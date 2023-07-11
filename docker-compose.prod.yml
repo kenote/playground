@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  api_server:
+    image: playground_api_server:prod
+    container_name: playground_api-server
+    build: 
+      context: .
+      dockerfile: ./api-server/Dockerfile.prod
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ${PWD}/api-server/config:/usr/src/app/config
+      - ${PWD}/api-server/channels:/usr/src/app/channels
+      - ${PWD}/api-server/logs:/usr/src/app/logs
+      - ${PWD}/api-server/static:/usr/src/app/static
+      - ${PWD}/api-server/views:/usr/src/app/views
+      - ${PWD}/.docker/api-server/config/server/config.docker.yml:/usr/src/app/config/server/config.docker.yml
+    ports:
+      - 4000:4000
+
+  mongodb: 
+    image: mongo:4.4.22-focal
+    container_name: playground_mongodb
+    restart: always
+
+  redis:
+    image: redis:6.2.12-alpine3.18
+    container_name: playground_redis
+    command: redis-server

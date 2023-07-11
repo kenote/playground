@@ -1,0 +1,7 @@
+
+redisOpts:
+  host: redis
+  port: 6379
+
+mongoOpts:
+  uris: mongodb://mongodb:27017/api-server

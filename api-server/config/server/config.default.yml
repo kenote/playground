@@ -1,0 +1,15 @@
+---
+
+NAME: api-server
+
+PORT: 4000
+
+SECRET_KEY: api-server
+
+redisOpts:
+  host: redis
+  port: 6379
+  db: 0
+
+mongoOpts:
+  uris: mongodb://localhost:27017/api-server

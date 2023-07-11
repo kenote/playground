@@ -1,0 +1,25 @@
+FROM node:16.20.1-alpine3.18
+
+WORKDIR /usr/src/app/
+
+COPY api-server/package.json /usr/src/app/
+COPY api-server/tsconfig.base.json /usr/src/app/
+COPY api-server/kenci.config.js /usr/src/app/
+
+RUN apk add --no-cache mongodb-tools
+
+RUN npm install
+
+VOLUME "/usr/src/app/src"
+VOLUME "/usr/src/app/channels"
+VOLUME "/usr/src/app/config"
+VOLUME "/usr/src/app/logs"
+VOLUME "/usr/src/app/static"
+VOLUME "/usr/src/app/views"
+VOLUME "/usr/src/app/dist"
+
+ENV NODE_ENV=development
+
+EXPOSE 4000
+
+CMD [ "npm", "run", "dev" ]
