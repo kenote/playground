@@ -89,9 +89,9 @@ export default class restful {
 
 }
 
-
 declare module '@kenote/core' {
   interface Context extends Restful {
+    user?: DB.user.SafeUser
     service: typeof service
   }
 }

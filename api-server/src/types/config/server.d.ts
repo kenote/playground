@@ -8,6 +8,7 @@ export declare type ServerConfigure = {
   SECRET_KEY     ?: string
   redisOpts      ?: Redis.RedisOptions
   mongoOpts      ?: ServerConfigure.MongoDBOptions
+  channelOpts    ?: ServerConfigure.ChannelOpts
 }
 
 export declare namespace ServerConfigure {
@@ -15,5 +16,9 @@ export declare namespace ServerConfigure {
   interface MongoDBOptions {
     uris         : string
     options     ?: mongoose.ConnectionOptions
+  }
+
+  interface ChannelOpts {
+    ignoreModules  ?: string[]
   }
 }

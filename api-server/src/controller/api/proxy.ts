@@ -1,19 +1,13 @@
 import { Context, Controller, NextHandler, Get, Post, Put, Delete } from '@kenote/core'
 import { APIProxy, getEntrance, getProxyResponse } from '@kenote/api-proxy'
-import { logger, nextError, ErrorCode } from '~/services'
-import ruleJudgment from 'rule-judgment'
-import { Plot } from '~/types/service/plot'
-import { isPlotAPI } from '~/services/plot'
-
-const plotChannelOptions: Plot.ChannelOptions<any>[] = [
-  {
-    name: 'fish',
-    pages: [],
-    api: [
-      { path: 'base-info' }
-    ]
-  }
-]
+import { logger, nextError } from '~/services'
+import { isPlotAPI, getPlot } from '~/services/plot'
+import path from 'path'
+import * as nedb from '~/services/nedb'
+import * as sqlite from '~/services/sqlite'
+import { omit } from 'lodash'
+import { loadConfig } from '@kenote/config'
+import type { ServerConfigure } from '~/types/config'
 
 @Controller()
 export default class ProxyController {
@@ -24,10 +18,16 @@ export default class ProxyController {
   @Delete('/:channel/:label?/:tag?')
   async handler (ctx: Context, next: NextHandler) {
     let { channel, label } = ctx.params
+    let { channelOpts } = loadConfig<ServerConfigure>('config/server', { mode: 'merge' })
     let options: APIProxy.EntranceOptions<any> = {
       channel,
       pathLabel: label,
-      sandbox: { service: ctx.service },
+      sandbox: { 
+        service: ctx.service, 
+        Nedb: nedb.DB(channel),
+        Sqlite: sqlite.DB(channel),
+        __dirname: path.resolve(process.cwd(), 'channels', channel) 
+      },
       getUser: () => ctx.user
     }
     try {
@@ -41,13 +41,20 @@ export default class ProxyController {
         return await ctx.status(401).send('Unauthorized')
       }
       // 使用策略
+      // let user = await ctx.getUser()
+      let plotChannelOptions = getPlot(ctx.user?.group.plot??'default')?.channels
       let pathname = entrance?.router.find( v => v.method == ctx.method )?.path ?? label
       let isPlot = isPlotAPI(channel, pathname, ctx.method)(plotChannelOptions)
       if (!isPlot) {
         return await ctx.status(401).send('Unauthorized')
       }
-      // 
-      let [ type, result ] = await getProxyResponse(entrance, payload)({ ctx, logger, serviceModules, setting })
+      //
+      let [ type, result ] = await getProxyResponse(entrance, payload)({ 
+        ctx, 
+        logger, 
+        serviceModules: omit(serviceModules, ['service.db', ...channelOpts?.ignoreModules??[]]), 
+        setting 
+      })
       if (entrance?.native) {
         ctx.setHeader('content-type', entrance.native == 'json' ? 'application/json; charset=utf-8' : type)
         return ctx.send(result)

@@ -13,3 +13,12 @@ redisOpts:
 
 mongoOpts:
   uris: mongodb://localhost:27017/api-server
+
+channelOpts:
+  ignoreModules:
+    - 'fs'
+    - 'fs/promises'
+    - 'node:fs'
+    - 'node:fs/promises'
+    - '@seald-io/nedb'
+    - 'better-sqlite3'

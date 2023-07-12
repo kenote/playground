@@ -1,18 +1,24 @@
-
 import type { Plot } from '~/types/service/plot'
-import { map } from 'lodash'
 import ruleJudgment from 'rule-judgment'
-import { Method, FilterQuery } from '@kenote/common'
+import { loadConfig } from '@kenote/config'
+import fs from 'fs'
+import path from 'path'
 
-
-const getChannels = (data: Plot<any>) => map(data.channels, 'name')
-
+/**
+ * 获取频道策略
+ */
 function getChannelOptions (data: Plot.ChannelOptions<any>[], channel: string) {
   return data.find( v => v.name == channel )
 }
 
-export function getAPIOptions (data: Plot.ChannelOptions<any>[], channel: string, path: string) {
-  return getChannelOptions(data, channel)?.api?.find( v => v.path == path )
+/**
+ * 获取策略
+ */
+export function getPlot (name: string = 'default') {
+  let regxp = new RegExp(`^(${name})\.(ya?ml|json)$`)
+  let filename = fs.readdirSync(path.resolve(process.cwd(), 'config/plots')).find( v => regxp.test(v) )
+  let plot = loadConfig<Plot<any>>(`config/plots/${filename}`)
+  return plot
 }
 
 /**
