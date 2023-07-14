@@ -50,3 +50,6 @@ previewTypes:
     extname: [ .woff ]
   - type: font/woff2
     extname: [ .woff2 ]
+
+encrypt: |-
+  ((value | md5) + '^' + salt) | sha1

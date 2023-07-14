@@ -10,6 +10,7 @@ export declare type ServerConfigure = {
   mongoOpts      ?: ServerConfigure.MongoDBOptions
   channelOpts    ?: ServerConfigure.ChannelOpts
   previewTypes   ?: ServerConfigure.FileType[]
+  encrypt        ?: string
 }
 
 export declare namespace ServerConfigure {
