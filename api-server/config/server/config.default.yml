@@ -22,3 +22,31 @@ channelOpts:
     - 'node:fs/promises'
     - '@seald-io/nedb'
     - 'better-sqlite3'
+
+previewTypes:
+  - type: image/png
+    extname: [ .png ]
+  - type: image/gif
+    extname: [ .gif ]
+  - type: image/jpeg
+    extname: [ .jpg, .jpeg ]
+  - type: image/svg+xml
+    extname: [ '.svg' ]
+  - type: application/json; charset=utf-8
+    extname: [ .json ]
+  - type: text/yaml; charset=utf-8
+    extname: [ .yml, .yaml ]
+  - type: text/html; charset=utf-8
+    extname: [ .htm, .html ]
+  - type: image/webp
+    extname: [ .webp ]
+  - type: text/css; charset=utf-8
+    extname: [ .css ]
+  - type: image/vnd.microsoft.icon
+    extname: [ .ico ]
+  - type: application/javascript; charset=utf-8
+    extname: [ .js ]
+  - type: font/woff
+    extname: [ .woff ]
+  - type: font/woff2
+    extname: [ .woff2 ]

@@ -3,7 +3,8 @@ import { staticDir, templateDir } from './config'
 import restful from './middlewares/restful'
 import session from '~/plugins/session'
 import passport from '~/plugins/passport'
-import ApiModule from './controller/api'
+import RootAPIControl from './controller'
+import ApiProxyModule from './controller/api_v1'
 
 @Module({
   statics: {
@@ -23,7 +24,7 @@ class StaticFile {}
 class TemplateView {}
 
 @Module({
-  imports: [ StaticFile, TemplateView, ApiModule ],
+  imports: [ StaticFile, TemplateView, RootAPIControl, ApiProxyModule ],
   plugins: [ session, passport ],
   middlewares: [ restful ],
   httpException: {

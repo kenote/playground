@@ -1,9 +1,12 @@
 import { Action, Context, Middleware, Property } from '@kenote/core'
-import type { Restful, HttpError } from '~/types/restful'
+import type { Restful, HttpError, StreamOptions } from '~/types/restful'
 import type * as DB from '~/types/service/db'
 import * as service from '~/services'
 import { setJwToken, verifyJwToken } from './auth'
 import { MASTER_GROUP_LEVEL } from '~/config'
+import fs from 'fs'
+import { Readable } from 'stream'
+import * as Store from '~/services/store'
 
 @Middleware()
 export default class restful {
@@ -84,6 +87,26 @@ export default class restful {
       if (level >= authlevel) {
         throw httpError(ErrorCode.ERROR_BYLOND_LEVEL_OPERATE)
       }
+    }
+  }
+
+  @Action()
+  sendStream (ctx: Context) {
+    return (content: string, options: StreamOptions = { mode: 'stream', contentType: 'application/octet-stream' }) => {
+      let contentType = options.contentType
+      let fileStream: Buffer | Readable | null = null
+      if (options.mode === 'stream') {
+        contentType = 'application/octet-stream'
+        fileStream = new Readable()
+        fileStream.push(content)
+        fileStream.push(null)
+      }
+      else {
+        contentType = Store.getContentType(content, options)
+        fileStream = fs.readFileSync(content)
+      }
+      ctx.setHeader('Content-Type', contentType)
+      return ctx.send(fileStream)
     }
   }
 

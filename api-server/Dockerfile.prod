@@ -15,6 +15,7 @@ VOLUME "/usr/src/app/channels"
 VOLUME "/usr/src/app/config"
 VOLUME "/usr/src/app/logs"
 VOLUME "/usr/src/app/static"
+VOLUME "/usr/src/app/uploadfiles"
 VOLUME "/usr/src/app/views"
 
 ENV NODE_ENV=production

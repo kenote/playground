@@ -9,6 +9,7 @@ export declare type ServerConfigure = {
   redisOpts      ?: Redis.RedisOptions
   mongoOpts      ?: ServerConfigure.MongoDBOptions
   channelOpts    ?: ServerConfigure.ChannelOpts
+  previewTypes   ?: ServerConfigure.FileType[]
 }
 
 export declare namespace ServerConfigure {
@@ -20,5 +21,10 @@ export declare namespace ServerConfigure {
 
   interface ChannelOpts {
     ignoreModules  ?: string[]
+  }
+
+  interface FileType {
+    type         : string
+    extname      : string[]
   }
 }

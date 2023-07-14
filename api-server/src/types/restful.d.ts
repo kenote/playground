@@ -1,4 +1,4 @@
-
+import { Context } from '@kenote/core'
 import type { HttpError } from 'http-errors'
 import * as DB from './service/db'
 
@@ -19,4 +19,11 @@ export declare interface Restful {
   getUser (): Promise<DB.user.SafeUser | undefined | null>
 
   filterUserLevel (level: number, minlevel: number): void
+
+  sendStream (content: string, options?: StreamOptions): Context
+}
+
+export declare interface StreamOptions {
+  mode          : 'preview' | 'stream' | 'download'
+  contentType  ?: string
 }

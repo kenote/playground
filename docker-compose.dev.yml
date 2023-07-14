@@ -17,6 +17,7 @@ services:
       - ${PWD}/api-server/channels:/usr/src/app/channels
       - ${PWD}/api-server/logs:/usr/src/app/logs
       - ${PWD}/api-server/static:/usr/src/app/static
+      - ${PWD}/api-server/uploadfiles:/usr/src/app/uploadfiles
       - ${PWD}/api-server/views:/usr/src/app/views
       - ${PWD}/api-server/src:/usr/src/app/src
       - ${PWD}/api-server/dist:/usr/src/app/dist

@@ -2,7 +2,7 @@ import { Module } from '@kenote/core'
 import ProxyController from './proxy'
 
 @Module({
-  path: '/api',
+  path: '/api/v1',
   controller: [
     ProxyController
   ],
@@ -11,4 +11,4 @@ import ProxyController from './proxy'
     headers: {}
   }
 })
-export default class ApiModule {}
+export default class ApiProxyModule {}
