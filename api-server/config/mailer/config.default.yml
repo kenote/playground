@@ -1,0 +1,13 @@
+---
+mailDir: mails
+
+smtpOptions:
+  host: smtp.ethereal.email
+  port: 587
+  auth:
+    user: penelope.leuschke41@ethereal.email
+    pass: aPxRSFBXbM7dseEwKK
+
+asyncRetryOptions:
+  times: 5
+  interval: 200

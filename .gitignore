@@ -139,3 +139,11 @@ yarn.lock
 *.docker.yml
 !.docker/**/*.docker.yml
 uploadfiles/
+db/
+
+**/config/**/*.*
+**/setting/*.*
+!**/*.default.yml
+!**/*.default.yaml
+!**/*.default.json
+!**/*.default.js

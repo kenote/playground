@@ -53,7 +53,7 @@ export default class restful {
   }
 
   @Action()
-  login (ctx: Context) {
+  jwtlogin (ctx: Context) {
     return async (user: DB.user.User) => {
       let jwtoken = setJwToken({ _id: user._id })
       ctx.cookie('jwtoken', jwtoken)

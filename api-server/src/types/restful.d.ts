@@ -14,7 +14,7 @@ export declare interface Restful {
 
   jwToken: string
 
-  login (user: DB.user.User): Promise<DB.user.SafeUser>
+  jwtlogin (user: DB.user.User): Promise<DB.user.SafeUser>
 
   getUser (): Promise<DB.user.SafeUser | undefined | null>
 

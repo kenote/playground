@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import nunjucks from 'nunjucks'
+import { Account } from '~/types/service/account'
 
 export const md5 = (text: string) => crypto.createHash('md5').update(text).digest('hex')
 
@@ -18,7 +19,7 @@ export function encode (format: string) {
       format = `{{ ${format} }}`
     }
     salt = salt ?? Math.random().toString(36).substring(8)
-    let password = { 
+    let password: Account.password = { 
       salt, 
       encrypt: parseTemplate(format, { value, salt })
     }

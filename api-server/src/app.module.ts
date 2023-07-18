@@ -4,6 +4,7 @@ import restful from './middlewares/restful'
 import session from '~/plugins/session'
 import passport from '~/plugins/passport'
 import RootAPIControl from './controller'
+import ApiMainModule from './controller/api_v0'
 import ApiProxyModule from './controller/api_v1'
 
 @Module({
@@ -24,7 +25,7 @@ class StaticFile {}
 class TemplateView {}
 
 @Module({
-  imports: [ StaticFile, TemplateView, RootAPIControl, ApiProxyModule ],
+  imports: [ StaticFile, TemplateView, RootAPIControl, ApiMainModule, ApiProxyModule ],
   plugins: [ session, passport ],
   middlewares: [ restful ],
   httpException: {
