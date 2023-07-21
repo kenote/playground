@@ -27,3 +27,9 @@ export declare interface StreamOptions {
   mode          : 'preview' | 'stream' | 'download'
   contentType  ?: string
 }
+
+export declare type PageRequest = {
+  page      ?: number
+  size      ?: number
+  sort      ?: string[]
+}

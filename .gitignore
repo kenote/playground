@@ -139,7 +139,7 @@ yarn.lock
 *.docker.yml
 !.docker/**/*.docker.yml
 uploadfiles/
-db/
+channels/**/db/
 
 **/config/**/*.*
 **/setting/*.*

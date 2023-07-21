@@ -8,6 +8,7 @@ import * as sqlite from '~/services/sqlite'
 import { omit } from 'lodash'
 import { loadConfig } from '@kenote/config'
 import type { ServerConfigure } from '~/types/config'
+import { parseTemplate, md5, sha1, encode } from '~/services/bcrypt'
 
 @Controller()
 export default class ProxyController {
@@ -26,10 +27,21 @@ export default class ProxyController {
         service: ctx.service, 
         Nedb: nedb.DB(channel),
         Sqlite: sqlite.DB(channel),
+        Buffer: Buffer,
         __dirname: path.resolve(process.cwd(), 'channels', channel) 
       },
       getUser: () => ctx.user
     }
+    console.log(
+      parseTemplate(`{{ ((pwd | md5) + '^' + salt) | sha1 }}`, { pwd: '123456', salt: 'abcd' }),
+    )
+    console.log(
+      sha1(md5('123456')+'^abcd'),
+    )
+    console.log(
+      encode("((value | md5) + '^' + salt) | sha1")('123456', 'abcd'),
+      // sha1
+    )
     try {
       let { 
         notFound, 

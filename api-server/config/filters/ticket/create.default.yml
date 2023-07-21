@@ -1,0 +1,41 @@
+---
+name: create
+
+auth: 9998
+
+payload:
+  - key: name
+    type: string
+    rules:
+      - required: true
+        message: 票据名称不能为空
+        code: 1000
+  - key: type
+    type: string
+    rules:
+      - required: true
+        message: 票据类型不能为空
+        code: 1000
+  - key: stint
+    type: number
+    rules:
+      - required: true
+        message: 次数限制不能为空
+        code: 1000
+    format:
+      - type: number
+    defaultValue: 1
+  - key: last_at
+    type: string
+    rules:
+      - required: true
+        message: 失效时间不能为空
+        code: 1000
+      - validator: isDateString
+        message: 失效时间无法解析成时间格式
+        code: 1000
+    format:
+      - type: date
+    defaultValue: {{ now }}
+  - key: content
+    type: string

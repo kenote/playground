@@ -22,7 +22,7 @@ export default class Group {
 
   @Field({ nullable: true, description: '用户组' })
   @prop({ required: true })
-  name!: string
+  public name!: string
 
   @Field({ nullable: true, description: '权级' })
   @prop({ default: 1000 })

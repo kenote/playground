@@ -1,0 +1,12 @@
+---
+name: verify
+
+payload:
+  - key: ticket
+    type: string
+  - key: name
+    type: string
+    defaultValue: 票据
+  - key: type
+    type: string
+    defaultValue: ticket

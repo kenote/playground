@@ -28,3 +28,7 @@ export const customize = {
     return value
   }
 }
+
+export const assign = {
+  now: new Date()
+}
