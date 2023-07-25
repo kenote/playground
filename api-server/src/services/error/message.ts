@@ -74,6 +74,18 @@ export const ERROR_REPEAT_ADDTO = '请不要重复添加%s'
  * 不在白名单中
  */
 export const ERROR_NOTIN_WHITELIST = '服务器拒绝了访问，您的IP 不在白名单中'
+/**
+ * 禁止删除 MASTER 组
+ */
+export const ERROR_NOT_REMOVE_MASTER = '禁止删除 MASTER 组'
+/**
+ * 禁止迁移进高级组
+ */
+export const ERROR_NOT_MIGRATED_ADVANCED = '禁止迁移到高级组'
+/**
+ * 迁移的组不存在
+ */
+export const ERROR_MIGRATED_GROUP_NOTEXIST = '迁移的组不存在'
 
 
 /**

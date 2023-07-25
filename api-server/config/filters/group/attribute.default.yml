@@ -1,0 +1,6 @@
+---
+name: attribute
+
+payload:
+  - key: plot
+    type: string

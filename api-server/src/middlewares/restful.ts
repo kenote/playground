@@ -77,9 +77,10 @@ export default class restful {
 
   @Action()
   filterUserLevel (ctx: Context) {
-    return (level: number, minlevel: number) => {
+    return async (level: number, minlevel: number) => {
       let { ErrorCode, httpError } = service
-      let authlevel = (<DB.user.User>ctx.user).group?.level ?? 0
+      let user = await ctx?.getUser()
+      let authlevel = user?.group?.level ?? 0
       if (authlevel === MASTER_GROUP_LEVEL) return
       if (authlevel < minlevel) {
         throw httpError(ErrorCode.ERROR_ONLY_ADVANCED_ADMIN)

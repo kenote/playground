@@ -12,17 +12,18 @@ interface FilterItem {
   auth       ?: number | true
 }
 
-export function loadFilter (path: string, name: string) {
+export function loadFilter (path: string, name: string, level?: number | true) {
   return async (ctx: Context, next: NextHandler) => {
     let filter = loadConfig<FilterItem[]>(`config/filters/${path}`, { type: 'array', assign })?.find( v => v.name === name )
+    let authlevel = level ?? filter?.auth
     try {
-      if (filter?.auth) {
+      if (authlevel) {
         let user = await ctx?.getUser()
         if (!user) {
           return await ctx.status(401).send('Unauthorized')
         }
-        if (isNumber(filter.auth)) {
-          ctx.filterUserLevel(0, filter.auth)
+        if (isNumber(authlevel)) {
+          await ctx.filterUserLevel(0, authlevel)
         }
       }
       let result = filterData(filter?.payload??[], customize)(ctx.body)

@@ -24,6 +24,10 @@ export const serverConfigure = <Required<ServerConfigure>> merge(<ServerConfigur
         useUnifiedTopology: true,
         useFindAndModify: false
       }
+    },
+    initial: {
+      username: process.env.ADMIN_NAME ?? 'admin',
+      password: process.env.ADMIN_PASS ?? 'admin888'
     }
   }, 
   loadConfig<ServerConfigure>('config/server', { mode: 'merge' })
@@ -36,3 +40,4 @@ export const templateDir = resolve(process.cwd(), 'views')
 export const SYSTEM_MINSAFE_ERROR_CODE = Number(process.env.SYSTEM_MINSAFE_ERROR_CODE ?? 1000)
 
 export const MASTER_GROUP_LEVEL = 9999
+export const ADVANCED_GROUP_LEVEL = 9000

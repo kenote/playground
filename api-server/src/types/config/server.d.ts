@@ -1,5 +1,6 @@
 import Redis from 'ioredis'
 import { mongoose } from '@typegoose/typegoose'
+import * as DB from '~/types/service/db'
 
 export declare type ServerConfigure = {
   NAME           ?: string
@@ -11,6 +12,7 @@ export declare type ServerConfigure = {
   channelOpts    ?: ServerConfigure.ChannelOpts
   previewTypes   ?: ServerConfigure.FileType[]
   encrypt        ?: string
+  initial        ?: DB.user.Register
 }
 
 export declare namespace ServerConfigure {

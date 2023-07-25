@@ -1,0 +1,6 @@
+---
+name: list
+
+payload:
+  - key: name
+    type: string

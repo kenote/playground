@@ -74,7 +74,18 @@ export const ERROR_REPEAT_ADDTO = 1017
  * 不在白名单中
  */
 export const ERROR_NOTIN_WHITELIST = 1018
-
+/**
+ * 禁止删除 MASTER 组
+ */
+export const ERROR_NOT_REMOVE_MASTER = 1019
+/**
+ * 禁止迁移进高级组
+ */
+export const ERROR_NOT_MIGRATED_ADVANCED = 1020
+/**
+ * 迁移的组不存在
+ */
+export const ERROR_MIGRATED_GROUP_NOTEXIST = 1021
 
 /**
  * 上传文件类型

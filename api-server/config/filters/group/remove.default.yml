@@ -1,0 +1,6 @@
+---
+name: remove
+
+payload:
+  - key: migrated
+    name: string

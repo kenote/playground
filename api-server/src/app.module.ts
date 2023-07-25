@@ -4,7 +4,7 @@ import restful from './middlewares/restful'
 import session from '~/plugins/session'
 import passport from '~/plugins/passport'
 import RootAPIControl from './controller'
-import ApiMainModule from './controller/api_v0'
+import ApiMainModule from './controller/api_uc'
 import ApiProxyModule from './controller/api_v1'
 
 @Module({

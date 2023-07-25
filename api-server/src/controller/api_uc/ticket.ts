@@ -46,7 +46,7 @@ export default class TicketController {
     }
   }
 
-  @Post('/edit/:_id', { filters: [ filters.loadFilter('ticket', 'create') ] })
+  @Post('/edit/:_id', { filters: [ filters.loadFilter('ticket', 'edit') ] })
   async edit (ctx: Context, next: NextHandler) {
     let id = filters.getRequestId(ctx, '_id')
     let conditions = db.toFilterQueryById<DB.ticket.Ticket>(id)

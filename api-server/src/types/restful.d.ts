@@ -18,7 +18,7 @@ export declare interface Restful {
 
   getUser (): Promise<DB.user.SafeUser | undefined | null>
 
-  filterUserLevel (level: number, minlevel: number): void
+  filterUserLevel (level: number, minlevel: number): Promise<void>
 
   sendStream (content: string, options?: StreamOptions): Context
 }
