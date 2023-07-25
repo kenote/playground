@@ -5,3 +5,7 @@ redisOpts:
 
 mongoOpts:
   uris: mongodb://mongodb:27017/api-server
+
+initial:
+  username: admin
+  password: admin888
