@@ -8,7 +8,6 @@ import * as sqlite from '~/services/sqlite'
 import { omit } from 'lodash'
 import { loadConfig } from '@kenote/config'
 import type { ServerConfigure } from '~/types/config'
-import { parseTemplate, md5, sha1, encode } from '~/services/bcrypt'
 
 @Controller()
 export default class ProxyController {
@@ -30,18 +29,8 @@ export default class ProxyController {
         Buffer: Buffer,
         __dirname: path.resolve(process.cwd(), 'channels', channel) 
       },
-      getUser: () => ctx.user
+      getUser: ctx.getUser
     }
-    console.log(
-      parseTemplate(`{{ ((pwd | md5) + '^' + salt) | sha1 }}`, { pwd: '123456', salt: 'abcd' }),
-    )
-    console.log(
-      sha1(md5('123456')+'^abcd'),
-    )
-    console.log(
-      encode("((value | md5) + '^' + salt) | sha1")('123456', 'abcd'),
-      // sha1
-    )
     try {
       let { 
         notFound, 
@@ -53,8 +42,8 @@ export default class ProxyController {
         return await ctx.status(401).send('Unauthorized')
       }
       // 使用策略
-      // let user = await ctx.getUser()
-      let plotChannelOptions = getPlot(ctx.user?.group.plot??'default')?.channels
+      let user = await ctx.getUser()
+      let plotChannelOptions = getPlot(user?.group.plot??'default')?.channels
       let pathname = entrance?.router.find( v => v.method == ctx.method )?.path ?? label
       let isPlot = isPlotAPI(channel, pathname, ctx.method)(plotChannelOptions)
       if (!isPlot) {

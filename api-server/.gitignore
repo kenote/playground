@@ -1,0 +1,7 @@
+# 
+.develop/
+uploadfiles/
+channels/
+config/
+# !config/**/*.default.yml
+# !config/**/default.yml

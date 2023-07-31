@@ -135,15 +135,5 @@ pnpm-lock.yaml
 yarn.lock
 
 # kenote
-.develop/
 *.docker.yml
 !.docker/**/*.docker.yml
-uploadfiles/
-channels/**/db/
-
-**/config/**/*.*
-**/setting/*.*
-!**/*.default.yml
-!**/*.default.yaml
-!**/*.default.json
-!**/*.default.js
