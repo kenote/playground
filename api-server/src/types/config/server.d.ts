@@ -13,6 +13,9 @@ export declare type ServerConfigure = {
   previewTypes   ?: ServerConfigure.FileType[]
   encrypt        ?: string
   initial        ?: DB.user.Register
+  REFRESH_SECRET ?: string
+  expiresIn      ?: string | number
+  refreshExpires ?: string | number
 }
 
 export declare namespace ServerConfigure {

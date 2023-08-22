@@ -22,7 +22,7 @@ export const Dao = modelDao<DB.user.User>(model as unknown as Model<Document, {}
 export function safeUser (data: DB.user.User, payload?: Partial<DB.user.SafeUser>) {
   if (!data) return
   let user = merge(data?.toObject({ virtuals: true }), payload)
-  return <DB.user.SafeUser> omit(user, ['encrypt', 'salt'])
+  return <DB.user.SafeUser> omit(user, ['encrypt', 'salt', 'jwtoken'])
 }
 
 export async function login (doc: Account.login) {

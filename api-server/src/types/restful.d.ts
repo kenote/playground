@@ -1,6 +1,7 @@
 import { Context } from '@kenote/core'
 import type { HttpError } from 'http-errors'
 import * as DB from './service/db'
+import { Account } from './service/account'
 
 export { HttpError }
 
@@ -14,7 +15,9 @@ export declare interface Restful {
 
   jwToken: string
 
-  jwtlogin (user: DB.user.User): Promise<DB.user.SafeUser>
+  jwtlogin (user: DB.user.User): Promise<AuthToken>
+
+  refreshToken (body: Account.refresh): Promise<AuthToken | null>
 
   getUser (): Promise<DB.user.SafeUser | undefined | null>
 
@@ -32,4 +35,10 @@ export declare type PageRequest = {
   page      ?: number
   size      ?: number
   sort      ?: string[]
+}
+
+export declare type AuthToken = {
+  user        ?: DB.user.SafeUser
+  accessToken  : string
+  refreshToken : string
 }

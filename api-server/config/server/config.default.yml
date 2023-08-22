@@ -6,6 +6,12 @@ PORT: 4000
 
 SECRET_KEY: api-server
 
+expiresIn: 5m
+
+REFRESH_SECRET: api-server_refresh
+
+refreshExpires: 2h
+
 redisOpts:
   host: redis
   port: 6379

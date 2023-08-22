@@ -1,0 +1,16 @@
+---
+name: refresh_token
+
+payload:
+  - key: refreshToken
+    type: string
+    rules:
+      - required: true
+        message: 刷新Token不能为空
+        code: 1000
+  - key: uid
+    type: string
+    rules:
+      - required: true
+        message: UID不能为空
+        code: 1000

@@ -1,5 +1,5 @@
 import { Action, Context, Middleware, Property } from '@kenote/core'
-import type { Restful, HttpError, StreamOptions } from '~/types/restful'
+import type { Restful, HttpError, StreamOptions, AuthToken } from '~/types/restful'
 import type * as DB from '~/types/service/db'
 import * as service from '~/services'
 import { setJwToken, verifyJwToken } from './auth'
@@ -7,6 +7,8 @@ import { MASTER_GROUP_LEVEL } from '~/config'
 import fs from 'fs'
 import { Readable } from 'stream'
 import * as Store from '~/services/store'
+import { serverConfigure } from '~/config'
+import type { Account } from '~/types/service/account'
 
 @Middleware()
 export default class restful {
@@ -55,20 +57,33 @@ export default class restful {
   @Action()
   jwtlogin (ctx: Context) {
     return async (user: DB.user.User) => {
-      let jwtoken = setJwToken({ _id: user._id })
-      ctx.cookie('jwtoken', jwtoken)
-      await service.db.user.Dao.updateOne({ _id: user._id }, { jwtoken })
-      return service.db.user.safeUser(user, { jwtoken })
+      let authToken = await updateToken(user._id)
+      ctx.cookie('jwtoken', authToken.accessToken)
+      authToken.user = service.db.user.safeUser(user)
+      return authToken
+    }
+  }
+
+  @Action()
+  refreshToken (ctx: Context) {
+    return async (body: Account.refresh) => {
+      let { refreshToken, uid } = body
+      let payload = verifyJwToken(refreshToken, serverConfigure.REFRESH_SECRET)
+      if (payload && payload._id == uid) {
+        let authToken = await updateToken(payload._id)
+        ctx.cookie('jwtoken', authToken.accessToken)
+        return authToken
+      }
+      return null
     }
   }
 
   @Action()
   getUser (ctx: Context) {
     return async () => {
-      let payload = verifyJwToken(ctx.jwToken)
+      let payload = verifyJwToken(ctx.jwToken, serverConfigure.SECRET_KEY)
       if (payload) {
         let user = await service.db.user.Dao.findOne({ _id: payload._id, jwtoken: ctx.jwToken })
-        user.group
         return service.db.user.safeUser(user)
       }
       return null
@@ -111,6 +126,20 @@ export default class restful {
     }
   }
 
+}
+
+async function updateToken (uid: string) {
+  let accessToken = setJwToken({ _id: uid }, serverConfigure.SECRET_KEY, {
+    expiresIn: serverConfigure.expiresIn
+  })
+  let refreshToken = setJwToken({ _id: uid }, serverConfigure.REFRESH_SECRET, {
+    expiresIn: serverConfigure.refreshExpires
+  })
+  await service.db.user.Dao.updateOne({ _id: uid }, { jwtoken: accessToken })
+  return <AuthToken> {
+    accessToken,
+    refreshToken
+  }
 }
 
 declare module '@kenote/core' {
