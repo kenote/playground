@@ -8,7 +8,7 @@ export declare type User = DocumentType<entities.User, BeAnObject> & {
   group      : Group
 }
 
-export declare type SafeUser = Omit<User, 'encrypt' | 'salt'>
+export declare type SafeUser = Omit<User, 'encrypt' | 'salt' | 'jwtoken'>
 
 export declare type Register = Partial<Omit<SafeUser, 'group'>> & {
   password  ?: string
