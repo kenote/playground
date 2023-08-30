@@ -22,9 +22,11 @@ export default class restful {
   api<T = any> (ctx: Context) {
     return (data: T, error?: HttpError) => {
       if (error != null) {
+        apilog({ error }, ctx)
         ctx.json({ error: error?.message })
       }
       else {
+        apilog({ data }, ctx)
         ctx.json({ data })
       }
     }
@@ -122,12 +124,18 @@ export default class restful {
         fileStream = fs.readFileSync(content)
       }
       ctx.setHeader('Content-Type', contentType)
+      apilog(fileStream, ctx)
       return ctx.send(fileStream)
     }
   }
 
 }
 
+/**
+ * 更新 Token
+ * @param uid 
+ * @returns 
+ */
 async function updateToken (uid: string) {
   let accessToken = setJwToken({ _id: uid }, serverConfigure.SECRET_KEY, {
     expiresIn: serverConfigure.expiresIn
@@ -140,6 +148,28 @@ async function updateToken (uid: string) {
     accessToken,
     refreshToken
   }
+}
+
+/**
+ * 写入请求日志
+ * @param response 
+ * @param ctx 
+ */
+export function apilog (response: any, ctx: Context) {
+  let info = {
+    // 客户端 IP
+    address: ctx.clientIP,
+    // 请求信息
+    request: {
+      originalUrl: ctx.originalUrl,
+      method: ctx.method,
+      headers: ctx.headers,
+      body: ctx.body
+    },
+    // 返回信息
+    response: JSON.stringify(response)
+  }
+  service.logger.info(info)
 }
 
 declare module '@kenote/core' {

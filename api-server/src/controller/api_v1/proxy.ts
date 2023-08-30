@@ -8,6 +8,7 @@ import * as sqlite from '~/services/sqlite'
 import { omit } from 'lodash'
 import { loadConfig } from '@kenote/config'
 import type { ServerConfigure } from '~/types/config'
+import { apilog } from '~/middlewares/restful'
 
 @Controller()
 export default class ProxyController {
@@ -58,6 +59,7 @@ export default class ProxyController {
       })
       if (entrance?.native) {
         ctx.setHeader('content-type', entrance.native == 'json' ? 'application/json; charset=utf-8' : type)
+        apilog(result, ctx)
         return ctx.send(result)
       }
       return ctx.api(result)

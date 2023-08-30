@@ -33,7 +33,6 @@ export default class AccountController {
    */
   @Put('refresh_token', { filters: [ filters.loadFilter('account', 'refresh_token') ] })
   async refreshToken (ctx: Context, next: NextHandler) {
-    console.log(ctx.payload)
     try {
       let result = await ctx.refreshToken(ctx.payload)
       return ctx.api(result)
