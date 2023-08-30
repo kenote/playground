@@ -60,7 +60,7 @@ function getAxiosInstance (interceptor?: boolean) {
           state.setToken(accessToken, refreshToken)
           axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
           originalRequest.headers.authorization = `Bearer ${accessToken}`
-          return axios(originalRequest)
+          return instance(originalRequest)
         }
       }
       return Promise.reject(error)

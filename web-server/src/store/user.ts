@@ -17,16 +17,19 @@ export const useUserStore = defineStore('user', {
     setToken(accessToken: string, refreshToken: string) {
       this.accessToken = accessToken
       this.refreshToken = refreshToken
+      update_cookie({ accessToken, refreshToken, user: this.user })
     },
     // 
-    setUser (user: UserEntitie) {
+    setUser (user: UserEntitie | null) {
       this.user = user
+      update_cookie({ accessToken: this.accessToken, refreshToken: this.refreshToken, user })
     },
     // 存储登录/导出
     setAuth (payload: AuthToken | null) {
       this.user = payload?.user
       this.accessToken = payload?.accessToken
       this.refreshToken = payload?.refreshToken
+      update_cookie(payload)
     },
     // 更改 Email
     setEmail (email: string) {
@@ -48,3 +51,8 @@ export const useUserStore = defineStore('user', {
   },
   persist: true
 })
+
+function update_cookie (payload: Partial<AuthToken> | null) {
+  const auth = useCookie('auth')
+  auth.value = JSON.stringify(payload)
+}

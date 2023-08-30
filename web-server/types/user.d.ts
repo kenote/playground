@@ -22,7 +22,7 @@ export declare interface GroupEntitie extends BaseEntitie {
 }
 
 export declare type AuthToken = {
-  user        ?: UserEntitie
+  user        ?: UserEntitie | null
   accessToken  : string
   refreshToken : string
 }

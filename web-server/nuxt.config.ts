@@ -6,6 +6,10 @@ export default defineNuxtConfig({
 
   srcDir: './src',
 
+  css: [
+    '~/assets/less/common.less'
+  ],
+
   modules: [
     '@vueuse/nuxt',
     '@unocss/nuxt',
@@ -14,6 +18,13 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     '@nuxtjs/color-mode'
   ],
+
+  piniaPersistedstate: {
+    cookieOptions: {
+      sameSite: 'strict'
+    },
+    storage: 'localStorage'
+  },
 
   runtimeConfig: {
     public: {
