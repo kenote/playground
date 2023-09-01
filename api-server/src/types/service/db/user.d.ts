@@ -16,3 +16,9 @@ export declare type Register = Partial<Omit<SafeUser, 'group'>> & {
 }
 
 export declare type NewUser = Partial<Omit<Register, 'password'>> & Account.password
+
+export declare interface CheckWarning {
+  username   : number
+  email      : number
+  mobile     : number
+}

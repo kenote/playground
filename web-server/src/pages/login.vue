@@ -29,10 +29,9 @@
 </template>
 
 <script setup lang="ts">
-import { FilterData } from 'parse-string'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { UserEntitie, AuthToken } from '@/types'
+import { AuthToken } from '@/types'
 import { useUserStore } from '~/store/user'
 
 definePageMeta({
@@ -54,38 +53,41 @@ const form = reactive(<LoginForm>{
   password: ''
 })
 
-const rules: Record<keyof LoginForm, FilterData.rule[]> = {
+// 验证规则
+const rules = useVerifyRule<keyof LoginForm>({
   username: [
-    { required: true, message: '请输入账号/邮箱/手机号' }
+  { required: true, message: '请输入账号/邮箱/手机号' }
   ],
   password: [
     { required: true, message: '请输入密码' }
   ]
-}
+})
 
-const submitForm = (formEl?: FormInstance) => {
+// 提交数据
+function submitForm (formEl?: FormInstance) {
   if (!formEl) return
   loading.value = true
   formEl.validate(valid => {
     if (valid) {
-      console.log(formEl.$props.model)
       setTimeout(async () => {
         try {
-          let { data, error } = await useHttpProxy<AuthToken>('/api/uc/account/login', { method: 'POST', data: formEl.$props.model })
-          console.log(data)
+          let { data, error } = await useHttpProxy<AuthToken>('/api/uc/account/login', { 
+            method: 'POST', 
+            data: formEl.$props.model 
+          })
           if (error) {
             ElMessage.warning(error)
           }
           else if (data) {
-            
             store.setAuth(data)
           }
         } catch (error) {
-          
+          if (error instanceof Error) {
+            ElMessage.error(error.message)
+          }
         }
         loading.value = false
       }, 500)
-        
     }
     else {
       return false

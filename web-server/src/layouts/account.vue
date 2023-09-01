@@ -3,7 +3,7 @@
   <div class="page-main">
     <div class="main-body">
       <div class="container flex justify-center">
-        <div class="warpper">
+        <div class="warpper my-10">
           <div class="account-header flex items-center justify-center h-24 pb-12">
             <el-image src="/images/logo.png" class="h-12" />
           </div>

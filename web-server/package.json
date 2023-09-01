@@ -6,7 +6,9 @@
   "dependencies": {
     "@kenote/common": "latest",
     "cross-env": "^7.0.3",
-    "element-plus": "^2.3.9"
+    "element-plus": "^2.3.9",
+    "nunjucks": "^3.2.4",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.5",
@@ -15,7 +17,10 @@
     "@nuxtjs/dotenv": "^1.4.1",
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
     "@pinia/nuxt": "^0.4.11",
+    "@types/js-yaml": "^3.12.7",
     "@types/node": "^20.5.0",
+    "@types/nunjucks": "^3.2.3",
+    "@types/validator": "^13.11.1",
     "@unocss/eslint-config": "^0.55.0",
     "@unocss/nuxt": "^0.55.0",
     "@vueuse/nuxt": "^10.3.0",
