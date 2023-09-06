@@ -66,5 +66,15 @@ export default defineNuxtConfig({
         { find: '~', replacement: resolve(__dirname, 'src') }
       ]
     }
+  },
+
+  hooks: {
+    'pages:extend': pages => {
+      pages.push({
+        name: 'cmsPage',
+        path: '/:catchAll(.*)',
+        file: resolve(__dirname, 'src/pages/_auto/[page].vue')
+      })
+    }
   }
 })

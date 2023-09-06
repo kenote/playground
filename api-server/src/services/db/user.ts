@@ -7,7 +7,13 @@ import { merge, omit } from 'lodash'
 import type { Account } from '~/types/service/account'
 import * as Bcrypt from '~/services/bcrypt'
 import { ErrorCode, httpError } from '~/services/error'
-import { serverConfigure } from '~/config'
+import * as db from '.'
+import mailer, { mailSender, parseMailUser, SITE_NAME, SITE_URL, sendMailNext } from '~/services/mailer'
+import Mail from 'nodemailer/lib/mailer'
+import nunjucks from 'nunjucks'
+import { AccountConfigure } from '~/types/config'
+import { toTime } from '~/utils'
+import { loadConfig } from '@kenote/config'
 
 export const model = getModelForClass(entities.User)
 export const Dao = modelDao<DB.user.User>(model as unknown as Model<Document, {}>, {
@@ -37,7 +43,8 @@ export async function login (doc: Account.login) {
   if (!user) {
     throw httpError(ErrorCode.ERROR_LOGINVALID_FAIL)
   }
-  let valide = Bcrypt.compare(serverConfigure.encrypt)(doc.password!, user.encrypt, user.salt)
+  let { encrypt } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
+  let valide = Bcrypt.compare(encrypt)(doc.password!, user.encrypt, user.salt)
   if (!valide) {
     throw httpError(ErrorCode.ERROR_LOGINVALID_FAIL)
   }
@@ -58,8 +65,73 @@ export async function create (doc: DB.user.Register) {
   if (unique_mobile) {
     throw httpError(ErrorCode.ERROR_VALID_MOBILE_UNIQUE)
   }
-  let password = Bcrypt.encode(serverConfigure.encrypt)(doc.password!)
+  let { password: options, encrypt } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
+  let pass = doc.password ?? Bcrypt.randomPassword(options)
+  let password = Bcrypt.encode(encrypt)(pass)
   let user: DB.user.NewUser = merge(omit(doc, ['password']), password)
   let result = await Dao.create(user)
-  return result
+  return { user: safeUser(result), pass }
+}
+
+export async function register (doc: DB.user.Register, options: Account.registerOptions, invitation: string = '') {
+  let ticket: DB.ticket.Ticket | null = null
+  if (options.invitation) {
+    ticket = await db.ticket.valid(invitation, '邀请码', 'resgister')
+    let group = await db.group.Dao.findOne({ _id: ticket.content })
+    doc.group = group._id
+  }
+  let store = await create(doc)
+  if (ticket && store.user) {
+    await db.ticket.Dao.updateOne({ _id: ticket._id }, { $inc: { usage: 1 } })
+  }
+  if (options.emailVerify && store.user) {
+    await sendMailByVerify(store.user, options.emailVerify)
+  }
+  return store
+}
+
+export async function sendMailByVerify (user: DB.user.SafeUser, options: AccountConfigure.emailVerify) {
+  let { timeout, url } = options
+  await db.verify.Dao.remove({ type: 'email', user: user._id })
+  let verify = await db.verify.create({ type: 'email', user: user._id })
+  let mailOptions: Mail.Options = {
+    from: mailSender,
+    to: parseMailUser(user),
+    subject: `${SITE_NAME}邮箱验证`
+  }
+  let content = {
+    site_name: SITE_NAME,
+    username: user.username,
+    email_verify_url: nunjucks.renderString(url, { siteUrl: SITE_URL, verify }),
+    timeout: toTime(timeout) / 3600
+  }
+  mailer.sendMail('email_verify.mjml', content)(mailOptions, sendMailNext)
+}
+
+export async function verifyEmailMobile (doc: Account.verifyEmailMobile<{ type: Account.verifyUserType}>, options: AccountConfigure.emailVerify) {
+  let warnings: DB.user.VerifyWarning = {
+    email: {
+      timeout: ErrorCode.ERROR_VERIFY_EMAIL_TIMEOUT,
+      falied: ErrorCode.ERROR_VERIFY_EMAIL_FAILED
+    },
+    mobile: {
+      timeout: ErrorCode.ERROR_VERIFY_MOBILE_TIMEOUT,
+      falied: ErrorCode.ERROR_VERIFY_MOBILE_FAILED
+    }
+  }
+  let verify = await db.verify.Dao.findOne(doc)
+  if (!verify) {
+    throw httpError(warnings?.[doc.type].falied)
+  }
+  let difftime = Date.now() - verify.create_at.getTime()
+  let timeout = toTime(options.timeout, true)
+  if (difftime > timeout) {
+    throw httpError(warnings?.[doc.type].timeout)
+  }
+  if (verify.approved) {
+    throw httpError(ErrorCode.ERROR_VERIFY_TOKEN_VERIFIED)
+  }
+  await db.verify.Dao.updateOne({ _id: verify._id }, { approved: true })
+  await Dao.updateOne({ _id: verify.user._id }, { $addToSet: { binds: doc.type } })
+  return verify
 }

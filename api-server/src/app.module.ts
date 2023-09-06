@@ -6,6 +6,7 @@ import passport from '~/plugins/passport'
 import RootAPIControl from './controller'
 import ApiMainModule from './controller/api_uc'
 import ApiProxyModule from './controller/api_v1'
+import { logger } from './services'
 
 @Module({
   statics: {
@@ -35,7 +36,17 @@ class TemplateView {}
         message: `This page could not be found.`
       })
     },
-    exception: (err, ctx: Context) => {
+    exception: (Error, ctx: Context) => {
+      logger.error({
+        address: ctx.clientIP,
+        request: {
+          originalUrl: ctx.originalUrl,
+          method: ctx.method,
+          headers: ctx.headers,
+          body: ctx.body
+        },
+        Error
+      })
       ctx.renderException('error', {
         code: 500,
         message: `This page could internal server error`

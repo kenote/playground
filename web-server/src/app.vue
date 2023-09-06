@@ -6,8 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import { UserEntitie, AuthToken } from '@/types'
+import type { UserEntitie, AuthToken } from '@/types'
 import { useUserStore } from '~/store/user'
+import type { AccountConfigure } from '@/types'
+import { useAccountStore } from '~/store/account'
 
 const auth = useCookie<AuthToken | null>('auth').value
 const store = useUserStore()
@@ -24,4 +26,7 @@ if (auth?.accessToken) {
     
   }
 }
+
+const { data: account } = await useSetting<AccountConfigure>('/api/uc/account') ?? {}
+useAccountStore().setConfigure(account)
 </script>

@@ -1,6 +1,8 @@
-
+import { AccountConfigure } from '../config'
 
 export declare namespace Account {
+
+  type verifyUserType = 'email' | 'mobile'
 
   interface login {
     username     ?: string
@@ -17,9 +19,15 @@ export declare namespace Account {
     salt       : string
   }
 
-  interface register {
-
+  interface registerOptions {
+    invitation   ?: boolean
+    emailVerify   : AccountConfigure.emailVerify
   }
+
+  type verifyEmailMobile<T = {}> = {
+    token         : string
+    _id           : string
+  } & T
 }
 
 export declare interface RandomOptions {

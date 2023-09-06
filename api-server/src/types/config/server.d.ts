@@ -6,12 +6,13 @@ export declare type ServerConfigure = {
   NAME           ?: string
   HOST           ?: string
   PORT           ?: number
+  SITE_NAME      ?: string
+  SITE_URL       ?: string
   SECRET_KEY     ?: string
   redisOpts      ?: Redis.RedisOptions
   mongoOpts      ?: ServerConfigure.MongoDBOptions
   channelOpts    ?: ServerConfigure.ChannelOpts
   previewTypes   ?: ServerConfigure.FileType[]
-  encrypt        ?: string
   initial        ?: DB.user.Register
   REFRESH_SECRET ?: string
   expiresIn      ?: string | number

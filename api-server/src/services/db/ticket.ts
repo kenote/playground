@@ -35,7 +35,7 @@ export async function valid (ticket: string, name: string, type: string) {
   if (data.last_at.getTime() <= Date.now()) {
     throw httpError(ErrorCode.ERROR_VALID_TICKET_EXPIRED, [ name ])
   }
-  if (data.usage) {
+  if (data.usage >= data.stint) {
     throw httpError(ErrorCode.ERROR_VALID_TICKET_USED, [ name ])
   }
   return data

@@ -1,0 +1,11 @@
+---
+name: verify
+
+payload:
+  - key: token
+    type: string
+    rules:
+      - require: true
+        message: 缺少 Token 凭证
+  - key: _id
+    type: string

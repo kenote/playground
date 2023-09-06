@@ -39,6 +39,9 @@ definePageMeta({
   middleware: ['auth']
 })
 
+const router = useRouter()
+const { url_callback } = useURLParams()
+
 type LoginForm = {
   username: string
   password: string
@@ -48,7 +51,7 @@ const store = useUserStore()
 const formRef = ref<FormInstance>()
 const loading = ref<boolean>(false)
 
-const form = reactive(<LoginForm>{
+const form = ref(<LoginForm>{
   username: '',
   password: ''
 })
@@ -66,9 +69,9 @@ const rules = useVerifyRule<keyof LoginForm>({
 // 提交数据
 function submitForm (formEl?: FormInstance) {
   if (!formEl) return
-  loading.value = true
   formEl.validate(valid => {
     if (valid) {
+      loading.value = true
       setTimeout(async () => {
         try {
           let { data, error } = await useHttpProxy<AuthToken>('/api/uc/account/login', { 
@@ -80,6 +83,8 @@ function submitForm (formEl?: FormInstance) {
           }
           else if (data) {
             store.setAuth(data)
+            formEl.resetFields()
+            router.push({ path: url_callback ?? '/' })
           }
         } catch (error) {
           if (error instanceof Error) {

@@ -22,12 +22,12 @@ export async function initData (runtime?: boolean) {
         level: MASTER_GROUP_LEVEL, 
         description: '创建者拥有系统最高权限，且只有一个帐号' 
       })
-      let user = await db.user.create(merge(serverConfigure?.initial, { group: group._id }))
+      let store = await db.user.create(merge(serverConfigure?.initial, { group: group._id }))
       logger.info(`初始化信息完成!
 
   -----------------------
-  管理员名称：${user.username}
-  管理员密码：${serverConfigure?.initial.password}
+  管理员名称：${store.user?.username}
+  管理员密码：${store.pass}
   -----------------------
         `)
     }

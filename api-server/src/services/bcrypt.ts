@@ -14,7 +14,7 @@ export function parseTemplate (tpl: string, context: object) {
   return env.renderString(tpl, context)
 }
 
-export function encode (format: string) {
+export function encode (format: string = 'value | md5') {
   return (value: string, salt?: string) => {
     if (!/^(\{){2}|(\}){2}$/.test(format)) {
       format = `{{ ${format} }}`
@@ -28,7 +28,7 @@ export function encode (format: string) {
   }
 }
 
-export function compare (format: string) {
+export function compare (format?: string) {
   return (value: string, encrypt: string, salt: string) => {
     let password = encode(format)(value, salt)
     return password.encrypt === encrypt

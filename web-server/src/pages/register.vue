@@ -1,7 +1,10 @@
 <template>
   <div class="account-body min-h-10 p-8 w-[480px]">
     <h1 class="text-center pb-8 m-0">注册账户</h1>
-    <el-form ref="formRef" size="large" 
+    <account-ticket v-if="account.invitation && !invitation" name="邀请码" :loading="loading" @submit="verifyTicket" >
+      <p class="text-warm-gray-500 mt-[-8px] text-center">必须要有邀请码才能注册；请在下方输入您的邀请码。</p>
+    </account-ticket>
+    <el-form v-else ref="formRef" size="large" 
       :model="form" 
       :rules="rules" 
       @submit.native.prevent="submitForm(formRef)" 
@@ -31,10 +34,58 @@
 
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
+import { useAccountStore } from '~/store/account'
+import type { TicketEntitie } from '@/types'
 
 definePageMeta({
   layout: 'account'
 })
+
+// 获取 Account 配置
+const account = useAccountStore()
+
+// 获取 URL 参数
+const urlParams = useURLParams()
+
+// 获取邀请函
+const invitation = ref<string>()
+
+
+const loading = ref<boolean>(false)
+
+// 挂载页面时
+onMounted(async () => {
+  // 核验邀请码
+  if (account.invitation && urlParams?.invitation) {
+    let { data } = await useVerifyTicket<TicketEntitie>(<string>urlParams?.invitation??'', '邀请码', 'register') ?? {}
+    if (data) {
+      invitation.value = data.ticket
+    }
+    else {
+      invitation.value = ''
+    }
+  }
+})
+
+function verifyTicket (value: string) {
+  loading.value = true
+  setTimeout(async () => {
+    try {
+      let { data, error } = await useVerifyTicket<TicketEntitie>(value, '邀请码', 'register') ?? {}
+      if (error) {
+        ElMessage.warning(error)
+      }
+      else if (data) {
+        invitation.value = data.ticket
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        ElMessage.error(error.message)
+      }
+    }
+    loading.value = false
+  }, 500)
+}
 
 type RegisterForm = {
   username: string
@@ -44,9 +95,8 @@ type RegisterForm = {
 }
 
 const formRef = ref<FormInstance>()
-const loading = ref<boolean>(false)
 
-const form = reactive(<RegisterForm>{
+const form = ref(<RegisterForm>{
   username: '',
   email: '',
   password: '',
@@ -69,7 +119,7 @@ const rules = useVerifyRule<keyof RegisterForm>({
   ],
   repassed: [
     { required: true, message: '请再输一遍密码，以便确认' },
-    { validator: [ 'validateRepassed', 'form.password' ] }
+    { validator: [ 'validateRepassed', 'form._value.password' ] }
   ]
 }, { form, uniqueFunc: useUniqueFunc(null) })
 

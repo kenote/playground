@@ -1,0 +1,26 @@
+---
+
+# 验证码发送间隔；单位：秒
+mailphoneStep: 30s
+
+# 验证码时效；单位：秒
+mailphoneTime: 15m
+
+# 邮箱验证
+emailVerify:
+  timeout: 12h
+  url: |-
+    {{siteUrl}}/security/email_verify?token={{verify.token}}&_id={{verify._id}}
+
+# 注册必须有邀请码
+invitation: true
+
+# 密码规范; 用于生成随机密码
+password:
+  length: 10        # 密码长度
+  symbol: true      # 是否插入符号
+  capitalize: true  # 英文字符是否大小写
+
+# 密码加密格式
+encrypt: |-
+  ((value | md5) + '^' + salt) | sha1

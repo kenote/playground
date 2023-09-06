@@ -4,6 +4,7 @@ import { isArray } from 'lodash'
 export * as group from './group'
 export * as user from './user'
 export * as ticket from './ticket'
+export * as verify from './verify'
 
 export function toFilterQueryById<T extends Document<string, any, any>> (id: string | string[]) {
   let conditions = <FilterQuery<T>> {

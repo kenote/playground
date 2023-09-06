@@ -174,7 +174,6 @@ export function apilog (response: any, ctx: Context) {
 
 declare module '@kenote/core' {
   interface Context extends Restful {
-    user?: DB.user.SafeUser
     service: typeof service
   }
 }
