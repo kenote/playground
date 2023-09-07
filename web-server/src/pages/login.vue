@@ -35,8 +35,7 @@ import { AuthToken } from '@/types'
 import { useUserStore } from '~/store/user'
 
 definePageMeta({
-  layout: 'account',
-  middleware: ['auth']
+  layout: 'account'
 })
 
 const router = useRouter()
