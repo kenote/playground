@@ -1,28 +1,20 @@
 import { useUserStore } from '~/store/user'
-import type { UserEntitie, AuthToken } from '@/types'
+import type { UserEntitie } from '@/types'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  const auth = useCookie<AuthToken | null>('auth').value
   const store = useUserStore()
-  store.setAuth(auth)
   
-  if (auth?.accessToken) {
-    try {
-      const { data } = await useHttpProxy<UserEntitie>('/api/uc/account/accesstoken', {
-        token: auth?.accessToken, 
-        interceptor: true
-      })
-      store.setUser(data ?? null)
-      if (!store.user) {
-        return navigateTo(`/login?url_callback=${to.fullPath}`)
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log('error', error.message)
-      }
+  try {
+    const { data } = await useHttpProxy<UserEntitie>('/api/uc/account/accesstoken', { interceptor: true })
+    store.setUser(data ?? null)
+  } catch (error) {
+    if (!store.refreshing) {
+      store.setUser(null)
     }
   }
-  else {
+  
+  if (!store.user) {
     return navigateTo(`/login?url_callback=${to.fullPath}`)
   }
+  
 })

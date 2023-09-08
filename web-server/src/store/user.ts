@@ -5,10 +5,16 @@ type State = {
   user         ?: UserEntitie | null
   accessToken  ?: string
   refreshToken ?: string
+  refreshing   ?: boolean
 }
 
-export const useUserStore = defineStore('user', {
-  state: () => reactive<State>({}),
+export const useUserStore = defineStore('auth', {
+  state: () => reactive<State>({
+    refreshing: false,
+    accessToken: '',
+    refreshToken: '',
+    user: null
+  }),
   getters: {
     userLevel: state => state.user?.group.level ?? 0,
   },
@@ -17,19 +23,21 @@ export const useUserStore = defineStore('user', {
     setToken(accessToken: string, refreshToken: string) {
       this.accessToken = accessToken
       this.refreshToken = refreshToken
-      update_cookie({ accessToken, refreshToken, user: this.user })
+      this.refreshing = false
     },
-    // 
+    // 设置刷新 Token 状态
+    setRefresh() {
+      this.refreshing = true
+    },
+    // 更新用户信息
     setUser (user: UserEntitie | null) {
       this.user = user
-      update_cookie({ accessToken: this.accessToken, refreshToken: this.refreshToken, user })
     },
     // 存储登录/导出
     setAuth (payload: AuthToken | null) {
       this.user = payload?.user
       this.accessToken = payload?.accessToken
       this.refreshToken = payload?.refreshToken
-      update_cookie(payload)
     },
     // 更改 Email
     setEmail (email: string) {
@@ -51,8 +59,3 @@ export const useUserStore = defineStore('user', {
   },
   persist: true
 })
-
-function update_cookie (payload: Partial<AuthToken> | null) {
-  const auth = useCookie('auth')
-  auth.value = JSON.stringify(payload)
-}

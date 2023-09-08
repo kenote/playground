@@ -33,7 +33,7 @@ export async function useHttpProxy<T extends any> (url: string, options?: HttpCl
  */
 function getAxiosInstance (interceptor?: boolean) {
   if (!interceptor) return axios
-  const state = useUserStore()
+  const store = useUserStore()
   const instance = axios.create()
   // 401 Unauthorized 请求拦截
   instance.interceptors.request.use(
@@ -47,20 +47,24 @@ function getAxiosInstance (interceptor?: boolean) {
       let originalRequest = error.config
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true
+        store.setRefresh()
         let params: HttpClientOptions = {
           method: 'PUT',
           data: {
-            refreshToken: state.refreshToken,
-            uid: state.user?._id
+            refreshToken: store.refreshToken,
+            uid: store.user?._id
           }
         }
         let { data } = await useHttpProxy<AuthToken>(REFRESH_TOKEN_API, params)
         if (data?.accessToken) {
           let { accessToken, refreshToken } = data
-          state.setToken(accessToken, refreshToken)
+          store.setToken(accessToken, refreshToken)
           axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
           originalRequest.headers.authorization = `Bearer ${accessToken}`
           return instance(originalRequest)
+        }
+        else {
+          store.setToken('', '')
         }
       }
       return Promise.reject(error)

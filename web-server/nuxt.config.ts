@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     cookieOptions: {
       sameSite: 'strict'
     },
-    storage: 'localStorage'
+    storage: 'cookies'
   },
 
   runtimeConfig: {
