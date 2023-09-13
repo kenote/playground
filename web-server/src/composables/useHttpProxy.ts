@@ -59,7 +59,7 @@ function getAxiosInstance (interceptor?: boolean) {
         if (data?.accessToken) {
           let { accessToken, refreshToken } = data
           store.setToken(accessToken, refreshToken)
-          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+          // axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
           originalRequest.headers.authorization = `Bearer ${accessToken}`
           return instance(originalRequest)
         }

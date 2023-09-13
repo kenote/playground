@@ -1,0 +1,49 @@
+// -> bodyer
+#panel-layout .page-main > .bodyer {
+  transition: all .5s;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  position: absolute;
+  top: 54px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .sidebar {
+    flex: 0 0 260px;
+    height: inherit;
+    background: #444c54;
+    border-right: solid 1px #e6e6e6;
+    transition: all .2s;
+    display: flex;
+    flex-direction: column;
+
+    .sidebar-header {
+      color: #e0e0e0;
+      padding: 0 20px;
+      transition: border-color .3s,background-color .3s,color .3s;
+      box-sizing: border-box;
+      height: 56px;
+      line-height: 56px;
+      background-color: #3c444a;
+      // text-align: center;
+      border-bottom: 1px solid #373737;
+
+      span {
+        font-size: 15px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .warpper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    min-width: 940px;
+  }
+}

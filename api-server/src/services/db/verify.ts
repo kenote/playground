@@ -3,7 +3,7 @@ import { getModelForClass } from '@typegoose/typegoose'
 import * as entities from '~/entities'
 import type * as DB from '~/types/service/db'
 import { Model, Document } from 'mongoose'
-import uuid from 'uuid'
+import * as uuid from 'uuid'
 
 export const model = getModelForClass(entities.Verify)
 export const Dao = modelDao<DB.verify.Verify>(model as unknown as Model<Document, {}>, {

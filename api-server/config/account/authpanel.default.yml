@@ -1,0 +1,17 @@
+---
+authpanel:
+  top:
+    - name: 基本资料
+      link: router:/account/baseinfo
+    - name: 安全设置
+      link: router:/account/security
+    - name: 我的收藏
+      link: command:bookmark
+  main:
+    - name: 基本资料
+      link: router:/account/baseinfo
+      divided: true
+    - name: 安全设置
+      link: router:/account/security
+    - name: 我的收藏
+      link: command:bookmark

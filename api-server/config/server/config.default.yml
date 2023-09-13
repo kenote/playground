@@ -14,7 +14,7 @@ expiresIn: 5m
 
 REFRESH_SECRET: api-server_refresh
 
-refreshExpires: 2h
+refreshExpires: 2d
 
 redisOpts:
   host: redis

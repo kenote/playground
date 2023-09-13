@@ -1,4 +1,5 @@
 import { FilterData } from 'parse-string'
+import { ChannelDataNode } from '@kenote/common'
 
 export declare interface BaseEntitie {
   _id     : string
@@ -17,4 +18,40 @@ export declare namespace Verify {
     trigger       ?: 'blur' | 'change' | Array<'blur' | 'change'>
     validator     ?: Validator | PromiseValidtor | Array<string | number | boolean | null>
   }
+}
+
+export declare namespace Command {
+
+  type type = 'dialog' | 'action' | 'command' | 'router' | 'http'
+
+  interface value<T> {
+    type     : type | T
+    path     : string
+  }
+}
+
+export declare namespace NavMenu {
+
+  interface DataItem extends BaseInfo {
+    key          ?: string
+    link         ?: string
+    icon         ?: string
+    divided      ?: booleanboolean
+    buttons      ?: DataItem[]
+  }
+
+}
+
+export declare namespace Channel {
+
+  type DataNode = ChannelDataNode<PlusNode>
+
+  interface PlusNode {
+    type          ?: string
+  }
+}
+
+export declare interface BaseInfo {
+  name          : string
+  description  ?: string
 }

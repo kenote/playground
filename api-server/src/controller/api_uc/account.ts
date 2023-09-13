@@ -8,6 +8,7 @@ import { loadConfig } from '@kenote/config'
 import type { AccountConfigure } from '~/types/config/account'
 import { Account } from '~/types/service/account'
 import createError from 'http-errors'
+import { getNavigator } from '~/services/channel'
 
 const checkWarning: DB.user.CheckWarning = {
   username: ErrorCode.ERROR_VALID_USERNAME_UNIQUE,
@@ -128,9 +129,10 @@ export default class AccountController {
    */
   @Get('/')
   async getSetting (ctx: Context, next: NextHandler) {
-    let { invitation } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
+    let { invitation, authpanel } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
     try {
-      return ctx.api({ invitation })
+      let navigator = getNavigator()
+      return ctx.api({ invitation, navigator, authpanel })
     } catch (error) {
       nextError(error, ctx, next)
     }
