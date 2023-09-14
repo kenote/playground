@@ -7,7 +7,8 @@ export default defineNuxtConfig({
   srcDir: './src',
 
   css: [
-    '~/assets/less/common.less'
+    '~/assets/less/common.less',
+    '~/assets/iconfont/iconfont.css',
   ],
 
   modules: [
