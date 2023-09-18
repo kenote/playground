@@ -14,6 +14,8 @@
         <navigation-sidebar-item 
           :name="item.name"
           :index="item.route ?? item.key"
+          :icon="item.icon"
+          :tag="item.tag"
           :children="item.children"
           />
       </template>
@@ -35,7 +37,6 @@ const props = withDefaults(defineProps<Props>(), {
   defaultActive: '',
 })
 
-
 </script>
 
 <style lang="less">
@@ -44,7 +45,7 @@ const props = withDefaults(defineProps<Props>(), {
 
   .el-menu-item.is-active {
     background-color: #373d41!important;
-    font-weight: 600;
+    font-weight: 400;
   }
 
   .el-submenu .el-menu-item {

@@ -1,5 +1,6 @@
 import { dataNodeProxy, initMaps, ChannelDataNode, removeMaps } from '@kenote/common'
-import { cloneDeep, compact } from 'lodash'
+import { cloneDeep, compact, map, pick } from 'lodash'
+import { Channel, NavMenu } from '@/types/base'
 
 
 export function toNavigatorRoute (node?: ChannelDataNode<any>) {
@@ -44,4 +45,20 @@ function toURLPath (value?: string) {
     val = `/${value}`
   }
   return val.replace(/(\/)$/, '')
+}
+
+
+export function toTypeNavigator (navigator: Channel.DataNode[], options: any = {}) {
+  // 
+
+  let types = <string[]> map(navigator, 'type')
+  let services: Channel.ServiceNode[] = []
+  for (let type of types) {
+    let node = navigator.filter( v => v.type == type )
+    services.push({ 
+      key: type, 
+      children: node.map( v => pick(v, ['key', 'name', 'route']) ) 
+    })
+  }
+  return services
 }

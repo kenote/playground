@@ -10,4 +10,5 @@ export declare type AccountConfigure = {
 type AuthPanel = {
   top         ?: NavMenu.DataItem[]
   main        ?: NavMenu.DataItem[]
+  trigger     ?: string
 }

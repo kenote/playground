@@ -135,3 +135,12 @@ export function parseParams (params: any) {
     return (jsYaml.load(val) || parseData) as Record<string, any>
   } 
 }
+
+
+export function parseTag (value: string) {
+  let [ type, val ] = String(value).split('::')
+  if (!val) {
+    return { val: type }
+  }
+  return { type, val }
+}

@@ -1,5 +1,6 @@
 import { DataItem } from '.'
 import { RandomOptions } from '~/types/service/account'
+import { CommonDataNode } from '@kenote/common'
 
 export declare interface AccountConfigure {
 
@@ -17,6 +18,8 @@ export declare interface AccountConfigure {
   encrypt             ?: string
 
   authpanel           ?: AccountConfigure.authPanel
+
+  navigator           ?: AccountConfigure.Navigator
 }
 
 export declare namespace AccountConfigure {
@@ -29,5 +32,10 @@ export declare namespace AccountConfigure {
   type authPanel = {
     top                 ?: DataItem[]
     main                ?: DataItem[]
+    trigger             ?: string
+  }
+
+  type Navigator = {
+    types                : Pick<CommonDataNode, 'key' | 'name'>[]
   }
 }

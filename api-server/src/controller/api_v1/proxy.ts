@@ -9,6 +9,7 @@ import { omit } from 'lodash'
 import { loadConfig } from '@kenote/config'
 import type { ServerConfigure } from '~/types/config'
 import { apilog } from '~/middlewares/restful'
+import { readChannelFile } from '~/services/channel'
 
 @Controller()
 export default class ProxyController {
@@ -27,6 +28,7 @@ export default class ProxyController {
         service: ctx.service, 
         Nedb: nedb.DB(channel),
         Sqlite: sqlite.DB(channel),
+        readFile: readChannelFile(channel),
         Buffer: Buffer,
         __dirname: path.resolve(process.cwd(), 'channels', channel) 
       },

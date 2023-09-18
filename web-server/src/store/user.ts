@@ -57,5 +57,7 @@ export const useUserStore = defineStore('auth', {
       this.user.avatar = avatar
     },
   },
-  persist: true
+  persist: {
+    storage: persistedState.cookies
+  }
 })

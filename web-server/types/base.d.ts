@@ -48,6 +48,13 @@ export declare namespace Channel {
 
   interface PlusNode {
     type          ?: string
+    tag           ?: string
+  }
+
+  type ServiceNode = {
+    key            : string
+    name          ?: string
+    children      ?: Pick<ChannelDataNode<{}>, 'key' | 'name' | 'route'>[]
   }
 }
 

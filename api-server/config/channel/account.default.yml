@@ -3,9 +3,11 @@ key: 01.account
 name: 账户中心
 route: /account
 children:
-  - key: 1-1
-    name: 账户管理
+  - name: 账户管理
     children:
-      - key: 1-1-1
-        name: 基本资料
+      - name: 基本资料
         route: /baseinfo
+      - name: 安全设置
+        route: /security
+      - name: 站内消息
+        route: /notification

@@ -8,6 +8,11 @@ import { map, orderBy } from 'lodash'
 
 export function getNavigator () {
   let systemNavigator = loadConfig<Channel.DataNode[]>('config/channel', { type: 'array' })
+  for (let node of systemNavigator) {
+    node.type = 'system'
+    node.label = node.label ?? node.key
+    node.children = generateChannelNode(node.children ?? [], node.key)
+  }
   let channelNavigator = readChannelSetting<Channel.DataNode>('navigator').filter(
     ruleJudgment<Channel.DataNode>({ label: { $nin: map(systemNavigator, 'label') }})
   )
@@ -15,7 +20,7 @@ export function getNavigator () {
   return orderBy(navigator, ['key'], ['asc'])
 } 
 
-export function readChannelSetting<T extends ChannelDataNode<{}>> (name: string) {
+export function readChannelSetting<T extends Channel.DataNode> (name: string) {
   let rootDir = path.resolve(process.cwd(), 'channels')
   let isDirectory = ruleJudgment<string>({ $where: v => fs.statSync(path.resolve(rootDir, v)).isDirectory() })
   let isConfFile = ruleJudgment({ $regex: new RegExp(`^(${name}\.(ya?ml|json5?|js))`) })
@@ -29,6 +34,7 @@ export function readChannelSetting<T extends ChannelDataNode<{}>> (name: string)
     conf.key = conf.key ?? `channel::${channel}`
     conf.label = conf.label ?? channel
     conf.route = conf.route ?? `/${channel}`
+    conf.type = conf.type ?? 'other'
     conf.children = generateChannelNode(conf.children ?? [], conf.key)
     info.push(conf)
   }
@@ -48,4 +54,11 @@ function generateChannelNode<T extends ChannelDataNode<any>> (data: T[], name: s
     __data.push(node)
   }
   return __data
+}
+
+export function readChannelFile (channel: string) {
+  return (name: string) => {
+    let filePath = path.resolve(process.cwd(), 'channels', channel, name)
+    return fs.readFileSync(filePath, 'utf8')
+  }
 }
