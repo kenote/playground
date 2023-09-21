@@ -1,4 +1,4 @@
-import { dataNodeProxy, initMaps, ChannelDataNode, removeMaps } from '@kenote/common'
+import { dataNodeProxy, initMaps, ChannelDataNode, removeMaps, CommonDataNode } from '@kenote/common'
 import { cloneDeep, compact, map, pick } from 'lodash'
 import { Channel, NavMenu } from '@/types/base'
 
@@ -27,6 +27,9 @@ function updateNavigatorNode (navs: ChannelDataNode<any>[], navigator: ChannelDa
 export function updateNavigatorRoute (navigator: ChannelDataNode<any>[] = []) {
   let __navs = dataNodeProxy(initMaps(navigator))
   for (let channel of __navs.data) {
+    // if (channel.index) {
+    //   __navs.update(channel.key, { index: toNavigatorRoute(__navs.find({ key: channel.key }))(navigator) })
+    // }
     if (channel.children) {
       __navs.update(channel.key, { children: updateNavigatorNode(channel.children, navigator) })
     }
@@ -48,15 +51,17 @@ function toURLPath (value?: string) {
 }
 
 
-export function toTypeNavigator (navigator: Channel.DataNode[], options: any = {}) {
+export function toTypeNavigator (navigator: Channel.DataNode[], options: Pick<CommonDataNode, 'key' | 'name'>[] = []) {
   // 
 
   let types = <string[]> map(navigator, 'type')
   let services: Channel.ServiceNode[] = []
   for (let type of types) {
     let node = navigator.filter( v => v.type == type )
+    if (services.find( v => v.key == type )) continue
     services.push({ 
       key: type, 
+      name: options.find( v => v.key == type )?.name,
       children: node.map( v => pick(v, ['key', 'name', 'route']) ) 
     })
   }

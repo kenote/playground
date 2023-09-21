@@ -1,7 +1,7 @@
-<!-- Page::baseinfo -->
+<!-- Page::security -->
 <template>
   <wrapper-panel>
-    BaseInfo
+    Security
   </wrapper-panel>
 </template>
 

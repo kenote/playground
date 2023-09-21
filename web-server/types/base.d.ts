@@ -49,6 +49,7 @@ export declare namespace Channel {
   interface PlusNode {
     type          ?: string
     tag           ?: string
+    refresh       ?: boolean
   }
 
   type ServiceNode = {

@@ -1,5 +1,5 @@
 <template>
-  <el-sub-menu v-if="children?.length > 0" :index="index">
+  <el-sub-menu v-if="children?.length??0 > 0" :index="index">
     <template #title>
       <i v-if="icon" class="mr-[6px]" v-bind:class="icon"></i>
       <span>{{ name }}</span>
@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
   
 })
 
-const tagElem = ref<{ type: string, val: string }>(parseTag(props.tag))
+const tagElem = ref<{ type?: string, val: string }>(parseTag(props.tag))
 
 
 </script>

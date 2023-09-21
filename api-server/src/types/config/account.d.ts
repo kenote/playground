@@ -25,17 +25,20 @@ export declare interface AccountConfigure {
 export declare namespace AccountConfigure {
 
   type emailVerify = {
-    timeout              : string | number
-    url                  : string
+    timeout      : string | number
+    url          : string
   }
 
   type authPanel = {
-    top                 ?: DataItem[]
-    main                ?: DataItem[]
-    trigger             ?: string
+    top         ?: DataItem[]
+    main        ?: DataItem[]
+    trigger     ?: string
   }
 
   type Navigator = {
-    types                : Pick<CommonDataNode, 'key' | 'name'>[]
+    name         : string
+    types        : Pick<CommonDataNode, 'key' | 'name'>[]
+    group        : string[][]
+    trigger     ?: string
   }
 }

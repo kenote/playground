@@ -1,12 +1,17 @@
 ---
 key: 01.account
 name: 账户中心
+icon: iconfont icon-account
+label: account
 route: /account
+index: /baseinfo
 children:
   - name: 账户管理
+    icon: iconfont icon-Passport
     children:
       - name: 基本资料
         route: /baseinfo
+        # refresh: true
       - name: 安全设置
         route: /security
       - name: 站内消息

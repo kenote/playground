@@ -49,5 +49,61 @@
     overflow-x: hidden;
     position: relative;
     min-width: 940px;
+
+    .breadcrumb {
+      position: absolute;
+      width: calc(100% - 30px);
+      padding: 20px 0 0 30px;
+      background-color: #fff;
+      z-index: 5;
+
+      .el-breadcrumb {
+        padding-left: 10px;
+        line-height: 15px;
+        position: relative;
+        height: 18px;
+        border-left: 2px #49a9ee solid;
+        margin-bottom: 28px;
+        min-width: max-content;
+    
+        &::after {
+          content: "";
+          display: block;
+          height: 1px;
+          width: 100%;
+          background: rgba(0,0,0,.2);
+          position: absolute;
+          top: 32px;
+          left: -2px;
+        }
+      }
+    }
+
+    .page-tools {
+      position: absolute;
+      z-index: 5;
+      width: 100%;
+      padding: 15px 30px 0;
+      text-align: right;
+
+      .el-button {
+        border: 0;
+        width: 32px;
+        margin-left: 0;
+        background-color: transparent;
+
+        &.refresh {
+          animation: rotating 2s linear infinite;
+        }
+
+        &:focus, &:hover {
+          color: #606266;
+        }
+
+        i {
+          font-size: 16px;
+        }
+      }
+    }
   }
 }

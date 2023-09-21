@@ -1,8 +1,14 @@
 ---
 navigator:
+  name: 产品与服务
 
   types:
     - key: system
       name: 系统服务
     - key: other
       name: 其他
+
+  group:
+    - [ system ]
+    # - [ game ]
+    # - [ other ]

@@ -137,7 +137,7 @@ export function parseParams (params: any) {
 }
 
 
-export function parseTag (value: string) {
+export function parseTag (value?: string): { type?: string, val: string } {
   let [ type, val ] = String(value).split('::')
   if (!val) {
     return { val: type }

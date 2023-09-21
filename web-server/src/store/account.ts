@@ -19,6 +19,7 @@ export const useAccountStore = defineStore('account', {
       this.invitation = config?.invitation
       this.navigator = updateNavigatorRoute(config?.navigator)
       this.authpanel = config?.authpanel
+      this.navOpts = config?.navOpts
     },
     async selectChannel (channel?: string) {
       this.current = channel

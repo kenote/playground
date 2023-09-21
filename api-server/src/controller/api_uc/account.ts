@@ -129,10 +129,10 @@ export default class AccountController {
    */
   @Get('/')
   async getSetting (ctx: Context, next: NextHandler) {
-    let { invitation, authpanel } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
+    let { invitation, authpanel, navigator: navOpts } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
     try {
       let navigator = getNavigator()
-      return ctx.api({ invitation, navigator, authpanel })
+      return ctx.api({ invitation, navigator, authpanel, navOpts })
     } catch (error) {
       nextError(error, ctx, next)
     }

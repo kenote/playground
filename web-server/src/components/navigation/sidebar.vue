@@ -33,7 +33,7 @@ type Props = {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  data: [],
+  // data: [],
   defaultActive: '',
 })
 
