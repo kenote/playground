@@ -66,6 +66,13 @@ export default defineNuxtConfig({
         { find: '@', replacement: __dirname },
         { find: '~', replacement: resolve(__dirname, 'src') }
       ]
+    },
+    css: {
+      preprocessorOptions: {
+        less: {
+          javascriptEnabled: true,
+        }
+      }
     }
   },
 
