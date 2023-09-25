@@ -3,8 +3,9 @@ import type { AccountConfigure } from '@/types'
 import { getChannelKey } from '@kenote/common'
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { data } = await useSetting<AccountConfigure>('/api/uc/account') ?? {}
-  useAccountStore().setConfigure(data)
+  const store = useAccountStore()
+  const configure = await useSetting<AccountConfigure>('/api/uc/account')
+  store.setConfigure(configure)
 
   const { navigator } = useAccountStore()
   const channelId = getChannelKey(navigator??[], to.path, 'route')
@@ -12,4 +13,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (!channelId) {
     throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
   }
+  const setting = await usePage(to.path)
+  store.setPageSetting(setting)
 })

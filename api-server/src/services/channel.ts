@@ -53,11 +53,14 @@ export function readConfigFile<T = any> (name: string, channel: string) {
   if (!fs.existsSync(path.resolve(rootDir, channel))) return null
   let file = fs.readdirSync(path.resolve(rootDir, channel))?.filter(isFile)?.find(isConfFile)
   let directory = fs.readdirSync(path.resolve(rootDir, channel))?.filter(isDirectory)?.find( v => v == name )
+  let assign = {
+    channel: channel.split(/\//)?.[0]
+  }
   if (file) {
-    return loadConfig<T>(path.resolve(rootDir, channel, file))
+    return loadConfig<T>(path.resolve(rootDir, channel, file), { assign })
   }
   else if (directory) {
-    return loadConfig<T>(path.resolve(rootDir, channel, directory), { mode: 'merge' })
+    return loadConfig<T>(path.resolve(rootDir, channel, directory), { mode: 'merge', assign })
   }
   return null
 }

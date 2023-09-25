@@ -6,6 +6,7 @@ export declare type AccountConfigure = {
   navigator   ?: Channel.DataNode[]
   authpanel   ?: AuthPanel
   navOpts     ?: NavOptions
+  setting     ?: PageSetting
 }
 
 type AuthPanel = {
@@ -19,4 +20,25 @@ type NavOptions = {
   types        : Pick<CommonDataNode, 'key' | 'name'>[]
   group        : string[][]
   trigger     ?: string
+}
+
+export declare type PageSetting = {
+  layout      ?: string
+  middleware  ?: string | string[]
+  style       ?: string
+  views       ?: ViewItem[]
+  env         ?: Record<string, any>
+  wrapper     ?: Wrapper
+}
+
+type ViewItem = {
+  name         : string
+  component    : string
+  options     ?: Record<string, any>
+  children    ?: ViewItem[]
+}
+
+type Wrapper = {
+  name         : string
+  options     ?: Record<string, any>
 }

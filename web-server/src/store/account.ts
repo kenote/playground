@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { AccountConfigure } from '@/types'
+import type { AccountConfigure, PageSetting } from '@/types'
 
 type State = AccountConfigure & {
   current ?: string
@@ -23,6 +23,9 @@ export const useAccountStore = defineStore('account', {
     },
     async selectChannel (channel?: string) {
       this.current = channel
+    },
+    setPageSetting (setting: PageSetting) {
+      this.setting = setting
     }
   }
 })
