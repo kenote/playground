@@ -30,6 +30,10 @@ a {
   border-radius: 0 !important;
 }
 
+.el-textarea__inner {
+  border-radius: 0 !important;
+}
+
 // .el-input__inner {
 //   height: 38px !important;
 //   line-height: 38px !important;
@@ -44,6 +48,21 @@ a {
   position: inherit !important;
 }
 
+.el-date-table-cell__holiday {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--el-color-danger);
+  border-radius: 50%;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.el-cascader-node__prefix {
+  margin-right: 10px;
+}
+
 .flex-container {
   display: flex;
 
@@ -53,5 +72,28 @@ a {
 
   &.horizontal {
     flex-direction: row;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.3);
   }
 }

@@ -1,5 +1,8 @@
-import { merge, get, isDate, isString } from 'lodash'
+import { merge, get, isDate, isString, compact, cloneDeep, isArray, isPlainObject, omit, template, isFunction } from 'lodash'
 import jsYaml from 'js-yaml'
+import { PropDataItem } from '@/types/base'
+import { toValue } from 'parse-string'
+import { evaluate } from 'eval5'
 
 /**
  * 解析成日期时间
@@ -136,11 +139,111 @@ export function parseParams (params: any) {
   } 
 }
 
-
+/**
+ * 解析 Tag
+ * @param value 
+ * @returns 
+ */
 export function parseTag (value?: string): { type?: string, val: string } {
   let [ type, val ] = String(value).split('::')
   if (!val) {
     return { val: type }
   }
   return { type, val }
+}
+
+/**
+ * 转像素大小
+ * @param value 
+ * @returns 
+ */
+export function toPixelSize (value: number | string) {
+  return compact(String(value).split(/\s+/)).map( v => {
+    if (/^(\d\.?)+$/.test(v)) {
+      return v + 'px'
+    }
+    if (v == 'auto') {
+      return '100%'
+    }
+    return v
+  }).join(' ')
+}
+
+/**
+ * 映射对象
+ * @param props 
+ */
+export function parseProps<T extends {}> (props?: Record<string, string>) {
+  return (data: Record<string, any>) => {
+    if (!props) return data as T
+    let result = cloneDeep(data)
+    let keys: string[] = []
+    for (let [key, val] of Object.entries(props)) {
+      let ret = get(data, val)
+      if (isArray(ret)) {
+        result[key] = ret?.map( v => isPlainObject(v) ? parseProps(props)(v) : v )
+      }
+      else {
+        result[key] = /(\{)/.test(val) ? parseTemplate(val, data) : ret
+      }
+      if (key !== val) {
+        keys.push(val)
+      }
+    }
+    return omit(result, keys) as T
+  }
+}
+
+/**
+ * 转换格式化字符串
+ * @param props 
+ * @returns 
+ */
+export function toFormatString (props?: Partial<Record<keyof PropDataItem, string>>) {
+  return (data: Record<string, any>, format: string = '{label}') => {
+    if (props) {
+      for (let item in Object.keys(props)) {
+        if (props?.[<keyof PropDataItem>item]) {
+          format = format.replace(new RegExp(`{${item}}`, 'g'), `{${props?.[<keyof PropDataItem>item]}}`)
+        }
+      }
+    }
+    return template(format, { interpolate: /{([\s\S]+?)}/g })(data)
+  }
+}
+
+/**
+ * 解析成 Function 函数
+ * @param value 
+ * @returns 
+ */
+export function parseFunction (value: string | Function) {
+  if (isString(value)) {
+    try {
+      return <Function> evaluate(`(${value})`)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message)
+      }
+    }
+  }
+  else if (isFunction(value)) {
+    return value
+  }
+  return 
+}
+
+/**
+ * 将时间转成 Date
+ * @param value 
+ * @returns 
+ */
+export function parseTime (value: string, __date?: Date | null) {
+  if (!value) return null
+  let [ hours, minutes, seconds ] = value.split(':').map( v => toValue('number')(v) == 'NaN' ? 0 : toValue('number')(v) )
+  let date = __date??new Date()
+  date.setHours(hours??0)
+  date.setMinutes(minutes??0)
+  date.setSeconds(seconds??0)
+  return date
 }

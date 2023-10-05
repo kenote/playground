@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware( (to, from) => {
   if (setting?.middleware) {
     let names = isArray(setting.middleware) ? setting.middleware : [setting.middleware]
     for (let item of names) {
-      return middlewares?.[item]?.(to, from)
+      middlewares?.[item]?.(to, from)
     }
   }
 })
