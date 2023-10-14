@@ -1,5 +1,5 @@
 import { FilterData } from 'parse-string'
-import { ChannelDataNode, HttpClient } from '@kenote/common'
+import { ChannelDataNode, HttpClient, FilterQuery } from '@kenote/common'
 import { CSSProperties } from 'vue'
 import { IncomingHttpHeaders } from 'http'
 
@@ -52,19 +52,39 @@ type Mark = {
 }
 
 export declare type FormItemType = 'text'
-| 'password' 
-| 'number'
-| 'textarea'
-| 'radio' | 'radio-button'
-| 'checkbox' | 'checkbox-button'
-| 'select' | 'select-v2'
-| 'year' | 'years' | 'month' | 'months' | 'date' | 'dates' | 'week' | 'datetime' | 'time' 
-| 'datetimerange' | 'daterange' | 'monthrange' | 'timerange'
-| 'cascader' | 'cascader-panel'
-| 'switch' | 'slider'
-| 'color-picker'
-| 'rate'
-| 'transfer'
+  | 'password' 
+  | 'number'
+  | 'textarea'
+  | 'radio' | 'radio-button'
+  | 'checkbox' | 'checkbox-button'
+  | 'select' | 'select-v2'
+  | 'year' | 'years' | 'month' | 'months' | 'date' | 'dates' | 'week' | 'datetime' | 'time' 
+  | 'datetimerange' | 'daterange' | 'monthrange' | 'timerange'
+  | 'cascader' | 'cascader-panel'
+  | 'switch' | 'slider'
+  | 'color-picker'
+  | 'rate'
+  | 'transfer'
+
+export declare type FormItemColumn = {
+  key                 : string
+  type                : FormItemType
+  label               : string
+  placeholder        ?: string | string[]
+  disabled           ?: boolean | FilterQuery<any> | string
+  width              ?: number | string
+  size               ?: Size
+  // readonly      ?: boolean
+  format             ?: string
+  valueFormat        ?: string
+  // pickerOptions ?: DatePickerOptions
+  data               ?: Array<Partial<PropDataItem> & { [x: string]: any }> | string | RequestConfig
+  props              ?: Partial<Record<keyof PropDataItem, string> & { [x: string]: any }>
+  options            ?: FormItemOptions
+  conditions         ?: FilterQuery<any> | string
+  labelOptions       ?: Omit<FormItemColumn, 'labelOptions' | 'labelWidth' | 'label' | 'type'>
+  labelWidth         ?: string | number
+}
 
 export declare type FormItemOptions = {
   clearable          ?: boolean
@@ -74,6 +94,8 @@ export declare type FormItemOptions = {
   rows               ?: number
   autosize           ?: boolean | { minRows?: number, maxRows?: number }
   step               ?: number
+  min                ?: number
+  max                ?: number
   precision          ?: number
   stepStrictly       ?: boolean
   controlsPosition   ?: '' | 'right'
@@ -137,6 +159,26 @@ export declare type RequestConfig = {
   method        ?: keyof HttpClient
   headers       ?: IncomingHttpHeaders
   data          ?: any
+}
+
+export declare type SubmitOptions = {
+  reset         ?: string
+  changeSubmit  ?: boolean | string
+  next          ?: (values: any) => void
+  emits         ?: EmitOptions[]
+  hide          ?: boolean
+  // draft         ?: PlanOptions
+}
+
+export declare type EmitOptions = {
+  key            : string
+  name           : string
+  type           : 'button' | 'dropdown'
+  style         ?: 'primary'| 'success'| 'warning'| 'danger'| 'info'| 'text'
+  disabled      ?: boolean | FilterQuery<any> | string
+  children      ?: Omit<EmitOptions, 'type' | 'children'>[]
+  command       ?: string
+  conditions    ?: FilterQuery<any> | string
 }
 
 export declare namespace Channel {

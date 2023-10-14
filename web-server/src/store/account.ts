@@ -3,6 +3,8 @@ import type { AccountConfigure, PageSetting } from '@/types'
 
 type State = AccountConfigure & {
   current ?: string
+  pages   ?: string[]
+  timestamp ?: number
 }
 
 export const useAccountStore = defineStore('account', {
@@ -10,6 +12,9 @@ export const useAccountStore = defineStore('account', {
     navigator: [],
     current: '',
     invitation: false,
+    pages: ['/', '/login', '/register', '/lostpass'],
+    setting: {},
+    timestamp: 0
   }),
   getters: {
     currentChannel: state => state.navigator?.find( v => v.key == state.current )
@@ -26,6 +31,7 @@ export const useAccountStore = defineStore('account', {
     },
     setPageSetting (setting: PageSetting) {
       this.setting = setting
+      this.timestamp = Date.now()
     }
   }
 })

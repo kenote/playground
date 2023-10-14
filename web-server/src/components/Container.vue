@@ -7,25 +7,9 @@
 
 <script setup lang="ts">
 import { compact, isString, isPlainObject, keys, camelCase, values, zipObject, isEqual } from 'lodash'
+import type { ContainerProps } from '@/types/views/container'
 
-type Props = {
-  name           ?: string
-  layout         ?: string
-  width          ?: number | string
-  minWidth       ?: number | string
-  maxWidth       ?: number | string
-  height         ?: number | string
-  minHeight      ?: number | string
-  maxHeight      ?: number | string
-  margin         ?: string
-  padding        ?: string
-  background     ?: string | Record<'color' | 'image' | 'repeat' | 'attachment' | 'position' | 'size' | 'clip' | 'origin', string>
-  border         ?: string | Record<string, string>
-  justifyContent ?: string
-  alignItems     ?: string
-  flex           ?: string | Record<string, string>
-  content        ?: string
-}
+type Props = ContainerProps
 
 type Style = {
   width          ?: string

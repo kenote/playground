@@ -66,6 +66,7 @@ import { ChannelDataNode, dataNodeProxy, getChannelKey } from '@kenote/common'
 import { useAccountStore } from '~/store/account'
 import { useUserStore } from '~/store/user'
 import { Refresh } from '@element-plus/icons-vue'
+import type { PageSetting } from '@/types'
 
 useHead({
   title: 'Panel',
@@ -81,7 +82,7 @@ const route = useRoute()
 const router = useRouter()
 const auth = useUserStore()
 const account = useAccountStore()
-// await updateChannel(route.path)
+
 
 const collapse = ref<boolean>(false)
 const pageSetting = ref<Channel.DataNode>()

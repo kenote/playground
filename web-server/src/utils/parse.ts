@@ -1,8 +1,10 @@
-import { merge, get, isDate, isString, compact, cloneDeep, isArray, isPlainObject, omit, template, isFunction } from 'lodash'
+import { assign, merge, get, isDate, isString, compact, cloneDeep, isArray, isPlainObject, omit, template, isFunction, isBoolean } from 'lodash'
 import jsYaml from 'js-yaml'
 import { PropDataItem } from '@/types/base'
 import { toValue } from 'parse-string'
 import { evaluate } from 'eval5'
+import { FilterQuery } from '@kenote/common'
+import ruleJudgment from 'rule-judgment'
 
 /**
  * 解析成日期时间
@@ -208,7 +210,12 @@ export function toFormatString (props?: Partial<Record<keyof PropDataItem, strin
         }
       }
     }
-    return template(format, { interpolate: /{([\s\S]+?)}/g })(data)
+    try {
+      return template(format, { interpolate: /{([\s\S]+?)}/g })(data)
+    } catch (error) {
+      return format
+    }
+    
   }
 }
 
@@ -246,4 +253,73 @@ export function parseTime (value: string, __date?: Date | null) {
   date.setMinutes(minutes??0)
   date.setSeconds(seconds??0)
   return date
+}
+
+/**
+ * 判断是否禁用
+ * @param env 
+ * @returns 
+ */
+export function isDisabled (env?: Record<string, any>) {
+  return (disabled?: boolean | FilterQuery<any> | string, props?: Record<string, any>) => {
+    if (!disabled) return false
+    let query = disabled
+    let data = assign({}, env, props)
+    if (isString(disabled)) {
+      query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(disabled, data))
+      if (!isPlainObject(query)) return false
+    }
+    if (isBoolean(query)) return query
+    let filter = ruleJudgment(<FilterQuery<any>>query)
+    return filter(data)
+  }
+}
+
+/**
+ * 判断是否过滤
+ * @param conditions 
+ * @param env 
+ */
+export function isFilter (env?: Record<string, any>) {
+  return (conditions?: FilterQuery<any> | string, props?: Record<string, any>) => {
+    if (!conditions) return true
+    let query = conditions
+    let data = assign({}, env, props)
+    if (isString(conditions)) {
+      query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(conditions, data))
+      if (!isPlainObject(query)) return true
+    }
+    let filter = ruleJudgment(<FilterQuery<any>>query)
+    return filter(data)
+  }
+}
+
+/**
+ * 获取过滤器
+ * @param conditions 
+ * @param props 
+ */
+export function getFilter (conditions?: FilterQuery<any> | string, props: Record<string, any> = {}) {
+  if (!conditions) return (data: any) => true
+  let query = <FilterQuery<any>> conditions
+  if (isString(conditions)) {
+    query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(conditions, { ...props }))
+  }
+  if (!isPlainObject(query)) return (data: any) => true
+  return ruleJudgment(query)
+}
+
+/**
+ * 获取过滤条件
+ * @param conditions 
+ * @param props 
+ */
+export function getConditions (conditions?: FilterQuery<any> | string, props: Record<string, any> = {}) {
+  if (!conditions) return null
+  let query = conditions
+  if (isString(conditions)) {
+    query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(conditions, { ...props }))
+  }
+  if (!isPlainObject(query)) return null
+  return <FilterQuery<any>> query
 }

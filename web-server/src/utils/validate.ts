@@ -11,7 +11,7 @@ import { get } from 'lodash'
 export function validateUsername (unique: string | null, path: string | null, self?: any) {
   return async (rule: any, value: any, callback: (message?: string) => any) => {
     if (!value) return callback()
-    let valid = /^[a-zA-Z]{1}[a-zA-Z0-9\_\-]/.test(value)
+    let valid = /^[a-zA-Z]{1}[a-zA-Z0-9\_\-]?/.test(value)
     if (!valid) {
       return callback('必须英文字符开头，可包含英文字符、数字、下划线及中划线')
     }
@@ -60,6 +60,7 @@ export function validateRepassed (password: string, self?: any) {
     if (!valid) {
       return callback('两次输入的密码不一致')
     }
+    return callback()
   }
 }
 

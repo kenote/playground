@@ -10,9 +10,7 @@ const middlewares: Record<string, RouteMiddleware> = {
 
 export default defineNuxtRouteMiddleware( (to, from) => {
   const { setting } = useAccountStore()
-  if (setting?.layout) {
-    setPageLayout(setting.layout)
-  }
+  setPageLayout(setting?.layout??'default')
   if (setting?.middleware) {
     let names = isArray(setting.middleware) ? setting.middleware : [setting.middleware]
     for (let item of names) {

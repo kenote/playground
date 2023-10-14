@@ -5,8 +5,8 @@
     type="text"
     :placeholder="placeholder"
     :disabled="disabled"
-    :minlength="min"
-    :maxlength="max"
+    :minlength="options?.min"
+    :maxlength="options?.max"
     :size="size"
     :clearable="options?.clearable"
     :show-word-limit="options?.showWordLimit"
@@ -19,8 +19,8 @@
     type="textarea"
     :placeholder="placeholder"
     :disabled="disabled"
-    :minlength="min"
-    :maxlength="max"
+    :minlength="options?.min"
+    :maxlength="options?.max"
     :clearable="options?.clearable"
     :show-word-limit="options?.showWordLimit"
     :resize="options?.resize"
@@ -33,8 +33,8 @@
     v-model="modelValue"
     :placeholder="placeholder"
     :disabled="disabled"
-    :min="min"
-    :max="max"
+    :min="options?.min"
+    :max="options?.max"
     :size="size"
     :step="options?.step"
     :precision="options?.precision"
@@ -65,8 +65,8 @@
     v-model="modelValue" 
     :disabled="disabled" 
     :size="size" 
-    :min="min" 
-    :max="max" 
+    :min="options?.min" 
+    :max="options?.max" 
     :style="styles">
     <template v-if="/(button)$/.test(type)">
       <el-checkbox-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
@@ -257,8 +257,8 @@
   <el-slider v-if="type == 'slider'"
     v-model="modelValue"
     :disabled="disabled"
-    :min="min"
-    :max="max"
+    :min="options?.min"
+    :max="options?.max"
     :size="size"
     :show-input="options?.showInput"
     :step="options?.step"
@@ -287,7 +287,7 @@
     v-model="modelValue"
     :disabled="disabled"
     :size="size"
-    :max="max"
+    :max="options?.max"
     :clearable="options?.clearable"
     :allow-half="options?.allowHalf"
     :low-threshold="options?.lowThreshold"
@@ -322,27 +322,17 @@
 
 <script setup lang="ts">
 import type { PropDataItem, Shortcut, FormItemType, FormItemOptions, Size, RequestConfig } from '@/types/base'
-import { CascaderProps, dayjs } from 'element-plus'
+import { CascaderProps, dayjs, useFormItem } from 'element-plus'
 import type { DateCell } from 'element-plus/es/components/date-picker/src/date-picker.type'
 import { isArray, isString, merge, unset, isPlainObject } from 'lodash'
 import ruleJudgment from 'rule-judgment'
+import { FormItemProps } from '@/types/views/form-item'
 
-type Props = {
-  type          ?: FormItemType
-  placeholder   ?: string | string[]
-  value         ?: any
-  disabled      ?: boolean
-  options       ?: FormItemOptions
-  width         ?: number | string
-  height        ?: number | string
-  min           ?: number
-  max           ?: number
-  size          ?: Size
-  data          ?: Array<Partial<PropDataItem> & { [x: string]: any }> | string | RequestConfig
-  props         ?: Partial<Record<keyof PropDataItem, string> & { [x: string]: any }>
-  format        ?: string
-  valueFormat   ?: string
-}
+defineOptions({
+  inheritAttrs: false
+})
+
+type Props = FormItemProps
 
 type Style = {
   width         ?: string
@@ -354,7 +344,8 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false
 })
 
-const modelValue = ref(props.value)
+// const { formItem } = useFormItem()
+const modelValue = ref(props.modelValue)
 const styles = reactive<Style>({})
 const propData = ref<PropDataItem[]>([])
 const filterMethod = ref<Function>()
@@ -363,13 +354,20 @@ const cascaderProps = ref({})
 watch(
   () => modelValue.value,
   (value, oldVal) => {
+    emit('update:modelValue', value)
     emit('change', value)
+  }
+)
+watch(
+  () => props.modelValue,
+  (value, oldVal) => {
+    modelValue.value = value
   }
 )
 
 initProps(props)
 
-const emit = defineEmits(['change', 'get-data', 'update:value'])
+const emit = defineEmits(['change', 'get-data', 'update:modelValue'])
 
 function initProps (value: Props) {
   if (value.width) {
@@ -386,7 +384,7 @@ function initProps (value: Props) {
     __request = <RequestConfig>value.data
   }
   if (__request) {
-    emit('get-data', __request, (data: Array<Partial<PropDataItem> & { [x: string]: any }>) => {
+    emit('get-data', __request, {}, (data: Array<Partial<PropDataItem> & { [x: string]: any }>) => {
       propData.value = data?.map( parseProps<PropDataItem>(value.props) ) ?? []
     })
   }

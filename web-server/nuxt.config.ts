@@ -3,6 +3,10 @@ import { resolve } from 'path'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  // Cannot stringify a function
+  experimental: {
+    renderJsonPayloads: false
+  },
 
   srcDir: './src',
 
