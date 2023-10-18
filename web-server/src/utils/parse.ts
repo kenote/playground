@@ -159,7 +159,8 @@ export function parseTag (value?: string): { type?: string, val: string } {
  * @param value 
  * @returns 
  */
-export function toPixelSize (value: number | string) {
+export function toPixelSize (value?: number | string) {
+  if (!value) return
   return compact(String(value).split(/\s+/)).map( v => {
     if (/^(\d\.?)+$/.test(v)) {
       return v + 'px'

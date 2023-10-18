@@ -44,6 +44,7 @@
               :placeholder="item.placeholder"
               :disabled="isDisabled()(item.disabled)"
               :width="item.width"
+              :height="item.height"
               :data="item.data"
               :props="item.props"
               :options="item.options"

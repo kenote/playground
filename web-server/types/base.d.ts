@@ -73,6 +73,7 @@ export declare type FormItemColumn = {
   placeholder        ?: string | string[]
   disabled           ?: boolean | FilterQuery<any> | string
   width              ?: number | string
+  height             ?: number | string
   size               ?: Size
   // readonly      ?: boolean
   format             ?: string
@@ -100,6 +101,7 @@ export declare type FormItemOptions = {
   stepStrictly       ?: boolean
   controlsPosition   ?: '' | 'right'
   controls           ?: boolean
+  checkAll           ?: boolean
   filterable         ?: boolean
   filterMethod       ?: Function | string
   allowCreate        ?: boolean

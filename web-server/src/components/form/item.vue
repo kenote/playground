@@ -43,42 +43,57 @@
     :controls="options?.controls"
     :style="styles"
     />
-  <!-- radio ｜ radio-button -->
-  <el-radio-group v-if="/^(radio)/.test(type)" 
+  <!-- radio-button -->
+  <el-radio-group v-if="type == 'radio-button'" 
     v-model="modelValue" 
     :disabled="disabled" 
     :size="size" 
-    :style="styles">
-    <template v-if="/(button)$/.test(type)">
-      <el-radio-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
-        {{ toFormatString(props)(item, format) }}
-      </el-radio-button>
-    </template>
-    <template v-else>
-      <el-radio v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
-        {{ toFormatString(props)(item, format) }}
-      </el-radio>
-    </template>
+    :style="styles"
+    >
+    <el-radio-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
+      {{ toFormatString(props)(item, format) }}
+    </el-radio-button>
   </el-radio-group>
-  <!-- checkbox ｜ checkbox-button -->
-  <el-checkbox-group v-if="/^(checkbox)/.test(type)" 
+  <!-- radio -->
+  <el-radio-group v-if="type == 'radio'" 
+    v-model="modelValue" 
+    :disabled="disabled" 
+    :size="size" 
+    :style="{ maxHeight: toPixelSize(height), width: toPixelSize(width) }">
+    <el-radio v-for="(item) in propData" 
+      :key="item.value" 
+      :label="item.value" 
+      :disabled="item?.disabled" 
+      :style="{ width: toPixelSize(options?.rows!) }"
+      >
+      <el-tooltip :content="toFormatString(props)(item, format)" placement="top-start">
+        {{ toFormatString(props)(item, format) }}
+      </el-tooltip>
+    </el-radio>
+  </el-radio-group>
+  <!-- checkbox-button -->
+  <el-checkbox-group v-if="type == 'checkbox-button'" 
     v-model="modelValue" 
     :disabled="disabled" 
     :size="size" 
     :min="options?.min" 
     :max="options?.max" 
-    :style="styles">
-    <template v-if="/(button)$/.test(type)">
-      <el-checkbox-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
-        {{ toFormatString(props)(item, format) }}
-      </el-checkbox-button>
-    </template>
-    <template v-else>
-      <el-checkbox v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
-        {{ toFormatString(props)(item, format) }}
-      </el-checkbox>
-    </template>
+    :style="styles"
+    >
+    <el-checkbox-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
+      {{ toFormatString(props)(item, format) }}
+    </el-checkbox-button>
   </el-checkbox-group>
+  <!-- checkbox -->
+  <input-checkbox v-if="type == 'checkbox'"
+    v-model="modelValue"
+    :disabled="disabled" 
+    :data="propData"
+    :props="props"
+    :options="options"
+    :width="toPixelSize(width)"
+    :height="toPixelSize(height)"
+  />
   <!-- select -->
   <el-select v-if="type == 'select'" 
     v-model="modelValue" 
@@ -268,7 +283,7 @@
     :range="options?.range"
     :vertical="options?.vertical"
     :marks="options?.marks"
-    :height="height && toPixelSize(height)"
+    :height="toPixelSize(height)"
   />
   <!-- color-picker -->
   <div class="inline-flex" v-if="type == 'color-picker'">
