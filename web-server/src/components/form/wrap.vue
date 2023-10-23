@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Verify, FormItemColumn, Size, RequestConfig, SubmitOptions } from '@/types/base'
+import type { Verify, FormItemColumn, Size, RequestConfig, SubmitOptions, SubmitActionOptions } from '@/types/base'
 import type { FormInstance } from 'element-plus'
 import { isDisabled } from '~/utils/parse'
 import { ParseData, formatData } from 'parse-string'
@@ -85,8 +85,8 @@ type Props = FormWrapProps & {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  submitName: 'Submit',
-  size: 'default'
+  submitName: '提 交',
+  size: 'default',
 })
 
 const formRef = ref<FormInstance>()
@@ -130,13 +130,15 @@ function formItemMarginBottom (value?: Size) {
   return '!mb-7'
 }
 
-function submitForm (formEl?: FormInstance) {
-  if (!formEl) return
-  formEl.validate(valid => {
+const submitForm = (formEl?: FormInstance) => {
+  if (!formEl) {
+    formEl = formRef.value
+  }
+  formEl?.validate(valid => {
     if (valid) {
       let labelKeys = map(props.columns?.filter(ruleJudgment<FormItemColumn>({ labelOptions: { $exists: true }})), 'labelOptions.key')
       let keys = map(props.columns?.filter( v => isFilter()(v.conditions) ), 'key').concat(labelKeys)
-      let __values = parseValues(pick(formEl.$props.model, keys))
+      let __values = parseValues(pick(formEl?.$props.model, keys))
       let __original = parseValues(pick(original.value, keys))
 
       let { changeSubmit } = props.options ?? {}
@@ -146,12 +148,9 @@ function submitForm (formEl?: FormInstance) {
       }
 
       // __values = merge(__values, pick(formEl.$props.model, labelKeys))
-      let __options: SubmitOptions = merge(props.options, {
-        next: (val: Record<string, any>) => {
-          values.value = val
-          original.value = val
-        }
-      })
+      let __options: SubmitActionOptions = {
+        
+      }
 
       emit('submit', __values, props.action, __options)
     }
@@ -198,8 +197,15 @@ function parseValues (value: Record<string, any>) {
 }
 
 function handleRest (formEl?: FormInstance) {
-  if (!formEl) return
-  formEl.resetFields()
+  if (!formEl) {
+    formEl = formRef.value
+  }
+  formEl?.resetFields()
   values.value = cloneDeep(props.defaultValues??{})
 }
+
+defineExpose({ 
+  submit: submitForm, 
+  rest: handleRest 
+})
 </script>

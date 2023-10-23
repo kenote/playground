@@ -166,10 +166,16 @@ export declare type RequestConfig = {
 export declare type SubmitOptions = {
   reset         ?: string
   changeSubmit  ?: boolean | string
-  next          ?: (values: any) => void
+  // next          ?: (values: any) => void
   emits         ?: EmitOptions[]
   hide          ?: boolean
   // draft         ?: PlanOptions
+}
+
+export declare type SubmitActionOptions = {
+  update        ?: (values: any) => void
+  // 弹框回调
+  dialog        ?: (data: any) => void
 }
 
 export declare type EmitOptions = {

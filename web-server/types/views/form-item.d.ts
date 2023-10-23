@@ -1,4 +1,4 @@
-import { FormItemType, FormItemOptions, PropDataItem, RequestConfig } from '../base'
+import { FormItemType, FormItemOptions, PropDataItem, RequestConfig, Size } from '../base'
 
 export declare type FormItemProps = {
   type          ?: FormItemType

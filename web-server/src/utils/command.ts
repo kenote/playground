@@ -6,7 +6,7 @@ import type { Command } from '@/types/base'
 
 export function parseCommand<T> (value: string, tag?: string): Command.value<T> | null {
   if (!value) return null
-  let tags = compact([ 'dialog', 'action', 'command', 'router', 'https?', tag ]).join('|')
+  let tags = compact([ 'dialog', 'action', 'submit', 'command', 'router', 'https?', tag ]).join('|')
   let regex = new RegExp(`^(${tags})\\:(\\S+)$`)
   let command = value.match(regex)
   if (!command) return null
@@ -33,6 +33,9 @@ export function runCommand (self: any, commands?: any) {
     }
     else if (command.type === 'dialog') {
       commands?.dialog(command.path, row, component, self)
+    }
+    else if (command.type === 'submit') {
+      commands?.submit(command.path, row, component, self)
     }
     else if (command.type === 'router') {
       self?.router.push(command.path)

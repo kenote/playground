@@ -3,6 +3,7 @@ import { FormWrapProps } from './form-wrap'
 import { FormItemProps } from './form-item'
 
 export declare type ViewComponent = 'Container'
+  | 'Dialog' | 'DiglogForm'
   | 'FormItem'
   | 'FormWrap'
   | 'WrapperPanel'

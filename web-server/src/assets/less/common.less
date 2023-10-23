@@ -64,6 +64,33 @@ a {
   white-space: nowrap;
 }
 
+.el-dialog__headerbtn {
+  width: 32px !important;
+  height: 32px !important;
+  margin: 11px 0;
+
+  &:last-child {
+    margin-right: 11px;
+  }
+}
+
+.el-dialog__close {
+  font-size: 20px !important;
+  &:hover {
+    animation: rotating 1.2s linear infinite;
+  }
+}
+
+.el-dialog {
+  display: flex;
+  flex-direction: column;
+}
+
+.el-dialog__body {
+  flex: 1;
+  overflow: auto;
+}
+
 .searcher {
   margin-bottom: 20px;
   padding: 20px 15px;
