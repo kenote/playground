@@ -60,9 +60,12 @@ export default defineNuxtConfig({
     themes: [ 'dark' ]
   },
 
-  // alias: {
-  //   '~': resolve(__dirname)
-  // },
+  alias: {
+    'lodash': 'lodash'
+  },
+  build: {
+    transpile: ['lodash']
+  },
 
   vite: {
     resolve: {
