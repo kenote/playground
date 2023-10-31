@@ -2,9 +2,10 @@ import { defineStore } from 'pinia'
 import type { AccountConfigure, PageSetting } from '@/types'
 
 type State = AccountConfigure & {
-  current ?: string
-  pages   ?: string[]
+  current   ?: string
+  pages     ?: string[]
   timestamp ?: number
+  loading   ?: boolean
 }
 
 export const useAccountStore = defineStore('account', {
@@ -14,7 +15,8 @@ export const useAccountStore = defineStore('account', {
     invitation: false,
     pages: ['/', '/login', '/register', '/lostpass'],
     setting: {},
-    timestamp: 0
+    timestamp: 0,
+    loading: false
   }),
   getters: {
     currentChannel: state => state.navigator?.find( v => v.key == state.current )
@@ -32,6 +34,12 @@ export const useAccountStore = defineStore('account', {
     setPageSetting (setting: PageSetting) {
       this.setting = setting
       this.timestamp = Date.now()
+    },
+    refresh () {
+      this.timestamp = Date.now()
+    },
+    setLoading (value: boolean) {
+      this.loading = value
     }
   }
 })

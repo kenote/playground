@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const data = ref<Pick<ChannelDataNode<any>, 'key' | 'name'>[]>()
-updateData(props.navigator, props.routePath)
+// updateData(props.navigator, props.routePath)
 
 watch(
   () => [ props.navigator, props.routePath ],
@@ -35,7 +35,7 @@ watch(
 
 function updateData (navigator: ChannelDataNode<any>, routePath: string) {
   let __nav = dataNodeProxy(initMaps([navigator]))
-  data.value = __nav.find({ route: routePath })?.maps
+  data.value = __nav?.find({ route: routePath })?.maps
 }
 
 </script>

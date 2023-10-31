@@ -1,10 +1,17 @@
 import { assign, merge, get, isDate, isString, compact, cloneDeep, isArray, isPlainObject, omit, template, isFunction, isBoolean } from 'lodash'
 import jsYaml from 'js-yaml'
 import { PropDataItem } from '@/types/base'
-import { toValue } from 'parse-string'
+import { toValue, ParseData, formatData } from 'parse-string'
 import { evaluate } from 'eval5'
 import { FilterQuery } from '@kenote/common'
 import ruleJudgment from 'rule-judgment'
+import dayjs from 'dayjs'
+
+export const customize: Record<string, Function> = {
+  // 格式化日期时间
+  dateFormat: (date: any, format: string = 'YYYY-MM-DD') => dayjs(date).format(format),
+  
+}
 
 /**
  * 解析成日期时间
@@ -267,7 +274,7 @@ export function isDisabled (env?: Record<string, any>) {
     let query = disabled
     let data = assign({}, env, props)
     if (isString(disabled)) {
-      query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(disabled, data))
+      query = <FilterQuery<any>> jsYaml.load(parseTemplate(disabled, data))
       if (!isPlainObject(query)) return false
     }
     if (isBoolean(query)) return query
@@ -287,7 +294,7 @@ export function isFilter (env?: Record<string, any>) {
     let query = conditions
     let data = assign({}, env, props)
     if (isString(conditions)) {
-      query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(conditions, data))
+      query = <FilterQuery<any>> jsYaml.load(parseTemplate(conditions, data))
       if (!isPlainObject(query)) return true
     }
     let filter = ruleJudgment(<FilterQuery<any>>query)
@@ -304,7 +311,7 @@ export function getFilter (conditions?: FilterQuery<any> | string, props: Record
   if (!conditions) return (data: any) => true
   let query = <FilterQuery<any>> conditions
   if (isString(conditions)) {
-    query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(conditions, { ...props }))
+    query = <FilterQuery<any>> jsYaml.load(parseTemplate(conditions, { ...props }))
   }
   if (!isPlainObject(query)) return (data: any) => true
   return ruleJudgment(query)
@@ -319,8 +326,21 @@ export function getConditions (conditions?: FilterQuery<any> | string, props: Re
   if (!conditions) return null
   let query = conditions
   if (isString(conditions)) {
-    query = <FilterQuery<any>> jsYaml.safeLoad(parseTemplate(conditions, { ...props }))
+    query = <FilterQuery<any>> jsYaml.load(parseTemplate(conditions, { ...props }))
   }
   if (!isPlainObject(query)) return null
   return <FilterQuery<any>> query
+}
+
+/**
+ * 格式化字符串
+ * @param customize 
+ * @returns 
+ */
+export function formatString (customize: Record<string, Function>) {
+  return (value: any, format?: ParseData.format | ParseData.format[], replace?: string | number) => {
+    if (!value && value !== 0) return replace ?? value
+    if (!format) return value
+    return formatData(format, customize)(value)
+  }
 }

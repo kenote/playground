@@ -75,12 +75,12 @@ watch(
 function handleCommand (value: string) {
   let command = parseCommand(value)
   if (command?.type == 'submit') {
-    loading.value = true
     formRef.value?.submit()
   }
 }
 
 function handleSubmit (values: any, action: RequestConfig, options: SubmitActionOptions) {
+  loading.value = true
   emit('submit', values, action, <SubmitActionOptions>{...options,
     dialog: data => {
       loading.value = false

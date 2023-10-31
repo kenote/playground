@@ -2,9 +2,10 @@ import { Context, NextHandler } from '@kenote/core'
 import { filterData, FilterData } from 'parse-string'
 import { loadConfig } from '@kenote/config'
 import { nextError, customize, assign } from '~/services'
-import { isNumber, isArray, compact, toSafeInteger, omit } from 'lodash'
+import { isNumber, isArray, compact, toSafeInteger, omit, isNaN, unset } from 'lodash'
 import { QueryOptions } from '@kenote/mongoose'
 import { PageRequest } from '~/types/restful'
+import createError, { HttpError } from 'http-errors'
 
 interface FilterItem {
   name        : string
@@ -27,10 +28,15 @@ export function loadFilter (path: string, name: string, level?: number | true) {
         }
       }
       let result = filterData(filter?.payload??[], customize)(ctx.body)
-      ctx.payload = result
+      ctx.payload = cleanNaNByPayload(result)
       return next()
     } catch (error) {
-      nextError(error, ctx, next)
+      if (error instanceof Error) {
+        if (error.message == 'jwt expired') {
+          return await ctx.status(401).send('Unauthorized')
+        }
+        nextError(<HttpError>error, ctx, next)
+      }
     }
   }
 }
@@ -76,4 +82,13 @@ export function toSortOptions (value?: string[]) {
   if (!prop) return undefined
   let options = { [prop]: /^(desc)/.test(order ?? 'asc') ? -1 : 0 }
   return options
+}
+
+function cleanNaNByPayload (payload: Record<string, any>) {
+  for (let [key, val] of Object.entries(payload)) {
+    if (isNaN(val)) {
+      unset(payload, key)
+    }
+  }
+  return payload
 }

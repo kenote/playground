@@ -2,7 +2,7 @@ import { ParseData } from 'parse-string'
 import { FormItemColumn, Verify, Size, RequestConfig, SubmitOptions } from '../base'
 
 export declare type FormWrapProps = {
-  defaultValues    ?: Record<string, any>
+  defaultValues    ?: Record<string, any> | string
   verifyRules      ?: Partial<Record<string, Verify.Rule[]>>
   columns          ?: FormItemColumn[]
   size             ?: Size

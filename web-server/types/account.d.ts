@@ -1,5 +1,5 @@
 import { CommonDataNode } from '@kenote/common'
-import { Channel, NavMenu } from './base'
+import { Channel, NavMenu, RequestConfig, SubmitActionOptions } from './base'
 
 export declare type AccountConfigure = {
   invitation  ?: boolean
@@ -29,6 +29,8 @@ export declare type PageSetting = {
   views       ?: ViewItem[]
   env         ?: Record<string, any>
   wrapper     ?: Wrapper
+  actions     ?: Record<string, Action>
+  initial     ?: string[]
 }
 
 type ViewItem = {
@@ -41,4 +43,16 @@ type ViewItem = {
 type Wrapper = {
   name         : string
   options     ?: Record<string, any>
+}
+
+type Action = {
+  request      : RequestConfig
+  options     ?: SubmitActionOptions
+  confirm     ?: Confirm
+}
+
+type Confirm = {
+  title       ?: string
+  message      : string
+  cancel      ?: string
 }

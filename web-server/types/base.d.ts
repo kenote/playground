@@ -1,4 +1,4 @@
-import { FilterData } from 'parse-string'
+import { FilterData, ParseData } from 'parse-string'
 import { ChannelDataNode, HttpClient, FilterQuery } from '@kenote/common'
 import { CSSProperties } from 'vue'
 import { IncomingHttpHeaders } from 'http'
@@ -87,6 +87,30 @@ export declare type FormItemColumn = {
   labelWidth         ?: string | number
 }
 
+export declare type TableColumn = {
+  key                 : string
+  label               : string
+  width              ?: string | number
+  minWidth           ?: string | number
+  fixed              ?: boolean | 'left' | 'right'
+  sortable           ?: boolean | 'custom'
+  align              ?: 'left' | 'center' | 'right'
+  format             ?: ParseData.format | ParseData.format[]
+  defaultValue       ?: string | number
+  emits              ?: EmitOptions[]
+}
+
+export declare interface Selection {
+  open           : boolean
+  disabled      ?: boolean | FilterQuery<any> | string
+}
+
+export declare interface PageInfo {
+  size         ?: number
+  page         ?: number
+  sort         ?: [ string, 'ascending' | 'descending' ]
+}
+
 export declare type FormItemOptions = {
   clearable          ?: boolean
   showWordLimit      ?: number
@@ -164,16 +188,23 @@ export declare type RequestConfig = {
 }
 
 export declare type SubmitOptions = {
+  assokey       ?: string
   reset         ?: string
   changeSubmit  ?: boolean | string
   // next          ?: (values: any) => void
   emits         ?: EmitOptions[]
   hide          ?: boolean
   // draft         ?: PlanOptions
+  afterCommand  ?: string[]
 }
 
 export declare type SubmitActionOptions = {
+  assokey       ?: string
+  assignment    ?: Record<string, string>
+  afterCommand  ?: string[]
+  row           ?: Record<string, any>
   update        ?: (values: any) => void
+  next          ?: (data: any) => void
   // 弹框回调
   dialog        ?: (data: any) => void
 }
@@ -181,12 +212,13 @@ export declare type SubmitActionOptions = {
 export declare type EmitOptions = {
   key            : string
   name           : string
-  type           : 'button' | 'dropdown'
+  type           : 'button' | 'dropdown' | 'confirm-button'
   style         ?: 'primary'| 'success'| 'warning'| 'danger'| 'info'| 'text'
   disabled      ?: boolean | FilterQuery<any> | string
   children      ?: Omit<EmitOptions, 'type' | 'children'>[]
   command       ?: string
   conditions    ?: FilterQuery<any> | string
+  options       ?: any
 }
 
 export declare namespace Channel {

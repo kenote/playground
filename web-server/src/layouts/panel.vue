@@ -35,7 +35,7 @@
     </header>
     <div class="bodyer" v-bind:class="collapse ? '!left-[-260px]' : ''">
       <div class="sidebar">
-        <navigation-sidebar :data="account.currentChannel?.children" :default-active="route.path">
+        <navigation-sidebar v-if="!loading" :data="account.currentChannel?.children" :default-active="route.path">
           <template #header>
             <div class="sidebar-header">
               <i v-if="account.currentChannel?.icon" v-bind:class="account.currentChannel?.icon"></i>
@@ -47,7 +47,7 @@
       <div class="warpper">
         <navigation-breadcrumb :navigator="account.currentChannel" :route-path="route.path" >
           <el-button v-if="pageSetting?.refresh" @click="handleCommand('command:refresh')">
-            <el-icon><Refresh /></el-icon>
+            <el-icon v-bind:class="account.loading ? 'is-loading' : ''"><Refresh /></el-icon>
           </el-button>
         </navigation-breadcrumb>
         <el-scrollbar>
@@ -88,11 +88,14 @@ const collapse = ref<boolean>(false)
 const pageSetting = ref<Channel.DataNode>()
 
 // await new Promise((resolve) => setTimeout(resolve, 1000))
+// updateChannel(route.path)
+const loading = ref(false)
 
 watch(
   () => route.path,
   async (value, oldVal) => {
     if (value == oldVal) return
+    loading.value = true
     await updateChannel(value)
   },
   { immediate: true }
@@ -110,6 +113,7 @@ async function updateChannel (routePath: string) {
     router.push(channel.route + channel.index)
   }
   pageSetting.value = dataNodeProxy(account.navigator??[])?.find({ route: routePath })
+  loading.value = false
   if (channelId == account.currentChannel?.key) return
   await account.selectChannel(channelId)
 }
@@ -121,6 +125,7 @@ function handleCommand (value: string, row?: any) {
     },
     refresh: () => {
       console.log('refresh')
+      account.refresh()
     }
   })(value, row)
   

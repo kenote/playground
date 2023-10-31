@@ -6,6 +6,7 @@ export declare type ViewComponent = 'Container'
   | 'Dialog' | 'DiglogForm'
   | 'FormItem'
   | 'FormWrap'
+  | 'Table'
   | 'WrapperPanel'
 
 export declare type ViewOptions = ContainerProps

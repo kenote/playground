@@ -1,0 +1,165 @@
+---
+# 视图
+views: 
+  - name: 'table_group'
+    component: Table
+    options:
+      assokey: t3921
+      columns:
+        - key: id
+          label: ID
+          width: 60
+        - key: name
+          label: 用户组
+          width: 120
+        - key: level
+          label: 权级
+          width: 80
+          sortable: true
+        - key: description
+          label: 描述
+          minWidth: 300
+          align: left
+          defaultValue: --
+        - key: actions
+          label: 操作
+          fixed: right
+          align: left
+          width: 240
+          emits:
+            - key: edit
+              type: button
+              name: 编辑
+              command: dialog:edit_group
+            - key: remove
+              type: button
+              style: danger
+              name: 删除
+              disabled: |-
+                row.level:
+                  $gte: 9999
+              command: action:remove_group
+      filter:
+        fielid: [ id, name ]
+        placeholder: 输入ID或名称检索...
+      expands:
+        - key: create
+          type: button
+          name: 新建用户组
+          style: primary
+          command: dialog:create_group
+
+
+  - name: 'dialog:create_group'
+    component: DialogForm
+    options: 
+      title: 新建用户组
+      closeOnClickModal: false
+      closeOnPressEscape: true
+      size: large
+      labelWidth: 100
+      # labelPosition: top
+      asteriskPosition: right
+      width: 600
+      columns:
+        - key: name
+          label: 用户组
+          type: text
+          width: 300
+          placeholder: 请填写用户组名称
+        - key: level
+          label: 权级
+          type: number
+          options:
+            min: 1000
+            max: 9998
+        - key: description
+          label: 描 述
+          type: textarea
+          placeholder: 请输入内容...
+          options:
+            max: 100
+            showWordLimit: true
+            resize: none
+            rows: 4
+            autosize:
+              minRows: 4
+              maxRows: 4
+      defaultValues:
+        level: 1000
+
+      verifyRules:
+        name: 
+          - required: true
+            message: 请填写用户组名称
+      options:
+        hide: true
+        afterCommand:
+          - action:refresh
+      action:
+        method: POST
+        url: /api/uc/group/create
+
+
+  - name: 'dialog:edit_group'
+    component: DialogForm
+    options: 
+      title: 编辑用户组
+      closeOnClickModal: false
+      closeOnPressEscape: true
+      size: large
+      labelWidth: 100
+      asteriskPosition: right
+      width: 600
+      columns:
+        - key: name
+          label: 用户组
+          type: text
+          width: 300
+          placeholder: 请填写用户组名称
+        # - key: level
+        #   label: 权级
+        #   type: number
+        #   disabled: true
+        #   conditions: |-
+        #     dialog.edit_group.row.level:
+        #       $gte: 9999
+        - key: level
+          label: 权级
+          type: number
+          options:
+            min: 1000
+            max: 9998
+          conditions: |-
+            dialog.edit_group.row.level:
+              $lte: 9998
+        - key: description
+          label: 描 述
+          type: textarea
+          placeholder: 请输入内容...
+          options:
+            max: 100
+            showWordLimit: true
+            resize: none
+            rows: 4
+            autosize:
+              minRows: 4
+              maxRows: 4
+      defaultValues: |-
+        name: '{{dialog.edit_group.row.name}}'
+        level: {{dialog.edit_group.row.level}}
+        description: '{{dialog.edit_group.row.description}}'
+
+      verifyRules:
+        name: 
+          - required: true
+            message: 请填写用户组名称
+      options:
+        hide: true
+        afterCommand:
+          - action:refresh
+        # 禁止不改变数据提交
+        changeSubmit: true 
+      action:
+        method: POST
+        url: /api/uc/group/edit/{{dialog.edit_group.row._id}}

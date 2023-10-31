@@ -63,8 +63,11 @@ export default defineNuxtConfig({
   alias: {
     'lodash': 'lodash'
   },
-  build: {
-    transpile: ['lodash']
+
+  $production: {
+    build: {
+      transpile: ['lodash']
+    }
   },
 
   vite: {

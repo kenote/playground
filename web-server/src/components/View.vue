@@ -1,7 +1,8 @@
 <template>
   <component :is="components?.[component]" 
-    v-bind="merge(options, { env })" 
+    v-bind="options" 
     v-model="modelValue"
+    v-bind:env="env"
     @command="handleCommand"
     @change="handleChange"
     @get-data="handleGetData"
@@ -34,6 +35,7 @@ import Dialog from './Dialog.vue'
 import DialogForm from './dialog/form.vue'
 import FormItem from './form/item.vue'
 import FormWrap from './form/wrap.vue'
+import Table from './Table.vue'
 import WrapperPanel from './wrapper/panel.vue'
 import type { ViewComponent } from '@/types/views'
 
@@ -43,6 +45,7 @@ const components: Record<string, any> = {
   DialogForm,
   FormItem,
   FormWrap,
+  Table,
   WrapperPanel,
 }
 

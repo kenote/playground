@@ -8,6 +8,7 @@ index: /baseinfo
 children:
   - name: 账户管理
     icon: iconfont icon-Passport
+    key: 01.account_01
     children:
       - name: 基本资料
         route: /baseinfo
@@ -16,3 +17,4 @@ children:
         route: /security
       - name: 站内消息
         route: /notification
+        refresh: true

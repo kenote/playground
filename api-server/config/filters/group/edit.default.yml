@@ -12,6 +12,5 @@ payload:
         code: 1000
   - key: level
     type: number
-    defaultValue: 0
   - key: description
     type: string

@@ -1,0 +1,25 @@
+---
+# Action 请求
+actions:
+  refresh:
+    request:
+      method: POST
+      url: /api/uc/group
+    options:
+      assokey: t3921
+      assignment:
+        data: data
+  remove_group:
+    request:
+      method: DELETE
+      url: /api/uc/group/{{row._id}}
+    options:
+      afterCommand:
+        - action:refresh
+    confirm:
+      message: 确认要删除该用户组, 是否继续?
+      cancel: 您已取消删除操作！
+
+# 初始化数据
+initial:
+  - action:refresh

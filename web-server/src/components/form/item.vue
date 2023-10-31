@@ -51,7 +51,7 @@
     :style="styles"
     >
     <el-radio-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
-      {{ toFormatString(props)(item, format) }}
+      {{ toFormatString(<any>props)(item, format) }}
     </el-radio-button>
   </el-radio-group>
   <!-- radio -->
@@ -66,8 +66,8 @@
       :disabled="item?.disabled" 
       :style="{ width: toPixelSize(options?.rows!) }"
       >
-      <el-tooltip :content="toFormatString(props)(item, format)" placement="top-start">
-        {{ toFormatString(props)(item, format) }}
+      <el-tooltip :content="toFormatString(<any>props)(item, format)" placement="top-start">
+        {{ toFormatString(<any>props)(item, format) }}
       </el-tooltip>
     </el-radio>
   </el-radio-group>
@@ -81,7 +81,7 @@
     :style="styles"
     >
     <el-checkbox-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
-      {{ toFormatString(props)(item, format) }}
+      {{ toFormatString(<any>props)(item, format) }}
     </el-checkbox-button>
   </el-checkbox-group>
   <!-- checkbox -->
@@ -113,17 +113,17 @@
       <el-option-group v-if="'children' in item" :key="item.label" :label="item.label">
         <el-option v-for="(ele) in item.children" 
           :key="ele.value" 
-          :label="toFormatString(props)(ele, format)" 
+          :label="toFormatString(<any>props)(ele, format)" 
           :value="ele.value" 
           :disabled="ele?.disabled">
-          <div v-if="options?.template" v-html="toFormatString(props)(ele, options?.template)" ></div>
+          <div v-if="options?.template" v-html="toFormatString(<any>props)(ele, options?.template)" ></div>
         </el-option>
       </el-option-group>
       <el-option v-else :key="item.value" 
-        :label="toFormatString(props)(item, format)" 
+        :label="toFormatString(<any>props)(item, format)" 
         :value="item.value" 
         :disabled="item?.disabled">
-        <div v-if="options?.template" v-html="toFormatString(props)(item, options?.template)" ></div>
+        <div v-if="options?.template" v-html="toFormatString(<any>props)(item, options?.template)" ></div>
       </el-option>
     </template>
   </el-select>
@@ -133,7 +133,7 @@
     :placeholder="placeholder"
     :disabled="disabled" 
     :size="size"
-    :options="propData?.map( v => ({ ...v, label: toFormatString(props)(v, format) }) )"
+    :options="propData?.map( v => ({ ...v, label: toFormatString(<any>props)(v, format) }) )"
     :clearable="options?.clearable"
     :filterable="options?.filterable"
     :allow-create="options?.allowCreate"
@@ -144,7 +144,7 @@
     :style="styles"
     collapse-tags-tooltip>
     <template v-if="options?.template" #default="{ item }">
-      <div v-html="toFormatString(props)(item, options?.template)" ></div>
+      <div v-html="toFormatString(<any>props)(item, options?.template)" ></div>
     </template>
   </el-select-v2>
   <!-- 'year' | 'month' | 'date' | 'dates' | 'week' | 'datetime' -->
@@ -245,7 +245,7 @@
     :style="styles"
     collapse-tags-tooltip >
     <template v-if="options?.template" #default="{ node, data }">
-      <div v-html="toFormatString(props)(data, options?.template)" ></div>
+      <div v-html="toFormatString(<any>props)(data, options?.template)" ></div>
     </template>
   </el-cascader>
   <!-- cascader-panel -->
@@ -255,7 +255,7 @@
     :options="propData"
     :style="styles" >
     <template v-if="options?.template" #default="{ node, data }">
-      <div v-html="toFormatString(props)(data, options?.template)" ></div>
+      <div v-html="toFormatString(<any>props)(data, options?.template)" ></div>
     </template>
   </el-cascader-panel>
   <!-- switch -->
@@ -330,7 +330,7 @@
     :right-default-checked="options?.rightDefaultChecked"
     :filter-method="filterMethod">
     <template v-if="options?.template" #default="{ option }">
-      <div v-html="toFormatString(props)(option, options?.template)" ></div>
+      <div v-html="toFormatString(<any>props)(option, options?.template)" ></div>
     </template>  
   </el-transfer>
 </template>

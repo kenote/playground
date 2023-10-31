@@ -25,7 +25,7 @@ export function runCommand (self: any, commands?: any) {
       let [ name, ...props ] = command.path.split('|')
       let runScript = get(commands ?? self, name)
       if (isFunction(runScript)) {
-        runScript(...props)
+        runScript(...props, row)
       }
     }
     else if (command.type === 'action') {

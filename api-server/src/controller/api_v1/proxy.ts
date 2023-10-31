@@ -10,6 +10,7 @@ import { loadConfig } from '@kenote/config'
 import type { ServerConfigure } from '~/types/config'
 import { apilog } from '~/middlewares/restful'
 import { readChannelFile } from '~/services/channel'
+import createError, { HttpError } from 'http-errors'
 
 @Controller()
 export default class ProxyController {
@@ -66,7 +67,12 @@ export default class ProxyController {
       }
       return ctx.api(result)
     } catch (error) {
-      nextError(error, ctx, next)
+      if (error instanceof Error) {
+        if (error.message == 'jwt expired') {
+          return await ctx.status(401).send('Unauthorized')
+        }
+        nextError(<HttpError>error, ctx, next)
+      }
     }
   }
 }

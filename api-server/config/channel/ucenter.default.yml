@@ -1,11 +1,14 @@
 ---
-key: 02.user
+key: 02.ucenter
 name: 用户中心
-route: /user
+route: /ucenter
+index: /group
 children:
   - name: 用户管理
     children:
       - name: 用户组
         route: /group
+        refresh: true
       - name: 查询用户
         route: /user
+        refresh: true

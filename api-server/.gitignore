@@ -1,7 +1,9 @@
 
 .develop/
 uploadfiles/
-channels/
+
+/channels/*
+!/channels/ucenter/
 
 *.local.yml
 *.local.json

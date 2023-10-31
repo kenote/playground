@@ -17,42 +17,45 @@
       @submit.native.prevent="submitForm(formRef)">
       <el-row :gutter="20">
         <el-col :span="24">
-          <el-form-item v-for="(item) in columns??[]" v-bind:class="formItemClass"
-            :key="item.key" 
-            :prop="item.key" 
-            :rules="rules?.[item.key]" 
-            :label="item.label"
-            :label-width="item.labelWidth"
-            >
-            <template #label v-if="item.labelOptions">
-              <form-item type="select"
-                v-model="values[item.labelOptions.key]"
-                
-                :placeholder="item.labelOptions.placeholder"
-                :disabled="isDisabled()(item.labelOptions.disabled)"
-                :width="item.labelOptions.width"
-                :data="item.labelOptions.data"
-                :options="item.labelOptions.options"
-                :format="item.labelOptions.format"
-                :value-format="item.labelOptions.valueFormat"
-                :size="item.labelOptions.size"
+          <template v-for="(item) in columns??[]">
+            <el-form-item v-bind:class="formItemClass"
+              :key="item.key" 
+              :prop="item.key" 
+              :rules="rules?.[item.key]" 
+              :label="item.label"
+              :label-width="item.labelWidth"
+              v-if="isFilter(env)(item.conditions, { values })"
+              >
+              <template #label v-if="item.labelOptions">
+                <form-item type="select"
+                  v-model="values[item.labelOptions.key]"
+                  
+                  :placeholder="item.labelOptions.placeholder"
+                  :disabled="isDisabled(env)(item.labelOptions.disabled)"
+                  :width="item.labelOptions.width"
+                  :data="item.labelOptions.data"
+                  :options="item.labelOptions.options"
+                  :format="item.labelOptions.format"
+                  :value-format="item.labelOptions.valueFormat"
+                  :size="item.labelOptions.size"
+                />
+              </template>
+              <!-- <el-input v-model="values[item.key]" /> -->
+              <form-item :type="item.type"
+                v-model="values[item.key]"
+                :placeholder="item.placeholder"
+                :disabled="isDisabled(env)(item.disabled)"
+                :width="item.width"
+                :height="item.height"
+                :data="item.data"
+                :props="item.props"
+                :options="item.options"
+                :format="item.format"
+                :value-format="item.valueFormat"
+                :size="item.size"
               />
-            </template>
-            <!-- <el-input v-model="values[item.key]" /> -->
-            <form-item :type="item.type" 
-              v-model="values[item.key]"
-              :placeholder="item.placeholder"
-              :disabled="isDisabled()(item.disabled)"
-              :width="item.width"
-              :height="item.height"
-              :data="item.data"
-              :props="item.props"
-              :options="item.options"
-              :format="item.format"
-              :value-format="item.valueFormat"
-              :size="item.size"
-            />
-          </el-form-item>
+            </el-form-item>
+          </template>
         </el-col>
       </el-row>
       <!-- footer -->
@@ -80,7 +83,7 @@ import type { FormWrapProps } from '@/types/views/form-wrap'
 import { ElMessage } from 'element-plus'
 
 type Props = FormWrapProps & {
-  loading    ?: boolean
+  // loading    ?: boolean
   env        ?: Record<string, any>
 }
 
@@ -90,20 +93,26 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const formRef = ref<FormInstance>()
-const original = ref<Record<string, any>>(props.defaultValues??{})
-const defaultValues = cloneDeep(props.defaultValues??{})
+const original = ref<Record<string, any>>(parseParams(props.defaultValues)(props.env))
+const defaultValues = cloneDeep(parseParams(props.defaultValues)(props.env))
 const values = ref<Record<string, any>>(defaultValues)
 const rules = useVerifyRule(props.verifyRules??{}, { 
   form: values, 
   uniqueFunc: useUniqueFunc(get(props, 'env.user'), props.uniqueOptions) 
 })
+const env = ref(props.env)
+const loading = ref(false)
 
 const wrapClass = ref<string>('')
 const formItemClass = ref<string>('')
 initProps(props)
 
 
-const emit = defineEmits(['get-data', 'submit', 'command', 'update:values'])
+watchDeep(env, (value, oldVal) => {
+  // loading.value = value?.cache?.[props.options?.assokey!]?.loading
+})
+
+const emit = defineEmits(['get-data', 'submit', 'command', 'update:defaultValues'])
 
 const handleCommand = (value: string | undefined, row: Record<string, any>) => {
   emit('command', value, row)
@@ -149,9 +158,14 @@ const submitForm = (formEl?: FormInstance) => {
 
       // __values = merge(__values, pick(formEl.$props.model, labelKeys))
       let __options: SubmitActionOptions = {
-        
+        assokey: props.options?.assokey,
+        afterCommand: props.options?.afterCommand,
+        next: val => {
+          loading.value = false
+          original.value = val
+        }
       }
-
+      loading.value = true
       emit('submit', __values, props.action, __options)
     }
     else {
@@ -196,12 +210,12 @@ function parseValues (value: Record<string, any>) {
   return omit(__values, props.exclude??[])
 }
 
-function handleRest (formEl?: FormInstance) {
+function handleRest (formEl?: FormInstance | null, value?: any) {
   if (!formEl) {
     formEl = formRef.value
   }
   formEl?.resetFields()
-  values.value = cloneDeep(props.defaultValues??{})
+  values.value = cloneDeep(original.value??{})
 }
 
 defineExpose({ 
