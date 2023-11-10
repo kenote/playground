@@ -32,6 +32,20 @@ views:
           options:
             clearable: true
           width: 300
+        - key: group
+          label: 用户组
+          type: select
+          placeholder: 请输选择用户组
+          data:
+            method: POST
+            url: /api/uc/group
+          props:
+            value: _id
+            label: name
+          format: '[{id}] {label}'
+          options:
+            multiple: true
+            collapseTags: true
       defaultValues: |-
         findtype: username
       options:

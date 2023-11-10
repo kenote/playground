@@ -13,6 +13,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
     throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
   }
   
+  if (!store.currentChannel) {
+    await store.selectChannel(channelId)
+  }
+  
   const channel = store.currentChannel
   if (channel?.route == to.path?.replace(/\/$/, '') && channel?.index) {
     return navigateTo(channel.route + channel.index)

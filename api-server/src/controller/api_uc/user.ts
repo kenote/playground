@@ -18,6 +18,9 @@ export default class UserController {
       let [ begin, end ] = payload.create_at
       conditions.create_at = { $gte: begin, $lt: end }
     }
+    if (payload?.group?.length > 0) {
+      conditions.group = { $in: payload.group }
+    }
     options.select = ['id', 'username', 'email', 'mobile', 'nickname', 'avatar', 'sex', 'group', 'teams', 'binds', 'create_at', 'update_at']
     try {
       let result = await db.user.Dao.list(conditions, options)
@@ -49,7 +52,7 @@ export default class UserController {
     }
   }
 
-  @Delete('/:UID', { filters: [ filters.loadFilter('user', 'remove', 9998) ] })
+  @Delete('/:UID?', { filters: [ filters.loadFilter('user', 'remove', 9998) ] })
   async remove (ctx: Context, next: NextHandler) {
     let UID = filters.getRequestId(ctx, 'UID')
     let conditions = db.toFilterQueryById<DB.user.User>(UID)

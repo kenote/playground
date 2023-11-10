@@ -10,6 +10,8 @@ payload:
     type: string
   - key: create_at
     type: date[]
+  - key: group
+    type: string[]
   - key: page
     type: number
     defaultValue: 1

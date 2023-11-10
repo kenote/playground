@@ -106,8 +106,8 @@ function handleCommand (value: string, row?: Record<string, any>) {
     'toPage': (key: string, value: PageInfo) => {
       let { request, options } = getActionByAssokey(setting?.value?.actions)(key) ?? {}
       if (request?.url) {
-        let pageInfo: PageInfo = merge(options?.pageInfo, value)
-        handleSubmit(env.value?.cache?.[key]?.payload, request, merge(options, { pageInfo, refresh: false }))
+        let pageInfo: PageInfo = merge(pick(options?.pageInfo, ['size']), value)
+        handleSubmit(env.value?.cache?.[key]?.payload, request, assign(options, { pageInfo, refresh: false }))
       }
     }
   })(value, row)
@@ -139,7 +139,7 @@ function handleSubmit (values: Record<string, any>, action: RequestConfig, optio
     return
   }
   let url = parseTemplate(action?.url??'', merge(env.value, { row: options.row }))
-  let __options = merge(pick(action, ['method', 'headers']), { data: merge(options.pageInfo, values), interceptor: true })
+  let __options = merge(pick(action, ['method', 'headers']), { data: assign(options.pageInfo, values), interceptor: true })
   setTimeout(async () => {
     try {
       let result = await useHttpProxy(url??'', __options)

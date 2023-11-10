@@ -185,7 +185,7 @@ const submitForm = (formEl?: FormInstance) => {
         assokey: props.options?.assokey,
         assignment: props.options?.assignment,
         afterCommand: props.options?.afterCommand,
-        pageInfo: props.options?.pageInfo,
+        pageInfo: pick(props.options?.pageInfo, ['page', 'size']),
         refresh: true,
         next: val => {
           loading.value = false
