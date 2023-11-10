@@ -60,13 +60,12 @@
 </template>
 
 <script setup lang="ts">
-import type { NavMenu, Channel } from '@/types/base'
+import type { Channel } from '@/types/base'
 import { runCommand } from '~/utils/command'
-import { ChannelDataNode, dataNodeProxy, getChannelKey } from '@kenote/common'
+import { dataNodeProxy, getChannelKey } from '@kenote/common'
 import { useAccountStore } from '~/store/account'
 import { useUserStore } from '~/store/user'
 import { Refresh } from '@element-plus/icons-vue'
-import type { PageSetting } from '@/types'
 
 useHead({
   title: 'Panel',
@@ -87,8 +86,6 @@ const account = useAccountStore()
 const collapse = ref<boolean>(false)
 const pageSetting = ref<Channel.DataNode>()
 
-// await new Promise((resolve) => setTimeout(resolve, 1000))
-// updateChannel(route.path)
 const loading = ref(false)
 
 watch(
@@ -124,7 +121,6 @@ function handleCommand (value: string, row?: any) {
       console.log('bookmark')
     },
     refresh: () => {
-      console.log('refresh')
       account.refresh()
     }
   })(value, row)

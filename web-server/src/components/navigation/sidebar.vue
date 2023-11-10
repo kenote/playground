@@ -1,7 +1,7 @@
 <template>
   <slot name="header"></slot>
   <el-scrollbar>
-    <el-menu
+    <el-menu ref="menuRef"
       background-color="#444c54"
       text-color="#ffffff"
       active-text-color="#ffd04b"
@@ -36,6 +36,8 @@ const props = withDefaults(defineProps<Props>(), {
   // data: [],
   defaultActive: '',
 })
+
+const menuRef = ref()
 
 </script>
 

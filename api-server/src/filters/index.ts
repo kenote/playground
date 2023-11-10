@@ -1,11 +1,11 @@
 import { Context, NextHandler } from '@kenote/core'
 import { filterData, FilterData } from 'parse-string'
 import { loadConfig } from '@kenote/config'
-import { nextError, customize, assign } from '~/services'
-import { isNumber, isArray, compact, toSafeInteger, omit, isNaN, unset } from 'lodash'
+import { nextError, customize, assign, db, httpError, ErrorCode } from '~/services'
+import { isNumber, isArray, compact, toSafeInteger, omit, isNaN, unset, isUndefined, isNull } from 'lodash'
 import { QueryOptions } from '@kenote/mongoose'
 import { PageRequest } from '~/types/restful'
-import createError, { HttpError } from 'http-errors'
+import type { HttpError } from 'http-errors'
 
 interface FilterItem {
   name        : string
@@ -16,7 +16,7 @@ interface FilterItem {
 export function loadFilter (path: string, name: string, level?: number | true) {
   return async (ctx: Context, next: NextHandler) => {
     let filter = loadConfig<FilterItem[]>(`config/filters/${path}`, { type: 'array', assign })?.find( v => v.name === name )
-    let authlevel = level ?? filter?.auth
+    let authlevel = filter?.auth ?? level
     try {
       if (authlevel) {
         let user = await ctx?.getUser()
@@ -24,7 +24,8 @@ export function loadFilter (path: string, name: string, level?: number | true) {
           return await ctx.status(401).send('Unauthorized')
         }
         if (isNumber(authlevel)) {
-          await ctx.filterUserLevel(0, authlevel)
+          let anitLevel = await getAnitLevel(ctx.params)
+          await ctx.filterUserLevel(anitLevel, authlevel)
         }
       }
       let result = filterData(filter?.payload??[], customize)(ctx.body)
@@ -84,11 +85,37 @@ export function toSortOptions (value?: string[]) {
   return options
 }
 
-function cleanNaNByPayload (payload: Record<string, any>) {
+export function cleanNaNByPayload (payload: Record<string, any>) {
   for (let [key, val] of Object.entries(payload)) {
-    if (isNaN(val)) {
+    if (Number.isNaN(val) || val == undefined || (val == '' && ['password'].includes(key))) {
       unset(payload, key)
     }
   }
   return payload
+}
+
+/**
+ * 获取操作对象等级
+ * @param params 
+ * @returns 
+ */
+async function getAnitLevel (params: Record<string, any> = {}) {
+  let { UID, GID } = params
+  if (UID) {
+    let user = await db.user.Dao.findOne({ _id: UID })
+    if (!user) {
+      throw httpError(ErrorCode.ERROR_AUTH_OPERATE_USER_NULL)
+    }
+    return user.group.level
+  }
+  else if (GID) {
+    let group = await db.group.Dao.findOne({ _id: GID })
+    if (!group) {
+      throw httpError(ErrorCode.ERROR_AUTH_OPERATE_GROUP_NULL)
+    }
+    return group.level
+  }
+  else {
+    return 0
+  }
 }

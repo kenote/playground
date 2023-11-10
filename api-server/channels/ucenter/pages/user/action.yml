@@ -1,0 +1,48 @@
+---
+# Action 请求
+actions:
+  # 刷新
+  refresh:
+    request:
+      method: POST
+      url: /api/uc/user
+      data:
+        findtype: username
+    options:
+      assokey: t3921
+      assignment:
+        data: data.data
+        counts: data.counts
+        pagination: data.limit
+      pageInfo:
+        page: 1
+        size: 10
+      refresh: true
+  # 删除用户
+  remove_user:
+    request:
+      method: DELETE
+      url: /api/uc/user/{{row._id}}
+    options:
+      afterCommand:
+        - action:refresh
+    confirm:
+      message: 确认要删除该用户, 是否继续?
+      cancel: 您已取消删除操作！
+  # 删除选中
+  deletes:
+    request:
+      method: DELETE
+      url: /api/uc/user
+      data: |-
+        ids: [{% for item in cache.t3921.selection %} {{item._id}}, {% endfor %}]
+    options:
+      afterCommand:
+        - action:refresh
+    confirm:
+      message: 确认要删除所选用户, 是否继续?
+      cancel: 您已取消删除操作！
+
+# 初始化数据
+initial:
+  - action:refresh

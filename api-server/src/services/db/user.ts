@@ -2,8 +2,8 @@ import { modelDao } from '@kenote/mongoose'
 import { getModelForClass } from '@typegoose/typegoose'
 import * as entities from '~/entities'
 import type * as DB from '~/types/service/db'
-import { FilterQuery, Model, Document } from 'mongoose'
-import { merge, omit } from 'lodash'
+import { FilterQuery, Model, Document, UpdateQuery } from 'mongoose'
+import { merge, omit, keys } from 'lodash'
 import type { Account } from '~/types/service/account'
 import * as Bcrypt from '~/services/bcrypt'
 import { ErrorCode, httpError } from '~/services/error'
@@ -14,6 +14,7 @@ import nunjucks from 'nunjucks'
 import { AccountConfigure } from '~/types/config'
 import { toTime } from '~/utils'
 import { loadConfig } from '@kenote/config'
+import ruleJudgment from 'rule-judgment'
 
 export const model = getModelForClass(entities.User)
 export const Dao = modelDao<DB.user.User>(model as unknown as Model<Document, {}>, {
@@ -134,4 +135,18 @@ export async function verifyEmailMobile (doc: Account.verifyEmailMobile<{ type: 
   await db.verify.Dao.updateOne({ _id: verify._id }, { approved: true })
   await Dao.updateOne({ _id: verify.user._id }, { $addToSet: { binds: doc.type } })
   return verify
+}
+
+
+export async function updateInfo (conditions: FilterQuery<DB.user.User>, doc: Partial<DB.user.Register>) {
+  let data = <Partial<DB.user.User>> omit(doc, ['password'])
+  if (doc.password) {
+    let { encrypt } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
+    let pass = doc.password
+    let password = Bcrypt.encode(encrypt)(pass)
+    data.encrypt = password.encrypt
+    data.salt = password.salt
+  }
+  data.update_at = new Date()
+  return await Dao.updateOne(conditions, data)
 }

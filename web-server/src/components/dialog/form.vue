@@ -16,6 +16,7 @@
       :label-width="labelWidth"
       :label-position="labelPosition"
       :label-suffix="labelSuffix"
+      :inline-message="inlineMessage"
       :status-icon="statusIcon"
       :hide-asterisk="hideAsterisk"
       :asterisk-position="asteriskPosition"
@@ -30,6 +31,7 @@
       :loading="loading"
       :env="env"
       @submit="handleSubmit"
+      @get-data="handleGetData"
     />
   </Dialog>
 </template>
@@ -48,7 +50,6 @@ type Props = FormWrapProps & {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  
   labelPosition: 'left'
 })
 
@@ -56,7 +57,7 @@ const modelValue = ref(props.modelValue)
 const formRef = ref<FormInstance>()
 const loading = ref(false)
 
-const emit = defineEmits(['command', 'submit', 'update:modelValue'])
+const emit = defineEmits(['command', 'submit', 'get-data', 'update:modelValue'])
 
 watch(
   () => modelValue.value,
@@ -71,6 +72,10 @@ watch(
     loading.value = false
   }
 )
+
+const handleGetData = (request: RequestConfig, options: any, next: (data: any) => void) => {
+  emit('get-data', request, options, next)
+}
 
 function handleCommand (value: string) {
   let command = parseCommand(value)

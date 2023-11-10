@@ -33,25 +33,25 @@ export declare type PageSetting = {
   initial     ?: string[]
 }
 
-type ViewItem = {
+export declare type ViewItem = {
   name         : string
   component    : string
   options     ?: Record<string, any>
   children    ?: ViewItem[]
 }
 
-type Wrapper = {
+export declare type Wrapper = {
   name         : string
   options     ?: Record<string, any>
 }
 
-type Action = {
+export declare type Action = {
   request      : RequestConfig
   options     ?: SubmitActionOptions
   confirm     ?: Confirm
 }
 
-type Confirm = {
+export declare type Confirm = {
   title       ?: string
   message      : string
   cancel      ?: string

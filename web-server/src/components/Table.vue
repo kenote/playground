@@ -1,8 +1,6 @@
 <template>
   <Container layout="horizontal" justify-content="space-between">
-    
     <Container layout="horizontal">
-      <!-- <el-button>新建用户组</el-button> -->
       <form-expand :data="expands" @command="handleCommand" />
     </Container>
     <form-item v-if="filter" 
@@ -14,8 +12,7 @@
     />
   </Container>
   <div v-loading="loading">
-    <el-table :data="pdata.filter(filterData)"
-
+    <el-table ref="tableRef" :data="pdata?.filter(filterData)"
       @selection-change="handleSelectionChange"
       @sort-change="handleSortChange"
       >
@@ -41,23 +38,25 @@
         </template>
       </el-table-column>
     </el-table>
-  <!--  -->
-  
-    <el-pagination v-if="pagination" class="mt-4" background 
+    <!-- 分页 -->
+    <el-pagination v-if="getPropValue('pagination')" class="mt-4" background 
       layout="->, total, prev, pager, next, jumper" 
       :total="total" 
-      :page-size="pagination"
+      :current-page="env?.cache?.[props.assokey!]?.pageInfo?.page??current"
+      :page-size="getPropValue('pagination')"
       @current-change="handleCurrentChange"
     />
-  
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Selection, TableColumn, PageInfo } from '@/types/base'
-import { chunk, trim, isEqual } from 'lodash'
-import type { Sort } from 'element-plus'
-import ruleJudgment from 'rule-judgment'
+import { chunk, trim } from 'lodash'
+import type { Sort, TableInstance } from 'element-plus'
+import { storeToRefs } from 'pinia'
+import { useAccountStore } from '~/store/account'
+
+const { timestamp } = storeToRefs(useAccountStore())
 
 type Props = {
   assokey      ?: string
@@ -82,11 +81,10 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   pageno: 1,
-  counts: 0,
+  counts: -1,
 })
 
-// const selection = ref(props.selection)
-// const multipleSelection = ref([])
+const tableRef = ref<TableInstance>()
 const pdata = ref(props.data??[])
 const total = ref(0)
 const current = ref(1)
@@ -95,17 +93,45 @@ const env = ref(props.env)
 const loading = ref(false)
 const keywords = ref('')
 
-watchDeep(env, (value, oldVal) => {
-  loading.value = value?.cache?.[props.assokey!]?.loading
-  initialData(value?.cache?.[props.assokey!]?.data)
-  if (loading.value) {
-    keywords.value = ''
+/**
+ * 监听页面刷新
+ */
+watch(
+  () => [timestamp?.value, env.value?.cache?.[props.assokey!]?.refresh],
+  (value, oldVal) => {
+    let [ timestamp, refresh ] = value
+    if (Date.now() - Number(timestamp) < 100 || refresh) {
+      tableRef.value?.clearSort()
+    }
   }
-})
+)
+
+/**
+ * 监听绑定的 assokey 是否加载状态
+ */
+watch(
+  () => env.value?.cache?.[props.assokey!]?.loading,
+  (value, oldVal) => {
+    loading.value = value
+    if (value) {
+      keywords.value = ''
+    }
+  }
+)
+
+/**
+ * 监听数据变化
+ */
+watch(
+  () => env.value?.cache?.[props.assokey!]?.data,
+  (value, oldVal) => {
+    initialData(value)
+  }
+)
 
 initialData(props.data)
 
-const emit = defineEmits(['get-data', 'submit', 'command', 'change', 'update:data'])
+const emit = defineEmits(['get-data', 'submit', 'command', 'change'])
 
 watch(
   () => props.data,
@@ -119,9 +145,15 @@ const handleCommand = (value: string, params?: Record<string, any>) => {
 }
 
 function initialData (value?: Record<string, any>[]) {
-  if (props.pagination) {
-    total.value = value?.length ?? 0
-    let pagesize = props.pagination
+  let pagination = getPropValue('pagination')
+  if (pagination) {
+    total.value = getPropValue('counts') == -1 ? (value?.length ?? 0) : getPropValue('counts')
+    let __data = getPropValue('data')
+    if ((__data?.length??0) < total.value) {
+      handleCurrentChange(env.value?.cache?.[props.assokey!]?.pageInfo?.page)
+      return
+    }
+    let pagesize = pagination
     let pageno = parseInt(String((total.value + pagesize - 1) / pagesize)) || 1
     handleCurrentChange(props.pageno > pageno ? pageno : props.pageno)
   }
@@ -133,32 +165,32 @@ function initialData (value?: Record<string, any>[]) {
 }
 
 function handleCurrentChange(page: number) {
-  let __data = props.env?.cache?.[props.assokey!]?.data ?? props.data
+  let pagination = getPropValue('pagination')
+  let __data = getPropValue('data')
   // 远端分页
   if ((__data?.length??0) < total.value) {
     pdata.value = __data??[]
+    if (getCurrentPage() !== page) {
+      emit('command', `command:toPage|${props.assokey}`, { page })
+    }
   }
   // 本地分页
-  else if (props.pagination) {
-    pdata.value = chunk(<any[]>__data, props.pagination)?.[page-1]
+  else if (pagination) {
+    current.value = page
+    pdata.value = chunk(<any[]>__data, pagination)?.[page-1]
   }
 }
 
 function handleSortChange (column: Sort) {
-  let { order, prop } = column
-  if (props.sorter && props.pagination) {
+  let { order, prop,  } = column
+  // 远端排序
+  let __data = getPropValue('data')
+  if ((__data?.length??0) < total.value) {
     let pageInfo: PageInfo = {
-      size: props.pagination,
-      page: current.value,
+      page: getCurrentPage(),
       sort: [ prop, order ]
     }
-    let conditions = { 
-      pageInfo
-    }
-    emit('submit', conditions, props.sorter)
-  }
-  else {
-    handleCurrentChange(current.value)
+    emit('command', `command:toPage|${props.assokey}`, pageInfo)
   }
 }
 
@@ -173,7 +205,6 @@ const filterData = (value: Record<string, any>) => {
   }
   return false
 }
-// const filterData = getFilter(props.filter?.method, { keywords: keywords.value })
 
 const selectable = (row: Record<string, any>[]) => {
   return !isDisabled(props?.env)(getSelection(props?.selection)?.disabled, { row })
@@ -189,5 +220,13 @@ function getSelection (value?: Selection | boolean) {
     return <Selection> { open: true }
   }
   return value
+}
+
+function getPropValue (name: keyof Props) {
+  return env?.value?.cache?.[props.assokey!]?.[name] ?? props?.[name]
+}
+
+function getCurrentPage () {
+  return env.value?.cache?.[props.assokey!]?.pageInfo?.page??current.value
 }
 </script>

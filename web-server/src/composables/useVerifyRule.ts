@@ -4,6 +4,7 @@ import { isArray, merge } from 'lodash'
 const validate: any = {
   validateUsername,
   validateEmail,
+  validateMobile,
   validatePassword,
   validateRepassed
 }

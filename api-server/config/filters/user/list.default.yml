@@ -1,0 +1,20 @@
+---
+name: list
+
+auth: 9998
+
+payload:
+  - key: findname
+    type: string
+  - key: findtype
+    type: string
+  - key: create_at
+    type: date[]
+  - key: page
+    type: number
+    defaultValue: 1
+  - key: size
+    type: number
+    defaultValue: 10
+  - key: sort
+    type: string[]

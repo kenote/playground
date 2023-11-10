@@ -7,6 +7,7 @@ actions:
       url: /api/uc/group
     options:
       assokey: t3921
+      refresh: true
       assignment:
         data: data
   remove_group:

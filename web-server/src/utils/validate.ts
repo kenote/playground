@@ -87,3 +87,20 @@ export function validateEmail (unique: string | null, path: string | null, self?
     return callback()
   }
 }
+
+export function validateMobile (lang: validator.MobilePhoneLocale = 'zh-CN', unique: string | null, path: string | null, self?: any) {
+  return async (rule: any, value: any, callback: (message?: string) => any) => {
+    if (!value) return callback()
+    let valid = validator.isMobilePhone(value, lang)
+    if (!valid) {
+      return callback('请输入正确的手机号码，且不可使用虚拟手机号码')
+    }
+    if (unique && self) {
+      valid = await get(self, 'uniqueFunc')?.(value, path, unique)
+      if (!valid) {
+        return callback('该手机号已绑定其他帐号')
+      }
+    }
+    return callback()
+  }
+}

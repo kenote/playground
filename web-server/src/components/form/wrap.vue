@@ -53,6 +53,7 @@
                 :format="item.format"
                 :value-format="item.valueFormat"
                 :size="item.size"
+                @get-data="handleGetData"
               />
             </el-form-item>
           </template>
@@ -73,17 +74,20 @@
 </template>
 
 <script setup lang="ts">
-import type { Verify, FormItemColumn, Size, RequestConfig, SubmitOptions, SubmitActionOptions } from '@/types/base'
+import type { FormItemColumn, Size, RequestConfig, SubmitActionOptions } from '@/types/base'
 import type { FormInstance } from 'element-plus'
 import { isDisabled } from '~/utils/parse'
-import { ParseData, formatData } from 'parse-string'
-import { get, set, pick, omit, merge, zipObject, unset, map, isString, isEmpty, isEqual, cloneDeep, omitBy, isUndefined } from 'lodash'
+import { formatData } from 'parse-string'
+import { set, pick, omit, merge, zipObject, unset, map, isString, isEmpty, isEqual, cloneDeep, omitBy, isUndefined } from 'lodash'
 import ruleJudgment from 'rule-judgment'
 import type { FormWrapProps } from '@/types/views/form-wrap'
 import { ElMessage } from 'element-plus'
+import { storeToRefs } from 'pinia'
+import { useAccountStore } from '~/store/account'
+
+const { timestamp } = storeToRefs(useAccountStore())
 
 type Props = FormWrapProps & {
-  // loading    ?: boolean
   env        ?: Record<string, any>
 }
 
@@ -98,7 +102,7 @@ const defaultValues = cloneDeep(parseParams(props.defaultValues)(props.env))
 const values = ref<Record<string, any>>(defaultValues)
 const rules = useVerifyRule(props.verifyRules??{}, { 
   form: values, 
-  uniqueFunc: useUniqueFunc(get(props, 'env.user'), props.uniqueOptions) 
+  uniqueFunc: useUniqueFunc(props.env, props.uniqueOptions) 
 })
 const env = ref(props.env)
 const loading = ref(false)
@@ -107,15 +111,36 @@ const wrapClass = ref<string>('')
 const formItemClass = ref<string>('')
 initProps(props)
 
+/**
+ * 监听绑定的 assokey 是否加载状态
+ */
+watch(
+  () => env.value?.cache?.[props.options?.assokey!]?.loading,
+  (value, oldVal) => {
+    loading.value = value
+  }
+)
 
-watchDeep(env, (value, oldVal) => {
-  // loading.value = value?.cache?.[props.options?.assokey!]?.loading
-})
+/**
+ * 监听页面刷新
+ */
+watch(
+  () => timestamp?.value,
+  (value, oldVal) => {
+    if (Date.now() - Number(value) < 100) {
+      handleRest()
+    }
+  }
+)
 
 const emit = defineEmits(['get-data', 'submit', 'command', 'update:defaultValues'])
 
 const handleCommand = (value: string | undefined, row: Record<string, any>) => {
   emit('command', value, row)
+}
+
+const handleGetData = (request: RequestConfig, options: any, next: (data: any) => void) => {
+  emit('get-data', request, options, next)
 }
 
 function initProps (value: Props) {
@@ -156,10 +181,12 @@ const submitForm = (formEl?: FormInstance) => {
         return
       }
 
-      // __values = merge(__values, pick(formEl.$props.model, labelKeys))
       let __options: SubmitActionOptions = {
         assokey: props.options?.assokey,
+        assignment: props.options?.assignment,
         afterCommand: props.options?.afterCommand,
+        pageInfo: props.options?.pageInfo,
+        refresh: true,
         next: val => {
           loading.value = false
           original.value = val
@@ -215,7 +242,7 @@ function handleRest (formEl?: FormInstance | null, value?: any) {
     formEl = formRef.value
   }
   formEl?.resetFields()
-  values.value = cloneDeep(original.value??{})
+  values.value = parseParams(props.defaultValues)(props.env)
 }
 
 defineExpose({ 

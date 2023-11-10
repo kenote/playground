@@ -189,6 +189,8 @@ export declare type RequestConfig = {
 
 export declare type SubmitOptions = {
   assokey       ?: string
+  assignment    ?: Record<string, string>
+  pageInfo      ?: PageInfo
   reset         ?: string
   changeSubmit  ?: boolean | string
   // next          ?: (values: any) => void
@@ -201,6 +203,8 @@ export declare type SubmitOptions = {
 export declare type SubmitActionOptions = {
   assokey       ?: string
   assignment    ?: Record<string, string>
+  pageInfo      ?: PageInfo
+  refresh       ?: boolean
   afterCommand  ?: string[]
   row           ?: Record<string, any>
   update        ?: (values: any) => void

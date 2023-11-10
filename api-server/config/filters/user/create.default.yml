@@ -1,0 +1,57 @@
+---
+name: create
+
+auth: 9998
+
+payload:
+  - key: username
+    type: string
+    rules:
+      - required: true
+        message: 用户名不能为空
+        code: 1000
+      - pattern: !!js/regexp /^[a-zA-Z]{1}[a-zA-Z0-9\_\-]/
+        message: 必须英文字符开头，可包含英文字符、数字、下划线及中划线
+        code: 1000
+      - min: 5
+        max: 20
+        message: 至少5个字符，最大不能超过20个字符
+        code: 100
+  - key: password
+    type: string
+    rules:
+      - required: true
+        message: 用户名不能为空
+        code: 1000
+      - pattern: !!js/regexp /^(?=.*[A-Za-z])[A-Za-z0-9$@$!%*#?&]{8,20}$/
+        message: 必须包含英文字符，可包含英文字符、数字和符号；且长度在8-20字符之间
+        code: 1000
+  - key: group
+    type: string
+    rules:
+      - required: true
+        message: 用户组不能为空
+        code: 1000
+      - validator: isMongoId
+        message: 用户组必须是个 ObjectId
+        code: 1000
+  - key: nickname
+    type: string
+  - key: sex
+    type: number
+    defaultValue: 0
+  - key: email
+    type: string
+    rules:
+      - validator: isEmail
+        message: 请输入正确的邮箱地址，如 example@163.com
+        code: 1000
+  - key: mobile
+    type: string
+    rules:
+      - validator: isMobile
+        message: 请输入正确的手机号码，且不可使用虚拟手机号码
+        code: 1000
+  - key: binds
+    type: string[]
+    defaultValue: []

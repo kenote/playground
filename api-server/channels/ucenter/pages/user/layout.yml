@@ -1,0 +1,7 @@
+---
+layout: panel
+
+middleware: auth
+
+wrapper:
+  name: WrapperPanel

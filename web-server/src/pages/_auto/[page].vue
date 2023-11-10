@@ -1,40 +1,36 @@
 <template>
-  <client-only>
-  <View :component="setting?.wrapper?.name??'Container'" :options="setting?.wrapper?.options">
-    
-    <View v-for="(item) in setting?.views??[]"
-      :name="item.name"
-      v-model="env[item.name]"
-      :component="item.component"
-      :options="item.options" 
-      :children="item.children"
-      @submit="handleSubmit"
-      @command="handleCommand"
-      :env="env"
-    />
-
-    
-  </View>
+  <client-only placeholder="loading...">
+    <View :component="setting?.wrapper?.name??'Container'" :options="setting?.wrapper?.options">
+      <View v-for="(item) in setting?.views??[]"
+        :name="item.name"
+        v-model="env[item.name]"
+        :component="item.component"
+        :options="item.options" 
+        :children="item.children"
+        @submit="handleSubmit"
+        @command="handleCommand"
+        @get-data="handleGetData"
+        :env="env"
+      />
+    </View>
   </client-only>
 </template>
 
 <script setup lang="ts">
 import { useAccountStore } from '~/store/account'
-import { RequestConfig, SubmitOptions, SubmitActionOptions, FormItemColumn } from '@/types/base'
+import type { RequestConfig, SubmitActionOptions, PageInfo } from '@/types/base'
 import { storeToRefs } from 'pinia'
-import { omit, pick, set, get, merge } from 'lodash'
+import { pick, set, merge, assign } from 'lodash'
 import { ElMessage, ElMessageBox, ElMessageBoxOptions } from 'element-plus'
 import { useUserStore } from '~/store/user'
-import { Confirm } from '@/types/account'
-// import { ElMessage, ElMessageBox } from 'element-plus'
+import type { Action, Confirm } from '@/types/account'
 
 // ReferenceError: document is not defined
 if (process.browser) {
   require('external_library')
 }
-// const document = {}
-const router = useRouter()
 
+const router = useRouter()
 const { setting, currentChannel, timestamp } = storeToRefs(useAccountStore())
 
 // 加载中间件
@@ -55,22 +51,15 @@ const env = ref(merge(
 
 initialData()
 
-watch(
-  () => setting?.value,
-  (value) => {
-    console.log(value)
-  }
-)
-watch(
-  () => env.value,
-  (value) => {
-    console.log(value)
-  }
-)
+/**
+ * 监听页面刷新
+ */
 watch(
   () => timestamp?.value,
   (value) => {
-    initialData()
+    if (Date.now() - Number(value) < 100) {
+      initialData()
+    }
   }
 )
 
@@ -78,9 +67,6 @@ watch(
  * 初始化数据
  */
 function initialData () {
-  // for (let command of setting?.value?.initial??[]) {
-  //   handleCommand(command)
-  // }
   runCommands(setting?.value?.initial)
 }
 
@@ -95,30 +81,49 @@ function handleCommand (value: string, row?: Record<string, any>) {
   return runCommand(__self, {
     // 处理 Action 请求
     action: async (name: string, params: Record<string, any>) => {
-      // console.log(name, getActionOptions(name), params)
-      let { request, options, confirm } = getActionOptions(name) ?? {}
+      let { confirm, request, options } = <Action> getActionOptions(setting?.value?.actions)(name)
       if (confirm) {
         let result = await actionConfirm(confirm)
         if (!result) return
       }
       if (request?.url) {
-        handleSubmit({}, request, merge(options, { row: params }))
+        let pageInfo: PageInfo | undefined = options?.pageInfo 
+          && assign(options?.pageInfo, { page: 1, sort: [] })
+        let values = parseParams(request.data)(env.value)
+        handleSubmit(values, request, merge(options, { pageInfo, row: params }))
       }
     },
+    // 处理弹框
     dialog: (name: string, params: Record<string, any>) => {
-      console.log(name, params)
-      // env.value = { ...env.value, [name]: true }
       setDialogInfo(name, 'open', true)
       setDialogInfo(name, 'row', params)
     },
-    // submit: (name: string, options: any) => {
-      
-    //   // options?.next()
-    // }
+    // 处理选中单元
     'selectionChange': (key: string, value: Record<string, any>[]) => {
-      console.log('selectionChange', key, value)
+      set(env.value, ['cache', key, 'selection'], value)
+    },
+    // 处理远程分页请求
+    'toPage': (key: string, value: PageInfo) => {
+      let { request, options } = getActionByAssokey(setting?.value?.actions)(key) ?? {}
+      if (request?.url) {
+        let pageInfo: PageInfo = merge(options?.pageInfo, value)
+        handleSubmit(env.value?.cache?.[key]?.payload, request, merge(options, { pageInfo, refresh: false }))
+      }
     }
   })(value, row)
+}
+
+async function handleGetData (request: RequestConfig, options: any, next: (data: any) => void) {
+  let url = parseTemplate(request?.url??'', env.value)
+  let __options = merge(pick(request, ['method', 'headers']), { data: request, interceptor: true })
+  try {
+    let result = await useHttpProxy(url??'', __options)
+    if (result.data) {
+      next(result.data)
+    }
+  } catch (error) {
+    
+  }
 }
 
 /**
@@ -128,15 +133,13 @@ function handleCommand (value: string, row?: Record<string, any>) {
  * @param options 
  */
 function handleSubmit (values: Record<string, any>, action: RequestConfig, options: SubmitActionOptions) {
-  // console.log(values)
   setCacheLoading(options.assokey, true)
   if (!action?.url) {
     setTimeout(() => options?.dialog?.(true), 300)
     return
   }
   let url = parseTemplate(action?.url??'', merge(env.value, { row: options.row }))
-  // console.log(merge(env.value, { row: options.row }))
-  let __options = merge(pick(action, ['method', 'headers']), { data: values, interceptor: true })
+  let __options = merge(pick(action, ['method', 'headers']), { data: merge(options.pageInfo, values), interceptor: true })
   setTimeout(async () => {
     try {
       let result = await useHttpProxy(url??'', __options)
@@ -145,7 +148,10 @@ function handleSubmit (values: Record<string, any>, action: RequestConfig, optio
         options?.dialog?.(false)
         return
       }
-      setCacheData(result, options)
+      setCacheData(env.value, {
+        request: action,
+        options: pick(options, ['assokey', 'assignment', 'pageInfo', 'refresh'])
+      })(values, result)
       runCommands(options.afterCommand)
       options?.next?.(null)
       options?.dialog?.(true)
@@ -172,21 +178,6 @@ function setCacheLoading (assokey: string | undefined, value: boolean) {
 }
 
 /**
- * 写入 Cache Data
- * @param value 
- * @param options
- */
-function setCacheData (value: any, options: SubmitActionOptions) {
-  let { assokey, assignment } = options
-  if (!assokey || !assignment) return
-  // timestamp
-  set(env.value, ['cache', assokey, 'timestamp'], Date.now())
-  for (let [key, name] of Object.entries(assignment)) {
-    set(env.value, ['cache', assokey, key], get(value, name))
-  }
-}
-
-/**
  * 写入弹框信息
  * @param name 
  * @param key 
@@ -202,14 +193,6 @@ function setDialogInfo (name: string, key: string, value: any) {
 }
 
 /**
- * 获取相关 Action 选项
- * @param name 
- */
-function getActionOptions (name: string) {
-  return setting?.value?.actions?.[name]
-}
-
-/**
  * 运行指令集
  * @param commands 
  */
@@ -219,9 +202,11 @@ function runCommands (commands?: string[]) {
   }
 }
 
-
+/**
+ * 确认操作
+ * @param config 
+ */
 async function actionConfirm (config: Confirm) {
-
   let options: ElMessageBoxOptions = {
     type: 'warning',
     confirmButtonText: '确定',
