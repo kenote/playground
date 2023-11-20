@@ -7,6 +7,17 @@ export declare type AccountConfigure = {
   authpanel   ?: AuthPanel
   navOpts     ?: NavOptions
   setting     ?: PageSetting
+  plots       ?: PlotOptions[]
+}
+
+export declare type PlotOptions = {
+  name          : string
+  pages         : PagePlot[]
+}
+
+type PagePlot = {
+  path          : string
+  permissions  ?: string[]
 }
 
 type AuthPanel = {
@@ -31,6 +42,7 @@ export declare type PageSetting = {
   wrapper     ?: Wrapper
   actions     ?: Record<string, Action>
   initial     ?: string[]
+  pathname    ?: string
 }
 
 export declare type ViewItem = {

@@ -16,7 +16,8 @@ export const useAccountStore = defineStore('account', {
     pages: ['/', '/login', '/register', '/lostpass'],
     setting: {},
     timestamp: 0,
-    loading: false
+    loading: false,
+    plots: []
   }),
   getters: {
     currentChannel: state => state.navigator?.find( v => v.key == state.current )
@@ -27,6 +28,7 @@ export const useAccountStore = defineStore('account', {
       this.navigator = updateNavigatorRoute(config?.navigator)
       this.authpanel = config?.authpanel
       this.navOpts = config?.navOpts
+      this.plots = config?.plots
     },
     async selectChannel (channel?: string) {
       this.current = channel

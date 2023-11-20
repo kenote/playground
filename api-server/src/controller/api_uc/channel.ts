@@ -10,9 +10,25 @@ export default class ChannelController {
     let { channel, label } = ctx.params
     try {
       let config = readConfigFile(label??'home', [channel, 'pages'].join('/'))
+      config.pathname = [, channel, label].join('/') 
       return ctx.api(config)
     } catch (error) {
       nextError(error, ctx, next)
     }
+  }
+
+  @Get('/')
+  async list (ctx: Context, next: NextHandler) {
+
+    try {
+      
+    } catch (error) {
+      nextError(error, ctx, next)
+    }
+  }
+
+  @Post('/create')
+  async create (ctx: Context, next: NextHandler) {
+
   }
 }

@@ -238,7 +238,7 @@ export declare namespace Channel {
   type ServiceNode = {
     key            : string
     name          ?: string
-    children      ?: Pick<ChannelDataNode<{}>, 'key' | 'name' | 'route'>[]
+    children      ?: Pick<ChannelDataNode<{}>, 'key' | 'name' | 'route' | 'index' | 'icon'>[]
   }
 }
 

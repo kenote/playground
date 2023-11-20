@@ -1,5 +1,6 @@
 import { get, set, pick, assign } from 'lodash'
 import type { Action } from '@/types/account'
+import { PlotOptions } from '@/types/account'
 
 /**
  * 获取 Action 选项
@@ -50,5 +51,29 @@ export function setCacheData (env: Record<string, any>, action: Action) {
       __cache['pageInfo'] = pageInfo
     }
     set(env, ['cache', assokey], __cache)
+  }
+}
+
+/**
+ * 获取路由策略
+ * @param routePath 
+ * @param plots 
+ * @returns 
+ */
+export function getRoutePlot (routePath: string, plots?: PlotOptions[]) {
+  let [, channel, path] = routePath.split(/\//)
+  return plots?.find( v => v.name == channel )?.pages.find( v => v.path == path )?.permissions
+}
+
+/**
+ * 判断权限
+ * @param level 
+ * @param permissions 
+ * @returns 
+ */
+export function isPermission (level: number, permissions?: string[]) {
+  return (name: string) => {
+    if (level >= 9998) return true
+    return permissions?.includes(name)
   }
 }

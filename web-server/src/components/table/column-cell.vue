@@ -3,7 +3,7 @@
     <template v-for="(item) in column.emits">
       <el-button v-if="item.type == 'button'"
         :type="item.style"
-        :disabled="isDisabled(env)(item.disabled, { row: scope.row })"
+        :disabled="permitDisabled(item)"
         @click="handleCommand(item.command, scope.row)"
         plain>
         {{ parseTemplate(item.name, env??{}) }}
@@ -19,7 +19,7 @@
         <template #reference>
           <el-button
             :type="item.style"
-            :disabled="isDisabled(env)(item.disabled, { row: scope.row })"
+            :disabled="permitDisabled(item)"
             plain>
             {{ parseTemplate(item.name, env??{}) }}
           </el-button>
@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import type { RenderRowData } from 'element-plus'
-import type { TableColumn } from '@/types/base'
+import type { TableColumn, EmitOptions } from '@/types/base'
 import { get } from 'lodash'
 import { customize } from '~/utils/parse'
 import { InfoFilled } from '@element-plus/icons-vue'
@@ -61,5 +61,14 @@ function getValue (row: Record<string, any>, key: string) {
   let value = get(row, key)
   let { format, defaultValue } = props.column
   return formatString(props.customize??customize)(value, format, defaultValue)
+}
+
+
+
+function permitDisabled (item: Omit<EmitOptions, "type" | "children">) {
+  let { user, permissions } = props.env ?? {}
+  let is_permission = isPermission(user?.group?.level, permissions)(item.command!)
+  if (!is_permission) return true
+  return isDisabled(props.env)(item.disabled, { row: props.scope.row })
 }
 </script>

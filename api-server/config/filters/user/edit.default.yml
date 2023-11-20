@@ -23,6 +23,8 @@ payload:
       - pattern: !!js/regexp /^(?=.*[A-Za-z])[A-Za-z0-9$@$!%*#?&]{8,20}$/
         message: 必须包含英文字符，可包含英文字符、数字和符号；且长度在8-20字符之间
         code: 1000
+  - key: group
+    type: string
   - key: nickname
     type: string
   - key: sex

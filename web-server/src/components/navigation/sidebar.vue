@@ -17,6 +17,8 @@
           :icon="item.icon"
           :tag="item.tag"
           :children="item.children"
+          :plots="plots"
+          :user="user"
           />
       </template>
     </el-menu>
@@ -26,10 +28,14 @@
 
 <script setup lang="ts">
 import type { ChannelDataNode } from '@kenote/common'
+import type { PlotOptions } from '@/types/account'
+import type { UserEntitie } from '@/types'
 
 type Props = {
-  data   : ChannelDataNode<any>[]
+  data          : ChannelDataNode<any>[]
   defaultActive : string
+  plots        ?: PlotOptions[]
+  user         ?: UserEntitie
 }
 
 const props = withDefaults(defineProps<Props>(), {

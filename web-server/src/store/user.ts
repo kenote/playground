@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
-import { UserEntitie, AuthToken } from '@/types'
+import { UserEntitie, AuthToken, AccessToken, PlotOptions } from '@/types'
 
 type State = {
   user         ?: UserEntitie | null
   accessToken  ?: string
   refreshToken ?: string
   refreshing   ?: boolean
+  plots        ?: PlotOptions[]
 }
 
 export const useUserStore = defineStore('auth', {
@@ -13,7 +14,8 @@ export const useUserStore = defineStore('auth', {
     refreshing: false,
     accessToken: '',
     refreshToken: '',
-    user: null
+    user: null,
+    plots: []
   }),
   getters: {
     userLevel: state => state.user?.group.level ?? 0,
@@ -30,8 +32,9 @@ export const useUserStore = defineStore('auth', {
       this.refreshing = true
     },
     // 更新用户信息
-    setUser (user: UserEntitie | null) {
-      this.user = user
+    setUser (payload: AccessToken | null) {
+      this.user = payload?.user
+      this.plots = payload?.plots
     },
     // 存储登录/导出
     setAuth (payload: AuthToken | null) {

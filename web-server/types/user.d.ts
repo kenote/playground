@@ -1,5 +1,11 @@
 import { FilterQuery } from '@kenote/common'
 import { BaseEntitie } from './base'
+import { PlotOptions } from './account'
+
+export declare type AccessToken = {
+  user        ?: UserEntitie
+  plots       ?: PlotOptions[]
+}
 
 export declare interface UserEntitie extends BaseEntitie {
   username     : string

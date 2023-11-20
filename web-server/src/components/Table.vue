@@ -1,7 +1,7 @@
 <template>
   <Container layout="horizontal" justify-content="space-between">
     <Container layout="horizontal">
-      <form-expand :data="expands" @command="handleCommand" />
+      <form-expand :data="expands" :env="env" @command="handleCommand" />
     </Container>
     <form-item v-if="filter" 
       v-model="keywords" 

@@ -3,7 +3,7 @@
     <template v-if="isFilter(env)(item.conditions)">
       <el-button v-if="item.type == 'button'"
         :type="item.style"
-        :disabled="isDisabled(env)(item.disabled, { values })"
+        :disabled="permitDisabled(item)"
         @click="handleCommand(item.command, { values })"
         plain>
         {{ parseTemplate(item.name, env??{}) }}
@@ -18,7 +18,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item v-for="(node) in item.children??[]" 
-              :disabled="isDisabled(env)(node.disabled, { values })"
+              :disabled="permitDisabled(node)"
               :command="node.command">
               {{ node.name }}
             </el-dropdown-item>
@@ -48,5 +48,12 @@ const emit = defineEmits(['command'])
 
 const handleCommand = (value: string | undefined, row: Record<string, any>) => {
   emit('command', value, row)
+}
+
+function permitDisabled (item: Omit<EmitOptions, "type" | "children">) {
+  let { user, permissions } = props.env ?? {}
+  let is_permission = isPermission(user?.group?.level, permissions)(item.command!)
+  if (!is_permission) return true
+  return isDisabled(props.env)(item.disabled, { values: props.values })
 }
 </script>

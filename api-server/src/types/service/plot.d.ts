@@ -2,6 +2,7 @@ import { Method, FilterQuery } from '@kenote/common'
 
 export declare type Plot<T> = {
   channels      : Plot.ChannelOptions<T>[]
+  apis          : Plot.APIOptions[]
 }
 
 export declare namespace Plot {

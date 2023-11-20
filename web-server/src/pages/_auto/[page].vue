@@ -1,19 +1,17 @@
 <template>
-  <client-only placeholder="loading...">
-    <View :component="setting?.wrapper?.name??'Container'" :options="setting?.wrapper?.options">
-      <View v-for="(item) in setting?.views??[]"
-        :name="item.name"
-        v-model="env[item.name]"
-        :component="item.component"
-        :options="item.options" 
-        :children="item.children"
-        @submit="handleSubmit"
-        @command="handleCommand"
-        @get-data="handleGetData"
-        :env="env"
-      />
-    </View>
-  </client-only>
+  <View :component="setting?.wrapper?.name??'Container'" :options="setting?.wrapper?.options">
+    <View v-for="(item) in setting?.views??[]"
+      :name="item.name"
+      v-model="env[item.name]"
+      :component="item.component"
+      :options="item.options" 
+      :children="item.children"
+      @submit="handleSubmit"
+      @command="handleCommand"
+      @get-data="handleGetData"
+      :env="env"
+    />
+  </View>
 </template>
 
 <script setup lang="ts">
@@ -30,6 +28,7 @@ if (process.browser) {
   require('external_library')
 }
 
+const route = useRoute()
 const router = useRouter()
 const { setting, currentChannel, timestamp } = storeToRefs(useAccountStore())
 
@@ -46,7 +45,10 @@ useHead({
 // 设置页面变量
 const env = ref(merge(
   parseParams(setting?.value?.env)({ channel: currentChannel.value?.label }), 
-  { user: useUserStore().user }
+  { 
+    user: useUserStore().user,
+    permissions: getRoutePlot(route.path, useUserStore().plots)
+  }
 ))
 
 initialData()
@@ -56,7 +58,7 @@ initialData()
  */
 watch(
   () => timestamp?.value,
-  (value) => {
+  (value, oldVal) => {
     if (Date.now() - Number(value) < 100) {
       initialData()
     }
@@ -67,6 +69,9 @@ watch(
  * 初始化数据
  */
 function initialData () {
+  if (route.path != setting?.value?.pathname) return
+  let permissions = getRoutePlot(setting?.value?.pathname!, useUserStore().plots)
+  if (!isPermission(useUserStore().userLevel, permissions)('access')) return
   runCommands(setting?.value?.initial)
 }
 
@@ -89,7 +94,7 @@ function handleCommand (value: string, row?: Record<string, any>) {
       if (request?.url) {
         let pageInfo: PageInfo | undefined = options?.pageInfo 
           && assign(options?.pageInfo, { page: 1, sort: [] })
-        let values = parseParams(request.data)(env.value)
+        let values = parseParams(request.data??{})(env.value)
         handleSubmit(values, request, merge(options, { pageInfo, row: params }))
       }
     },
@@ -157,7 +162,7 @@ function handleSubmit (values: Record<string, any>, action: RequestConfig, optio
       options?.dialog?.(true)
     } catch (error) {
       if (error instanceof Error) {
-        ElMessage.error(error.message)
+        // ElMessage.error(error.message)
         options?.next?.(null)
         options?.dialog?.(false)
       }

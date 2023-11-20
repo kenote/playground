@@ -13,7 +13,12 @@
         <div class="header-link-dropdown-block" v-for="(rows, key) in group??[]">
           <template v-for="(item) in navigator?.filter( v => rows.includes(v.key))??[]">
             <h3>{{ item.name }}</h3>
-            <el-dropdown-item v-for="(node) in item.children??[]" :command="`router:${node.route}`">{{ node.name }}</el-dropdown-item>
+            <template v-for="(node) in item.children??[]">
+              <el-dropdown-item v-if="plots?.find( v => v.name == node.route?.split('/')?.[1]) || user?.group.level! >= 9998"
+                :command="`router:${node.route}`">
+                {{ node.name }}
+              </el-dropdown-item>
+            </template>
           </template>
         </div>
       </el-dropdown-menu>
@@ -24,14 +29,18 @@
 
 <script setup lang="ts">
 import type { Channel } from '@/types/base'
+import type { PlotOptions } from '@/types/account'
+import type { UserEntitie } from '@/types'
 
 type Props = {
   name       : string
   trigger   ?: string
   navigator ?: Channel.ServiceNode[]
   group     ?: string[][]
+  plots     ?: PlotOptions[]
+  user      ?: UserEntitie
 }
-
+// props.plots?.find( v => v.name)
 const props = withDefaults(defineProps<Props>(), {
   name: '快捷导航',
   trigger: 'hover',

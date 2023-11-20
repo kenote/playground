@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
   }
   
-  if (!store.currentChannel) {
+  if (store.current !== channelId) {
     await store.selectChannel(channelId)
   }
   

@@ -18,6 +18,8 @@
           :trigger="account.navOpts?.trigger"
           :group="account.navOpts?.group??[]"
           :navigator="toTypeNavigator(account.navigator??[], account.navOpts?.types)"
+          :plots="auth.plots"
+          :user="auth.user"
           @command="handleCommand"
           />
       </div>
@@ -35,7 +37,11 @@
     </header>
     <div class="bodyer" v-bind:class="collapse ? '!left-[-260px]' : ''">
       <div class="sidebar">
-        <navigation-sidebar v-if="!loading" :data="account.currentChannel?.children" :default-active="route.path">
+        <navigation-sidebar v-if="account.currentChannel" 
+          :data="account.currentChannel?.children" 
+          :plots="auth.plots"
+          :user="auth.user"
+          :default-active="route.path">
           <template #header>
             <div class="sidebar-header">
               <i v-if="account.currentChannel?.icon" v-bind:class="account.currentChannel?.icon"></i>
@@ -50,9 +56,15 @@
             <el-icon v-bind:class="account.loading ? 'is-loading' : ''"><Refresh /></el-icon>
           </el-button>
         </navigation-breadcrumb>
-        <el-scrollbar>
-          <slot></slot>
-        </el-scrollbar>
+        <client-only placeholder="loading...">
+          <slot v-if="isPermission(auth.userLevel, permissions)('access')"></slot>
+          <el-empty v-else class="mt-30" >
+            <template #description>
+              <h3 class="text-3xl text-dark-100">403 Forbidden</h3>
+              <p class="!text-dark-100">您尚未获得该页面的访问权限</p>
+            </template>
+          </el-empty>
+        </client-only>
       </div>
     </div>
     
@@ -85,6 +97,7 @@ const account = useAccountStore()
 
 const collapse = ref<boolean>(false)
 const pageSetting = ref<Channel.DataNode>()
+const permissions = ref<string[]>()
 
 const loading = ref(false)
 
@@ -94,6 +107,7 @@ watch(
     if (value == oldVal) return
     loading.value = true
     await updateChannel(value)
+    permissions.value = getRoutePlot(value, account.plots)
   },
   { immediate: true }
 )

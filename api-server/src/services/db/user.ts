@@ -59,11 +59,11 @@ export async function create (doc: DB.user.Register) {
     throw httpError(ErrorCode.ERROR_VALID_USERNAME_UNIQUE)
   }
   let unique_email = await Dao.findOne({ email: { $eq: email }})
-  if (unique_email) {
+  if (unique_email && email) {
     throw httpError(ErrorCode.ERROR_VALID_EMAIL_UNIQUE)
   }
   let unique_mobile = await Dao.findOne({ mobile: { $eq: mobile }})
-  if (unique_mobile) {
+  if (unique_mobile && mobile) {
     throw httpError(ErrorCode.ERROR_VALID_MOBILE_UNIQUE)
   }
   let { password: options, encrypt } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })

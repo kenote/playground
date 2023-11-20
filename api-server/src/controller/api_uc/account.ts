@@ -9,6 +9,9 @@ import type { AccountConfigure } from '~/types/config/account'
 import { Account } from '~/types/service/account'
 import createError from 'http-errors'
 import { getNavigator } from '~/services/channel'
+import { isPlotAPI, getPlot } from '~/services/plot'
+import { pick } from 'lodash'
+import type { HttpError } from 'http-errors'
 
 const checkWarning: DB.user.CheckWarning = {
   username: ErrorCode.ERROR_VALID_USERNAME_UNIQUE,
@@ -38,7 +41,8 @@ export default class AccountController {
    */
   @Get('/accesstoken', { filters: authenticate })
   async accessToken (ctx: Context) {
-    return ctx.api(ctx.user)
+    let plots = getPlot()?.channels.map(v => pick(v, ['name', 'pages']))
+    return ctx.api({ user: ctx.user, plots })
   }
 
   /**
@@ -131,10 +135,17 @@ export default class AccountController {
   async getSetting (ctx: Context, next: NextHandler) {
     let { invitation, authpanel, navigator: navOpts } = loadConfig<AccountConfigure>('config/account', { mode: 'merge' })
     try {
+      // let user = await ctx.getUser()
       let navigator = getNavigator()
-      return ctx.api({ invitation, navigator, authpanel, navOpts })
+      let plots = getPlot()?.channels.map(v => pick(v, ['name', 'pages']))
+      return ctx.api({ invitation, navigator, authpanel, navOpts, plots })
     } catch (error) {
-      nextError(error, ctx, next)
+      if (error instanceof Error) {
+        if (error.message == 'jwt expired') {
+          return await ctx.status(401).send('Unauthorized')
+        }
+        nextError(<HttpError>error, ctx, next)
+      }
     }
   }
 }

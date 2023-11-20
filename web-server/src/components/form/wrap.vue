@@ -100,12 +100,12 @@ const formRef = ref<FormInstance>()
 const original = ref<Record<string, any>>(parseParams(props.defaultValues)(props.env))
 const defaultValues = cloneDeep(parseParams(props.defaultValues)(props.env))
 const values = ref<Record<string, any>>(defaultValues)
-const rules = useVerifyRule(props.verifyRules??{}, { 
-  form: values, 
-  uniqueFunc: useUniqueFunc(props.env, props.uniqueOptions) 
-})
 const env = ref(props.env)
 const loading = ref(false)
+const rules = useVerifyRule(props.verifyRules??{}, { 
+  form: values, 
+  uniqueFunc: useUniqueFunc(env.value, props.uniqueOptions) 
+})
 
 const wrapClass = ref<string>('')
 const formItemClass = ref<string>('')
@@ -171,7 +171,7 @@ const submitForm = (formEl?: FormInstance) => {
   formEl?.validate(valid => {
     if (valid) {
       let labelKeys = map(props.columns?.filter(ruleJudgment<FormItemColumn>({ labelOptions: { $exists: true }})), 'labelOptions.key')
-      let keys = map(props.columns?.filter( v => isFilter()(v.conditions) ), 'key').concat(labelKeys)
+      let keys = map(props.columns?.filter( v => isFilter(props.env)(v.conditions) ), 'key').concat(labelKeys)
       let __values = parseValues(pick(formEl?.$props.model, keys))
       let __original = parseValues(pick(original.value, keys))
 

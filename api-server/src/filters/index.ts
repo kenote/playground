@@ -6,6 +6,9 @@ import { isNumber, isArray, compact, toSafeInteger, omit, isNaN, unset, isUndefi
 import { QueryOptions } from '@kenote/mongoose'
 import { PageRequest } from '~/types/restful'
 import type { HttpError } from 'http-errors'
+import { isPlotAPI, getPlot } from '~/services/plot'
+import ruleJudgment from 'rule-judgment'
+import type { Plot } from '~/types/service/plot'
 
 interface FilterItem {
   name        : string
@@ -26,6 +29,15 @@ export function loadFilter (path: string, name: string, level?: number | true) {
         if (isNumber(authlevel)) {
           let anitLevel = await getAnitLevel(ctx.params)
           await ctx.filterUserLevel(anitLevel, authlevel)
+        }
+        if (user.group.level < 9998) {
+          let plots = getPlot(user.group.plot).apis.find(ruleJudgment<Plot.APIOptions>({ 
+            path: ctx.path,
+            method: { $_in: [ctx.method.toLocaleLowerCase()] }
+          }))
+          if (!plots) {
+            throw httpError(ErrorCode.ERROR_AUTH_FLAG_ACCESS)
+          }
         }
       }
       let result = filterData(filter?.payload??[], customize)(ctx.body)

@@ -149,6 +149,11 @@ views:
             - key: edit
               type: button
               name: 编辑
+              disabled: |-
+                row.group.level:
+                  $gte: {{user.group.level}}
+                row._id: 
+                  $not: {{user._id}}
               command: dialog:edit_user
             - key: remove
               type: button
@@ -298,6 +303,9 @@ views:
           format: '[{id}] {label}'
           disabled: |-
             dialog.edit_user.row.group.level: 9999
+          conditions: |-
+            dialog.edit_user.row.group.level:
+              $lt: 9999
         - key: nickname
           label: 昵称
           type: text
@@ -360,6 +368,7 @@ views:
           uid: '{{dialog.edit_user.row._id}}'
       options:
         hide: true
+        changeSubmit: true
         afterCommand:
           - action:refresh
       action:
