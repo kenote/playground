@@ -12,5 +12,7 @@ payload:
         code: 1000
   - key: level
     type: number
+  - key: plot
+    type: string
   - key: description
     type: string

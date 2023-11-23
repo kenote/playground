@@ -98,6 +98,10 @@ export declare type TableColumn = {
   format             ?: ParseData.format | ParseData.format[]
   defaultValue       ?: string | number
   emits              ?: EmitOptions[]
+  template           ?: string
+  click              ?: string
+  alpha              ?: FilterQuery<any> | string
+  clipboard          ?: boolean | string
 }
 
 export declare interface Selection {

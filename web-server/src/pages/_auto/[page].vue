@@ -201,9 +201,9 @@ function setDialogInfo (name: string, key: string, value: any) {
  * 运行指令集
  * @param commands 
  */
-function runCommands (commands?: string[]) {
+async function runCommands (commands?: string[]) {
   for (let command of commands??[]) {
-    handleCommand(command)
+    await handleCommand(command)
   }
 }
 

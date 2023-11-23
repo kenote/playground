@@ -1,12 +1,20 @@
 ---
 # Action 请求
 actions:
+  plot_list:
+    request:
+      method: GET
+      url: /api/uc/plot/list
+    options:
+      assokey: parse
+      assignment:
+        plots: data
   refresh:
     request:
       method: POST
       url: /api/uc/group
     options:
-      assokey: t3921
+      assokey: t1
       refresh: true
       assignment:
         data: data
@@ -23,4 +31,5 @@ actions:
 
 # 初始化数据
 initial:
+  - action:plot_list
   - action:refresh

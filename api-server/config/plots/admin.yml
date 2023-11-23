@@ -1,0 +1,44 @@
+---
+name: 管理员策略
+
+# 频道策略
+channels:
+  - name: ucenter
+    # 页面策略
+    pages: 
+      - path: group
+        permissions:
+          - access
+          - dialog:create_group
+          - dialog:edit_group
+          - action:remove_group
+      - path: user
+        # 页面权限
+        permissions:
+          - access
+          - dialog:create_user
+          - dialog:edit_user
+          - action:remove_user
+          - action:deletes
+        # 页面过滤器
+        # filters: {}
+
+    # API策略
+    
+      
+
+# API策略
+apis:
+  - path: /api/uc/account/login
+    method: [ post ]
+  - path: /api/uc/account/refresh_token
+    method: [ put ]
+  - path: /api/uc/account/verify
+    method: [ put ]
+  - path: /api/uc/account/register
+    method: [ post ]
+  - path: /api/uc/user
+    method: [ post ]
+  - path: /api/uc/group
+    method: [ post ]
+

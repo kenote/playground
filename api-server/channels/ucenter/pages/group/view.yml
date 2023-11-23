@@ -4,7 +4,7 @@ views:
   - name: 'table_group'
     component: Table
     options:
-      assokey: t3921
+      assokey: t1
       columns:
         - key: id
           label: ID
@@ -15,10 +15,20 @@ views:
         - key: level
           label: 权级
           width: 80
+          align: center
           sortable: true
+        - key: plot
+          label: 安全策略
+          width: 180
+          align: center
+          format:
+            maps: cache.parse.plots
+            options: [key, name]
+            substr: '[ {name} ]'
+          defaultValue: --
         - key: description
           label: 描述
-          minWidth: 300
+          minWidth: 150
           align: left
           defaultValue: --
         - key: actions
@@ -133,6 +143,23 @@ views:
           conditions: |-
             dialog.edit_group.row.level:
               $lte: 9998
+        - key: plot
+          label: 安全策略
+          type: select
+          placeholder: 请输选择安全策略
+          width: 300
+          data:
+            method: GET
+            url: /api/uc/plot/list
+          props:
+            value: key
+            label: name
+          format: '[{value}] - {label}'
+          options:
+            clearable: true
+          conditions: |-
+            dialog.edit_group.row.level:
+              $lt: 9998
         - key: description
           label: 描 述
           type: textarea
@@ -148,6 +175,7 @@ views:
       defaultValues: |-
         name: '{{dialog.edit_group.row.name}}'
         level: {{dialog.edit_group.row.level}}
+        plot: '{{dialog.edit_group.row.plot}}'
         description: '{{dialog.edit_group.row.description}}'
 
       verifyRules:

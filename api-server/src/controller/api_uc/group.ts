@@ -19,7 +19,7 @@ export default class GroupController {
     }
   }
 
-  @Post('/:type?', { filters: [ filters.loadFilter('group', 'list', 9998) ] })
+  @Post('/:type?', { filters: [ filters.loadFilter('group', 'list') ] })
   async list (ctx: Context, next: NextHandler) {
     let conditions: FilterQuery<DB.group.Group> = {}
     if (ctx.payload?.name) {

@@ -9,7 +9,7 @@ actions:
       data:
         findtype: username
     options:
-      assokey: t3921
+      assokey: t1
       assignment:
         data: data.data
         counts: data.counts
@@ -35,7 +35,7 @@ actions:
       method: DELETE
       url: /api/uc/user
       data: |-
-        ids: [{% for item in cache.t3921.selection %} {{item._id}}, {% endfor %}]
+        ids: [{% for item in cache.t1.selection %} {{item._id}}, {% endfor %}]
     options:
       afterCommand:
         - action:refresh

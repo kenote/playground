@@ -107,7 +107,7 @@ watch(
     if (value == oldVal) return
     loading.value = true
     await updateChannel(value)
-    permissions.value = getRoutePlot(value, account.plots)
+    permissions.value = getRoutePlot(value, auth.plots)
   },
   { immediate: true }
 )
@@ -125,6 +125,7 @@ async function updateChannel (routePath: string) {
   }
   pageSetting.value = dataNodeProxy(account.navigator??[])?.find({ route: routePath })
   loading.value = false
+  console.log('channel', account.currentChannel?.key)
   if (channelId == account.currentChannel?.key) return
   await account.selectChannel(channelId)
 }

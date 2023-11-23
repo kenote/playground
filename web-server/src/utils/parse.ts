@@ -337,10 +337,18 @@ export function getConditions (conditions?: FilterQuery<any> | string, props: Re
  * @param customize 
  * @returns 
  */
-export function formatString (customize: Record<string, Function>) {
+export function formatString (customize: Record<string, Function>, env?: Record<string, any>) {
   return (value: any, format?: ParseData.format | ParseData.format[], replace?: string | number) => {
     if (!value && value !== 0) return replace ?? value
     if (!format) return value
+    if (!isArray(format) && isString(format.maps) && /^(cache)/.test(format.maps)) {
+      let list: any[] = get(env, format.maps)
+      let [key, name] = format.options ?? ['key', 'label']
+      let item = list?.find( v => v?.[key] == value )
+      if (item) {
+        return format.substr ? toFormatString()(item, format.substr) : item?.[name]
+      }
+    }
     return formatData(format, customize)(value)
   }
 }

@@ -93,6 +93,10 @@ const env = ref(props.env)
 const loading = ref(false)
 const keywords = ref('')
 
+onMounted(() => {
+  loading.value = env.value?.cache?.[props.assokey!]?.loading
+})
+
 /**
  * 监听页面刷新
  */

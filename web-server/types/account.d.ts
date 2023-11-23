@@ -7,7 +7,6 @@ export declare type AccountConfigure = {
   authpanel   ?: AuthPanel
   navOpts     ?: NavOptions
   setting     ?: PageSetting
-  plots       ?: PlotOptions[]
 }
 
 export declare type PlotOptions = {

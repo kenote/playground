@@ -1,6 +1,8 @@
 import { Method, FilterQuery } from '@kenote/common'
+import { BaseInfo } from '../config'
 
-export declare type Plot<T> = {
+export declare type Plot<T> = BaseInfo & {
+  key           : string
   channels      : Plot.ChannelOptions<T>[]
   apis          : Plot.APIOptions[]
 }

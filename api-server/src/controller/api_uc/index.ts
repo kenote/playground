@@ -4,6 +4,7 @@ import GroupController from './group'
 import TicketController from './ticket'
 import ChannelController from './channel'
 import UserController from './user'
+import PlotController from './plot'
 
 @Module({
   path: '/api/uc',
@@ -12,7 +13,8 @@ import UserController from './user'
     GroupController,
     TicketController,
     ChannelController,
-    UserController
+    UserController,
+    PlotController
   ],
   options: {
     cors: true,

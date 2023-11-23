@@ -49,7 +49,7 @@ views:
       defaultValues: |-
         findtype: username
       options:
-        assokey: t3921
+        assokey: t1
         assignment:
           data: data.data
           counts: data.counts
@@ -69,7 +69,7 @@ views:
             name: 删除选中
             style: danger
             disabled: |-
-              cache.t3921.selection:
+              cache.t1.selection:
                 $size: 0
             command: action:deletes
       submitName: 查 询
@@ -80,7 +80,7 @@ views:
   - name: table_user
     component: Table
     options:
-      assokey: t3921
+      assokey: t1
       selection:
         open: true
         disabled: |-
@@ -92,16 +92,19 @@ views:
           width: 60
         - key: username
           label: 用户名
-          width: 120
+          width: 150
+          clipboard: true
           sortable: true
         - key: nickname
           label: 昵称
-          width: 120
+          width: 150
           align: left
+          clipboard: true
           defaultValue: --
         - key: sex
           label: 性别
           width: 90
+          align: center
           format:
             - type: number
               maps: { 0: 未知, 1: 男, 2: 女 }
@@ -115,6 +118,7 @@ views:
           label: 电子邮箱
           width: 240
           align: left
+          clipboard: true
           format:
             - type: string
               regexp: \w{4}@
@@ -122,8 +126,9 @@ views:
           defaultValue: --
         - key: mobile
           label: 手机号
-          width: 120
+          width: 150
           align: left
+          clipboard: true
           format:
             - type: string
               regexp: ^(\d{3})\d+(\d{4})$
