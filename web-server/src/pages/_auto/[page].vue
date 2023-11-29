@@ -23,11 +23,6 @@ import { ElMessage, ElMessageBox, ElMessageBoxOptions } from 'element-plus'
 import { useUserStore } from '~/store/user'
 import type { Action, Confirm } from '@/types/account'
 
-// ReferenceError: document is not defined
-if (process.browser) {
-  require('external_library')
-}
-
 const route = useRoute()
 const router = useRouter()
 const { setting, currentChannel, timestamp } = storeToRefs(useAccountStore())

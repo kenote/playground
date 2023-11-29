@@ -10,7 +10,9 @@ export default class ChannelController {
     let { channel, label } = ctx.params
     try {
       let config = readConfigFile(label??'home', [channel, 'pages'].join('/'))
-      config.pathname = [, channel, label].join('/') 
+      if (config) {
+        config.pathname = [, channel, label].join('/') 
+      }
       return ctx.api(config)
     } catch (error) {
       nextError(error, ctx, next)

@@ -26,9 +26,9 @@ export default class GroupController {
       conditions.name = { $regex: new RegExp(ctx.payload.name, 'i') }
     }
     try {
-      let user = await ctx.getUser()
       let result = await db.group.Dao.find(conditions)
       if (ctx.params?.type == 'list') {
+        let user = await ctx.getUser()
         return ctx.api(result.map(toListObject(<DB.user.User>user)))
       }
       return ctx.api(result)

@@ -90,11 +90,13 @@ views:
         - key: id
           label: ID
           width: 60
+          fixed: left
         - key: username
           label: 用户名
           width: 150
           clipboard: true
           sortable: true
+          fixed: left
         - key: nickname
           label: 昵称
           width: 150

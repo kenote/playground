@@ -36,22 +36,22 @@
       </div>
     </header>
     <div class="bodyer" v-bind:class="collapse ? '!left-[-260px]' : ''">
-      <div class="sidebar">
-        <navigation-sidebar v-if="account.currentChannel" 
-          :data="account.currentChannel?.children" 
+      <div class="sidebar" @contextmenu.prevent>
+        <navigation-sidebar v-if="getNavigator(account.currentChannel)" 
+          :data="getNavigator(account.currentChannel)?.children" 
           :plots="auth.plots"
           :user="auth.user"
           :default-active="route.path">
           <template #header>
             <div class="sidebar-header">
-              <i v-if="account.currentChannel?.icon" v-bind:class="account.currentChannel?.icon"></i>
-              <span>{{ account.currentChannel?.name }}</span>
+              <i v-if="getNavigator(account.currentChannel)?.icon" v-bind:class="getNavigator(account.currentChannel)?.icon"></i>
+              <span>{{ getNavigator(account.currentChannel)?.name }}</span>
             </div>
           </template>
         </navigation-sidebar>
       </div>
       <div class="warpper">
-        <navigation-breadcrumb :navigator="account.currentChannel" :route-path="route.path" >
+        <navigation-breadcrumb :navigator="getNavigator(account.currentChannel)" :route-path="route.path" >
           <el-button v-if="pageSetting?.refresh" @click="handleCommand('command:refresh')">
             <el-icon v-bind:class="account.loading ? 'is-loading' : ''"><Refresh /></el-icon>
           </el-button>
@@ -117,17 +117,17 @@ const self = {
 }
 
 async function updateChannel (routePath: string) {
-  let channel = account.navigator?.find( v => v.route == routePath )
-  let channelId = getChannelKey(account.navigator??[], routePath, 'route') 
-    ?? channel?.key
-  if (channel?.route == routePath && channel.index) {
-    router.push(channel.route + channel.index)
-  }
+  let channelId = getChannelKey(account.navigator??[], routePath, 'route')
   pageSetting.value = dataNodeProxy(account.navigator??[])?.find({ route: routePath })
   loading.value = false
-  console.log('channel', account.currentChannel?.key)
   if (channelId == account.currentChannel?.key) return
   await account.selectChannel(channelId)
+}
+
+function getNavigator (navigator?: Channel.DataNode) {
+  if (navigator) return navigator
+  let channelId = getChannelKey(account.navigator??[], route.path, 'route')
+  return account.navigator?.find( v => v.key == channelId )
 }
 
 function handleCommand (value: string, row?: any) {

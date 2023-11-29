@@ -9,9 +9,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   
   const channelId = getChannelKey(store.navigator??[], to.path, 'route')
     ?? store.navigator?.find( v => v.route == to.path )?.key
-  if (!channelId && !store.pages?.includes(to.path)) {
-    throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
-  }
   
   if (store.current !== channelId) {
     await store.selectChannel(channelId)
@@ -24,6 +21,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   
   if (!store.pages?.includes(to.path)) {
     const setting = await usePage<PageSetting>(to.path)
-    store.setPageSetting(setting??{})
+    setting && store.setPageSetting(setting)
   }
 })

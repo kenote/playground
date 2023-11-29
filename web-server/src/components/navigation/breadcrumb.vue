@@ -34,7 +34,8 @@ watch(
 )
 
 function updateData (navigator: ChannelDataNode<any>, routePath: string) {
-  let __nav = dataNodeProxy(initMaps([navigator]))
+  let __data = initMaps([navigator])
+  let __nav = dataNodeProxy(__data)
   data.value = __nav?.find({ route: routePath })?.maps
 }
 
