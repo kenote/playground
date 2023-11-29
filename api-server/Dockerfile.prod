@@ -1,25 +1,16 @@
-FROM node:16.20.1-alpine3.18
+FROM node:16.20.2-alpine3.18
 
 WORKDIR /usr/src/app/
 
 COPY api-server/package.json /usr/src/app/
-COPY api-server/tsconfig.base.json /usr/src/app/
-COPY api-server/kenci.config.js /usr/src/app/
 COPY api-server/dist/ /usr/src/app/dist/
 
 RUN apk add --no-cache mongodb-tools
 
 RUN npm install --production
 
-VOLUME "/usr/src/app/channels"
-VOLUME "/usr/src/app/config"
-VOLUME "/usr/src/app/logs"
-VOLUME "/usr/src/app/static"
-VOLUME "/usr/src/app/uploadfiles"
-VOLUME "/usr/src/app/views"
-
 ENV NODE_ENV=production
 
 EXPOSE 4000
 
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "./dist/main.js" ]

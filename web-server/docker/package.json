@@ -1,0 +1,10 @@
+{
+  "name": "web-server",
+  "dependencies": {
+    "@nuxt/kit": "^3.6.5",
+    "nuxi": "^3.6.5"
+  },
+  "scripts": {
+    "preview": "nuxi preview"
+  }
+}
