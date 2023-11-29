@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  api_server:
+    image: playground_api_server:latest
+    container_name: playground_api-server
+    restart: always
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - SITE_NAME=${SITE_NAME}
+      - SITE_URL=${SITE_URL}
+      - MONGODB_USER=${MONGODB_USER}
+      - MONGODB_PASS=${MONGODB_PASS}
+      - MONGODB_HOST=${MONGODB_HOST:-mongodb}
+      - MONGODB_PORT=${MONGODB_PORT:-27017}
+      - SERVER_NAME=${SERVER_NAME}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASS=${REDIS_PASS}
+      - ADMIN_NAME=${ADMIN_NAME:-admin}
+      - ADMIN_PASS=${ADMIN_PASS:-admin888}
+    volumes:
+      - ./api-server/config:/usr/src/app/config
+      - ./api-server/channels:/usr/src/app/channels
+      - ./api-server/logs:/usr/src/app/logs
+      - ./api-server/mails:/usr/src/app/mails
+      - ./api-server/static:/usr/src/app/static
+      - ./api-server/uploadfiles:/usr/src/app/uploadfiles
+      - ./api-server/views:/usr/src/app/views
+    ports:
+      - ${API_SERVER_PORT:-4000}:4000
+
+  web-server:
+    image: playground_web_server:latest
+    container_name: playground_web-server
+    restart: always
+    environment:
+      - NUXT_PUBLIC_API_BASE=${API_BASEURL}
+    volumes:
+      - ${PWD}/web-server/.output:/home/web-server/.output
+    ports:
+      - ${WEB_SERVER_PORT:-3000}:3000
+
+  mongodb: 
+    image: mongo:4.4.22-focal
+    container_name: playground_mongodb
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASS}
+    volumes:
+      - ./mongodb/data:/data/db
+
+  redis:
+    image: redis:6.2.12-alpine3.18
+    container_name: playground_redis
+    restart: always
+    volumes:
+      - ./redis/data:/data
+      - ./redis/logs:/logs
+    command: redis-server --requirepass ${REDIS_PASS}

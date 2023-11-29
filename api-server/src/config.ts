@@ -1,23 +1,29 @@
 import { basename, resolve } from 'path'
 import { loadConfig } from '@kenote/config'
 import type { ServerConfigure } from '~/types/config'
-import { merge } from 'lodash'
+import { merge, compact } from 'lodash'
 import address from 'address'
 
 export const env = process.env.NODE_ENV ?? 'development'
-const SERVER_NAME = process.env.SERVER_NAME ?? basename(process.cwd())
+const SERVER_NAME = process.env.SERVER_NAME || basename(process.cwd())
+const { MONGODB_USER, MONGODB_PASS, MONGODB_HOST, MONGODB_PORT, REDIS_HOST, REDIS_PORT, REDIS_PASS } = process.env
+const MONGODB_AUTH = compact([MONGODB_USER, MONGODB_PASS]).join(':')
+const MONGODB_HOSTNAME = compact([MONGODB_HOST, MONGODB_PORT]).join(':')
+const MONGODB_BASEURL = compact([MONGODB_AUTH, MONGODB_HOSTNAME]).join('@') || 'localhost:27017'
 
 export const serverConfigure = <Required<ServerConfigure>> merge(<ServerConfigure>
   {
     NAME: SERVER_NAME,
+    PORT: process.env.SERVER_PORT || 4000,
     HOST: address.ip(),
     redisOpts: {
-      host: '127.0.0.1',
-      port: 6379,
-      db: 0
+      host: REDIS_HOST || '127.0.0.1',
+      port: REDIS_PORT || 6379,
+      db: 0,
+      password: REDIS_PASS
     },
     mongoOpts: {
-      uris: `mongodb://localhost:27017/${SERVER_NAME}`,
+      uris: `mongodb://${MONGODB_BASEURL}/${SERVER_NAME}`,
       options: {
         useNewUrlParser: true,
         useCreateIndex: true,
@@ -26,8 +32,8 @@ export const serverConfigure = <Required<ServerConfigure>> merge(<ServerConfigur
       }
     },
     initial: {
-      username: process.env.ADMIN_NAME ?? 'admin',
-      password: process.env.ADMIN_PASS ?? 'admin888'
+      username: process.env.ADMIN_NAME || 'admin',
+      password: process.env.ADMIN_PASS || 'admin888'
     }
   }, 
   loadConfig<ServerConfigure>('config/server', { mode: 'merge' })
