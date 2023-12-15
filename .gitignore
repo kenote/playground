@@ -134,8 +134,5 @@ package-lock.json
 pnpm-lock.yaml
 yarn.lock
 
-# kenote
-*.docker.yml
-!.docker/**/*.docker.yml
-/.docker/export/
-!/.env
+# Deploy
+.deploy/
