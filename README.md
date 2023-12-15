@@ -1,56 +1,29 @@
 # Playground
 
+...
 
+## 环境需求
 
-## 使用 Docker
+- `Node.js` >= `16.10.0`
+- `MongoDB` >= `4.4.0`
+- `Redis` >= `6.2.0`
 
-- 运行开发环境
+## 本地开发调试
 
-```bash
-# 启动服务
-docker-compose -f docker-compose.dev.yml up -d --build
-# 关闭服务
-docker-compose -f docker-compose.dev.yml down
-# 关闭服务并删除容器
-docker-compose -f docker-compose.dev.yml down -v
-```
-
-- 运行生产环境
+-- 独立窗口运行 `api-server`
 
 ```bash
-# 启动服务
-docker-compose -f docker-compose.prod.yml up -d --build
-# 关闭服务
-docker-compose -f docker-compose.prod.yml down
-# 关闭服务并删除容器
-docker-compose -f docker-compose.prod.yml down -v
+npm run dev --prefix ./api-server
 ```
 
-- 查看日志
+-- 独立窗口运行 `web-server`
 
 ```bash
-docker logs -f --tail 10 playground_api-server
+npm run dev --prefix ./web-server
 ```
 
-- 进入容器内部, 输入 exit 退出
+## 服务器部署
 
-```bash
-docker exec -it playground_api-server /bin/sh
-```
-
-- 编译代码 (开发环境下)
-
-```bash
-docker exec -it playground_api-server /bin/sh -c 'npm run build'
-```
-
-- 编译镜像文件
-
-```bash
-# 编辑成镜像
-docker build -f api-server/Dockerfile.prod --platform=linux/amd64 --tag playground_api_server:latest .
-# 镜像打包
-docker save > .docker/export/playground_api_server.tar playground_api_server:latest
-# 镜像解包
-docker load < playground_api_server.tar
-```
+- [PM2 方式部署](./docs/deploy/pm2.md)
+- [Docker 方式部署](./docs/deploy/docker.md)
+- [配置 Nginx 代理](./docs/deploy/nginx.md)
