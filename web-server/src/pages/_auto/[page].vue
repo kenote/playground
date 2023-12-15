@@ -115,9 +115,15 @@ function handleCommand (value: string, row?: Record<string, any>) {
 
 async function handleGetData (request: RequestConfig, options: any, next: (data: any) => void) {
   let url = parseTemplate(request?.url??'', env.value)
+  if (/^(cache)/.test(url)) {
+    let data = (<Record<string, any>[]>getCacheData(env.value)(url)??[])
+      .map(appendDisabled(env.value, request.headers?.disabled))
+    
+    return next(data)
+  }
   let __options = merge(pick(request, ['method', 'headers']), { data: request, interceptor: true })
   try {
-    let result = await useHttpProxy(url??'', __options)
+    let result = await useHttpProxy(url, __options)
     if (result.data) {
       next(result.data)
     }

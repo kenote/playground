@@ -1,6 +1,15 @@
 ---
 # Action 请求
 actions:
+  # 用户组
+  groups:
+    request:
+      method: POST
+      url: /api/uc/group
+    options:
+      assokey: groups
+      assignment:
+        data: data
   # 刷新
   refresh:
     request:
@@ -45,4 +54,5 @@ actions:
 
 # 初始化数据
 initial:
+  - action:groups
   - action:refresh

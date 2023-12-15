@@ -7,13 +7,13 @@
     "@kenote/common": "latest",
     "@kenote/config": "latest",
     "cross-env": "^7.0.3",
-    "element-plus": "^2.3.9",
+    "element-plus": "^2.4.3",
     "nunjucks": "^3.2.4",
     "parse-string": "^1.2.8",
     "validator": "^13.11.0"
   },
   "devDependencies": {
-    "@element-plus/nuxt": "^1.0.5",
+    "@element-plus/nuxt": "^1.0.7",
     "@nuxt/devtools": "^0.8.0",
     "@nuxtjs/color-mode": "^3.3.0",
     "@nuxtjs/dotenv": "^1.4.1",

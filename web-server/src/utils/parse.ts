@@ -284,6 +284,19 @@ export function isDisabled (env?: Record<string, any>) {
 }
 
 /**
+ * 附加 Disable 属性
+ * @param env 
+ * @param disabled 
+ * @returns 
+ */
+export function appendDisabled (env: Record<string, any>, disabled?: boolean | FilterQuery<any> | string) {
+  return (row: Record<string, any>) => {
+    row.disabled = isDisabled(env)(disabled, { row })
+    return row
+  }
+}
+
+/**
  * 判断是否过滤
  * @param conditions 
  * @param env 

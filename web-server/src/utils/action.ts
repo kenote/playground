@@ -55,6 +55,17 @@ export function setCacheData (env: Record<string, any>, action: Action) {
 }
 
 /**
+ * 获取 Cache 数据
+ * @param env 
+ * @returns 
+ */
+export function getCacheData (env: Record<string, any>) {
+  return (name: string) => {
+    return get(env, name)
+  }
+}
+
+/**
  * 获取路由策略
  * @param routePath 
  * @param plots 

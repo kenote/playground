@@ -201,8 +201,11 @@ views:
           type: select
           placeholder: 请输选择用户组
           data:
-            method: POST
-            url: /api/uc/group/list
+            url: cache.groups.data
+            headers:
+              disabled: |-
+                row.level:
+                  $gte: {{user.group.level}}
           props:
             value: _id
             label: name
@@ -302,8 +305,11 @@ views:
           type: select
           placeholder: 请输选择用户组
           data:
-            method: POST
-            url: /api/uc/group/list
+            url: cache.groups.data
+            headers:
+              disabled: |-
+                row.level:
+                  $gte: {{user.group.level}}
           props:
             value: _id
             label: name
