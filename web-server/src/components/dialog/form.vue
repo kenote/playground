@@ -5,7 +5,7 @@
     :width="width"
     :height="height"
     :close-on-click-modal="false"
-    :show-footer="options?.hide"
+    :show-footer="props.options?.hide"
     :loading="loading"
     @command="handleCommand"
     >
@@ -80,7 +80,7 @@ const handleGetData = (request: RequestConfig, options: any, next: (data: any) =
 function handleCommand (value: string) {
   let command = parseCommand(value)
   if (command?.type == 'submit') {
-    formRef.value?.submit()
+    formRef.value?.["submit"]()
   }
 }
 

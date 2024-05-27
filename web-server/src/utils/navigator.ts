@@ -1,6 +1,6 @@
-import { dataNodeProxy, initMaps, ChannelDataNode, removeMaps, CommonDataNode } from '@kenote/common'
+import { dataNodeProxy, initMaps, type ChannelDataNode, removeMaps, type CommonDataNode } from '@kenote/common'
 import { cloneDeep, compact, map, pick } from 'lodash'
-import { Channel, NavMenu } from '@/types/base'
+import type { Channel, NavMenu } from '@/types/base'
 
 
 export function toNavigatorRoute (node?: ChannelDataNode<any>) {

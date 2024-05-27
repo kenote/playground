@@ -1,11 +1,11 @@
 <template>
-  <View :component="setting?.wrapper?.name??'Container'" :options="setting?.wrapper?.options">
+  <View :component="<any>setting?.wrapper?.name??'Container'" :options="setting?.wrapper?.options">
     <View v-for="(item) in setting?.views??[]"
       :name="item.name"
       v-model="env[item.name]"
-      :component="item.component"
+      :component="<any>item.component"
       :options="item.options" 
-      :children="item.children"
+      :children="<any>item.children"
       @submit="handleSubmit"
       @command="handleCommand"
       @get-data="handleGetData"
@@ -19,7 +19,7 @@ import { useAccountStore } from '~/store/account'
 import type { RequestConfig, SubmitActionOptions, PageInfo } from '@/types/base'
 import { storeToRefs } from 'pinia'
 import { pick, set, merge, assign } from 'lodash'
-import { ElMessage, ElMessageBox, ElMessageBoxOptions } from 'element-plus'
+import { ElMessage, ElMessageBox, type ElMessageBoxOptions } from 'element-plus'
 import { useUserStore } from '~/store/user'
 import type { Action, Confirm } from '@/types/account'
 

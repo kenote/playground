@@ -6,7 +6,7 @@
         :disabled="permitDisabled(item)"
         @click="handleCommand(item.command, scope.row)"
         plain>
-        {{ parseTemplate(item.name, env??{}) }}
+        {{ parseTemplate(item.name, props.env??{}) }}
       </el-button>
       <el-popconfirm v-if="item.type == 'confirm-button'"
         cancel-button-text="取消"
@@ -21,7 +21,7 @@
             :type="item.style"
             :disabled="permitDisabled(item)"
             plain>
-            {{ parseTemplate(item.name, env??{}) }}
+            {{ parseTemplate(item.name, props.env??{}) }}
           </el-button>
         </template>
       </el-popconfirm>
@@ -58,7 +58,7 @@ import type { TableColumn, EmitOptions } from '@/types/base'
 import { get } from 'lodash'
 import { customize } from '~/utils/parse'
 import { InfoFilled } from '@element-plus/icons-vue'
-import { ParseData } from 'parse-string'
+import { type ParseData } from 'parse-string'
 import type { FilterQuery } from 'rule-judgment'
 
 type Props = {

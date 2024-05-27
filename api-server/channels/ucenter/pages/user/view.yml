@@ -36,6 +36,7 @@ views:
           label: 用户组
           type: select
           placeholder: 请输选择用户组
+          width: 150
           data:
             method: POST
             url: /api/uc/group
@@ -199,6 +200,7 @@ views:
         - key: group
           label: 用户组
           type: select
+          width: 300
           placeholder: 请输选择用户组
           data:
             url: cache.groups.data
@@ -303,6 +305,7 @@ views:
         - key: group
           label: 用户组
           type: select
+          width: 300
           placeholder: 请输选择用户组
           data:
             url: cache.groups.data

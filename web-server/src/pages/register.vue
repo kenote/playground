@@ -1,25 +1,25 @@
 <template>
   <div class="account-body min-h-10 p-8 w-[480px]">
     <h1 class="text-center pb-8 m-0">注册账户</h1>
-    <account-ticket v-if="account.invitation && !invitation" name="邀请码" :loading="loading" @submit="verifyTicket" >
+    <account-ticket v-if="<any>account.invitation && !<any>invitation" name="邀请码" :loading="<any>loading" @submit="<any>verifyTicket" >
       <p class="text-warm-gray-500 mt-[-8px] text-center">必须要有邀请码才能注册；请在下方输入您的邀请码。</p>
     </account-ticket>
     <el-form v-else ref="formRef" size="large" 
       :model="form" 
-      :rules="rules" 
+      :rules="<any>rules" 
       @submit.native.prevent="submitForm(formRef)" 
       label-position="top" 
        >
-      <el-form-item prop="username" :rules="rules.username" label="账户名" class="h-20">
+      <el-form-item prop="username" :rules="<any>rules.username" label="账户名" class="h-20">
         <el-input placeholder="请填写账户名" v-model="form.username" />
       </el-form-item>
-      <el-form-item prop="email" :rules="rules.email" label="电子邮箱" class="h-20">
+      <el-form-item prop="email" :rules="<any>rules.email" label="电子邮箱" class="h-20">
         <el-input placeholder="请填写电子邮箱地址" v-model="form.email" />
       </el-form-item>
-      <el-form-item prop="password" :rules="rules.password" label="密码" class="h-20">
+      <el-form-item prop="password" :rules="<any>rules.password" label="密码" class="h-20">
         <el-input type="password" placeholder="请填写密码" v-model="form.password" show-password />
       </el-form-item>
-      <el-form-item prop="repassed" :rules="rules.repassed" label="确认密码" class="h-20">
+      <el-form-item prop="repassed" :rules="<any>rules.repassed" label="确认密码" class="h-20">
         <el-input type="password" placeholder="请确认密码" v-model="form.repassed" show-password />
       </el-form-item>
       <el-form-item >
@@ -123,15 +123,15 @@ const rules = useVerifyRule<keyof RegisterForm>({
   ]
 }, { form, uniqueFunc: useUniqueFunc(null) })
 
-function submitForm (formEl?: FormInstance) {
+async function submitForm (formEl?: FormInstance) {
   if (!formEl) return
-  formEl.validate(valid => {
+  await formEl.validate(valid => {
     if (valid) {
       console.log(formEl.$props.model)
         
     }
     else {
-      return false
+      return
     }
   })
 }

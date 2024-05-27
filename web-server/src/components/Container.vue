@@ -1,5 +1,5 @@
 <template>
-  <div v-if="content" class="flex-container" v-bind:class="layoutClass" :style="styles" v-html="content" />
+  <div v-if="props.content" class="flex-container" v-bind:class="layoutClass" :style="styles" v-html="props.content" />
   <div v-else class="flex-container" v-bind:class="layoutClass" :style="styles">
     <slot></slot>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <component :is="components?.[component]" 
-    v-bind="options" 
+    v-bind="props.options" 
     v-model="modelValue"
     v-bind:env="env"
     @command="handleCommand"

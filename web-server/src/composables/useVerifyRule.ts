@@ -17,7 +17,7 @@ const validate: any = {
  */
 export function useVerifyRule<T extends string> (options: Partial<Record<T, Verify.Rule[]>>, self?: any) {
   for (let [key, rule] of Object.entries<Verify.Rule[]>(<any>options)) {
-    options[<T>key] = rule.map( item => {
+    options[key] = rule.map( item => {
       if (item.validator && isArray(item.validator)) {
         let [ name, ...props ] = item.validator
         let validator = validate?.[<string>name]

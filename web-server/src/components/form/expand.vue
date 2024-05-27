@@ -6,7 +6,7 @@
         :disabled="permitDisabled(item)"
         @click="handleCommand(item.command, { values })"
         plain>
-        {{ parseTemplate(item.name, env??{}) }}
+        {{ parseTemplate(item.name, props.env??{}) }}
       </el-button>
       <el-dropdown v-if="item.type == 'dropdown'"
         :disabled="isDisabled(env)(item.disabled, { values })"

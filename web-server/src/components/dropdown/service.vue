@@ -2,7 +2,7 @@
   <el-dropdown class="h-full" 
     v-bind:popper-class="`header-link-dropdown header-link-dropdown-service w-[${poperwidth}px]`"
     @command="handleCommand" 
-    :trigger="trigger">
+    :trigger="<any>trigger">
     <a class="header-link">
       <span class="el-dropdown-link">
         {{ name }}<i class="iconfont icon-arrow-down ml-1"></i>

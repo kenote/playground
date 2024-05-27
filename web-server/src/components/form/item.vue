@@ -3,44 +3,44 @@
   <el-input v-if="['text', 'password'].includes(type)"
     v-model="modelValue"
     type="text"
-    :placeholder="placeholder"
+    :placeholder="<string>placeholder"
     :disabled="disabled"
-    :minlength="options?.min"
-    :maxlength="options?.max"
+    :minlength="props.options?.min"
+    :maxlength="props.options?.max"
     :size="size"
-    :clearable="options?.clearable"
-    :show-word-limit="options?.showWordLimit"
-    :show-password="type == 'password' || options?.showPassword"
+    :clearable="props.options?.clearable"
+    :show-word-limit="props.options?.showWordLimit"
+    :show-password="type == 'password' || props.options?.showPassword"
     :style="styles"
     />
   <!-- textarea -->
   <el-input v-if="type == 'textarea'"
     v-model="modelValue"
     type="textarea"
-    :placeholder="placeholder"
+    :placeholder="<string>placeholder"
     :disabled="disabled"
-    :minlength="options?.min"
-    :maxlength="options?.max"
-    :clearable="options?.clearable"
-    :show-word-limit="options?.showWordLimit"
-    :resize="options?.resize"
-    :rows="options?.rows"
-    :autosize="options?.autosize"
+    :minlength="props.options?.min"
+    :maxlength="props.options?.max"
+    :clearable="props.options?.clearable"
+    :show-word-limit="props.options?.showWordLimit"
+    :resize="props.options?.resize"
+    :rows="props.options?.rows"
+    :autosize="props.options?.autosize"
     :style="styles"
     />
   <!-- number -->
   <el-input-number v-if="type == 'number'"
     v-model="modelValue"
-    :placeholder="placeholder"
+    :placeholder="<string>placeholder"
     :disabled="disabled"
-    :min="options?.min"
-    :max="options?.max"
+    :min="props.options?.min"
+    :max="props.options?.max"
     :size="size"
-    :step="options?.step"
-    :precision="options?.precision"
-    :step-strictly="options?.stepStrictly"
-    :controls-position="options?.controlsPosition"
-    :controls="options?.controls"
+    :step="props.options?.step"
+    :precision="props.options?.precision"
+    :step-strictly="props.options?.stepStrictly"
+    :controls-position="props.options?.controlsPosition"
+    :controls="props.options?.controls"
     :style="styles"
     />
   <!-- radio-button -->
@@ -64,7 +64,7 @@
       :key="item.value" 
       :label="item.value" 
       :disabled="item?.disabled" 
-      :style="{ width: toPixelSize(options?.rows!) }"
+      :style="{ width: toPixelSize(props.options?.rows!) }"
       >
       <el-tooltip :content="toFormatString(<any>props)(item, format)" placement="top-start">
         {{ toFormatString(<any>props)(item, format) }}
@@ -76,8 +76,8 @@
     v-model="modelValue" 
     :disabled="disabled" 
     :size="size" 
-    :min="options?.min" 
-    :max="options?.max" 
+    :min="props.options?.min" 
+    :max="props.options?.max" 
     :style="styles"
     >
     <el-checkbox-button v-for="(item) in propData" :key="item.value" :label="item.value" :disabled="item?.disabled" >
@@ -97,16 +97,16 @@
   <!-- select -->
   <el-select v-if="type == 'select'" 
     v-model="modelValue" 
-    :placeholder="placeholder"
+    :placeholder="<string>placeholder"
     :disabled="disabled" 
     :size="size"
-    :clearable="options?.clearable"
-    :filterable="options?.filterable"
-    :allow-create="options?.allowCreate"
-    :multiple="options?.multiple"
-    :multiple-limit="options?.multipleLimit"
-    :collapse-tags="options?.collapseTags"
-    :max-collapse-tags="options?.maxCollapseTags"
+    :clearable="props.options?.clearable"
+    :filterable="props.options?.filterable"
+    :allow-create="props.options?.allowCreate"
+    :multiple="props.options?.multiple"
+    :multiple-limit="props.options?.multipleLimit"
+    :collapse-tags="props.options?.collapseTags"
+    :max-collapse-tags="props.options?.maxCollapseTags"
     :style="styles"
     collapse-tags-tooltip>
     <template v-for="(item) in propData">
@@ -116,51 +116,51 @@
           :label="toFormatString(<any>props)(ele, format)" 
           :value="ele.value" 
           :disabled="ele?.disabled">
-          <div v-if="options?.template" v-html="toFormatString(<any>props)(ele, options?.template)" ></div>
+          <div v-if="props.options?.template" v-html="toFormatString(<any>props)(ele, props.options?.template)" ></div>
         </el-option>
       </el-option-group>
       <el-option v-else :key="item.value" 
         :label="toFormatString(<any>props)(item, format)" 
         :value="item.value" 
         :disabled="item?.disabled">
-        <div v-if="options?.template" v-html="toFormatString(<any>props)(item, options?.template)" ></div>
+        <div v-if="props.options?.template" v-html="toFormatString(<any>props)(item, props.options?.template)" ></div>
       </el-option>
     </template>
   </el-select>
   <!-- select-v2 -->
   <el-select-v2 v-if="type == 'select-v2'" 
     v-model="modelValue" 
-    :placeholder="placeholder"
+    :placeholder="<string>placeholder"
     :disabled="disabled" 
     :size="size"
     :options="propData?.map( v => ({ ...v, label: toFormatString(<any>props)(v, format) }) )"
-    :clearable="options?.clearable"
-    :filterable="options?.filterable"
-    :allow-create="options?.allowCreate"
-    :multiple="options?.multiple"
-    :multiple-limit="options?.multipleLimit"
-    :collapse-tags="options?.collapseTags"
-    :max-collapse-tags="options?.maxCollapseTags"
+    :clearable="props.options?.clearable"
+    :filterable="props.options?.filterable"
+    :allow-create="props.options?.allowCreate"
+    :multiple="props.options?.multiple"
+    :multiple-limit="props.options?.multipleLimit"
+    :collapse-tags="props.options?.collapseTags"
+    :max-collapse-tags="props.options?.maxCollapseTags"
     :style="styles"
     collapse-tags-tooltip>
-    <template v-if="options?.template" #default="{ item }">
-      <div v-html="toFormatString(<any>props)(item, options?.template)" ></div>
+    <template v-if="props.options?.template" #default="{ item }">
+      <div v-html="toFormatString(<any>props)(item, props.options?.template)" ></div>
     </template>
   </el-select-v2>
   <!-- 'year' | 'month' | 'date' | 'dates' | 'week' | 'datetime' -->
   <el-date-picker v-if="['year', 'month', 'date', 'dates', 'week', 'datetime'].includes(type)"
     v-model="modelValue"
-    :type="type"
-    :placeholder="placeholder"
+    :type="<any>type"
+    :placeholder="<string>placeholder"
     :disabled="disabled"
     :size="size"
     :format="format"
     :value-format="valueFormat"
-    :clearable="options?.clearable"
-    :editable="options?.editable"
-    :arrow-control="options?.arrowControl"
-    :default-time="parseTime(options?.defaultTime!)??undefined"
-    :shortcuts="options?.shortcuts?.map(parseShortcut)"
+    :clearable="props.options?.clearable"
+    :editable="props.options?.editable"
+    :arrow-control="props.options?.arrowControl"
+    :default-time="parseTime(props.options?.defaultTime!)??undefined"
+    :shortcuts="props.options?.shortcuts?.map(parseShortcut)"
     :disabled-date="disabledDate"
     :style="styles"
     >
@@ -174,20 +174,20 @@
   <!-- 'datetimerange' | 'daterange' | 'monthrange' -->
   <el-date-picker v-if="['datetimerange', 'daterange', 'monthrange'].includes(type)"
     v-model="modelValue"
-    :type="type"
+    :type="<any>type"
     :start-placeholder="placeholder?.[0]"
     :end-placeholder="placeholder?.[1]"
     :disabled="disabled"
     :size="size"
     :format="format"
     :value-format="valueFormat"
-    :clearable="options?.clearable"
-    :editable="options?.editable"
-    :arrow-control="options?.arrowControl"
-    :default-time="parseTime(options?.defaultTime!)??undefined"
-    :shortcuts="options?.shortcuts?.map(parseShortcut)"
+    :clearable="props.options?.clearable"
+    :editable="props.options?.editable"
+    :arrow-control="props.options?.arrowControl"
+    :default-time="parseTime(props.options?.defaultTime!)??undefined"
+    :shortcuts="props.options?.shortcuts?.map(parseShortcut)"
     :disabled-date="disabledDate"
-    :range-separator="options?.separator"
+    :range-separator="props.options?.separator"
     :style="styles"
     >
     <template #default="cell">
@@ -200,13 +200,13 @@
   <!-- time -->
   <el-time-picker v-if="['time'].includes(type)"
     v-model="modelValue"
-    :placeholder="placeholder"
+    :placeholder="<string>placeholder"
     :disabled="disabled"
     :size="size"
     :format="format"
-    :clearable="options?.clearable"
-    :editable="options?.editable"
-    :arrow-control="options?.arrowControl"
+    :clearable="props.options?.clearable"
+    :editable="props.options?.editable"
+    :arrow-control="props.options?.arrowControl"
     :disabled-hours="disabledHours"
     :disabled-minutes="disabledMinutes"
     :disabled-seconds="disabledSeconds"
@@ -220,32 +220,32 @@
     :disabled="disabled"
     :size="size"
     :format="format"
-    :clearable="options?.clearable"
-    :editable="options?.editable"
-    :arrow-control="options?.arrowControl"
+    :clearable="props.options?.clearable"
+    :editable="props.options?.editable"
+    :arrow-control="props.options?.arrowControl"
     :disabled-hours="disabledHours"
     :disabled-minutes="disabledMinutes"
     :disabled-seconds="disabledSeconds"
-    :range-separator="options?.separator"
+    :range-separator="props.options?.separator"
     :style="styles"
   />
   <!-- cascader -->
   <el-cascader v-if="['cascader'].includes(type)"
     v-model="modelValue"
-    :placeholder="placeholder"
+    :placeholder="<string>placeholder"
     :disabled="disabled" 
     :size="size"
     :props="cascaderProps"
     :options="propData"
-    :clearable="options?.clearable"
-    :filterable="options?.filterable"
-    :collapse-tags="options?.collapseTags"
-    :max-collapse-tags="options?.maxCollapseTags"
-    :separator="options?.separator"
+    :clearable="props.options?.clearable"
+    :filterable="props.options?.filterable"
+    :collapse-tags="props.options?.collapseTags"
+    :max-collapse-tags="props.options?.maxCollapseTags"
+    :separator="props.options?.separator"
     :style="styles"
     collapse-tags-tooltip >
-    <template v-if="options?.template" #default="{ node, data }">
-      <div v-html="toFormatString(<any>props)(data, options?.template)" ></div>
+    <template v-if="props.options?.template" #default="{ node, data }">
+      <div v-html="toFormatString(<any>props)(data, props.options?.template)" ></div>
     </template>
   </el-cascader>
   <!-- cascader-panel -->
@@ -254,8 +254,8 @@
     :props="cascaderProps"
     :options="propData"
     :style="styles" >
-    <template v-if="options?.template" #default="{ node, data }">
-      <div v-html="toFormatString(<any>props)(data, options?.template)" ></div>
+    <template v-if="props.options?.template" #default="{ node, data }">
+      <div v-html="toFormatString(<any>props)(data, props.options?.template)" ></div>
     </template>
   </el-cascader-panel>
   <!-- switch -->
@@ -263,26 +263,26 @@
     v-model="modelValue"
     :disabled="disabled" 
     :size="size"
-    :active-text="options?.activeText"
-    :inactive-text="options?.inactiveText"
-    :active-value="options?.activeValue"
-    :inactive-value="options?.inactiveValue"
+    :active-text="props.options?.activeText"
+    :inactive-text="props.options?.inactiveText"
+    :active-value="props.options?.activeValue"
+    :inactive-value="props.options?.inactiveValue"
   />
   <!-- slider -->
   <el-slider v-if="type == 'slider'"
     v-model="modelValue"
     :disabled="disabled"
-    :min="options?.min"
-    :max="options?.max"
+    :min="props.options?.min"
+    :max="props.options?.max"
     :size="size"
-    :show-input="options?.showInput"
-    :step="options?.step"
-    :input-size="options?.inputSize"
-    :show-stops="options?.showStops"
-    :show-tooltip="options?.showTooltip"
-    :range="options?.range"
-    :vertical="options?.vertical"
-    :marks="options?.marks"
+    :show-input="props.options?.showInput"
+    :step="props.options?.step"
+    :input-size="props.options?.inputSize"
+    :show-stops="props.options?.showStops"
+    :show-tooltip="props.options?.showTooltip"
+    :range="props.options?.range"
+    :vertical="props.options?.vertical"
+    :marks="props.options?.marks"
     :height="toPixelSize(height)"
   />
   <!-- color-picker -->
@@ -292,9 +292,9 @@
       v-model="modelValue"
       :disabled="disabled"
       :size="size"
-      :show-alpha="options?.showAlpha"
-      :predefine="options?.precision"
-      :color-format="options?.colorFormat"
+      :show-alpha="props.options?.showAlpha"
+      :predefine="props.options?.predefine"
+      :color-format="props.options?.colorFormat"
     />
   </div>
   <!-- rate -->
@@ -302,17 +302,17 @@
     v-model="modelValue"
     :disabled="disabled"
     :size="size"
-    :max="options?.max"
-    :clearable="options?.clearable"
-    :allow-half="options?.allowHalf"
-    :low-threshold="options?.lowThreshold"
-    :high-threshold="options?.highThreshold"
-    :colors="options?.colors"
-    :texts="options?.texts"
-    :show-text="options?.showText"
-    :show-score="options?.showScore"
-    :text-color="options?.textColor"
-    :score-template="options?.template"
+    :max="props.options?.max"
+    :clearable="props.options?.clearable"
+    :allow-half="props.options?.allowHalf"
+    :low-threshold="props.options?.lowThreshold"
+    :high-threshold="props.options?.highThreshold"
+    :colors="props.options?.colors"
+    :texts="props.options?.texts"
+    :show-text="props.options?.showText"
+    :show-score="props.options?.showScore"
+    :text-color="props.options?.textColor"
+    :score-template="props.options?.template"
   />
   <!-- transfer -->
   <el-transfer v-if="type == 'transfer'"
@@ -321,27 +321,27 @@
     :size="size"
     :data="propData"
     :props="toProps('key')"
-    :filterable="options?.filterable"
-    :filter-placeholder="placeholder"
-    :titles="options?.titles"
-    :button-texts="options?.buttonTexts"
-    :target-order="options?.targetOrder"
-    :left-default-checked="options?.leftDefaultChecked"
-    :right-default-checked="options?.rightDefaultChecked"
-    :filter-method="filterMethod">
-    <template v-if="options?.template" #default="{ option }">
-      <div v-html="toFormatString(<any>props)(option, options?.template)" ></div>
+    :filterable="props.options?.filterable"
+    :filter-placeholder="<string>placeholder"
+    :titles="props.options?.titles"
+    :button-texts="props.options?.buttonTexts"
+    :target-order="props.options?.targetOrder"
+    :left-default-checked="props.options?.leftDefaultChecked"
+    :right-default-checked="props.options?.rightDefaultChecked"
+    :filter-method="<any>filterMethod">
+    <template v-if="props.options?.template" #default="{ option }">
+      <div v-html="toFormatString(<any>props)(option, props.options?.template)" ></div>
     </template>  
   </el-transfer>
 </template>
 
 <script setup lang="ts">
 import type { PropDataItem, Shortcut, FormItemType, FormItemOptions, Size, RequestConfig } from '@/types/base'
-import { CascaderProps, dayjs, useFormItem } from 'element-plus'
+import { type CascaderProps, dayjs, useFormItem } from 'element-plus'
 import type { DateCell } from 'element-plus/es/components/date-picker/src/date-picker.type'
 import { isArray, isString, merge, unset, isPlainObject } from 'lodash'
 import ruleJudgment from 'rule-judgment'
-import { FormItemProps } from '@/types/views/form-item'
+import type { FormItemProps } from '@/types/views/form-item'
 
 defineOptions({
   inheritAttrs: false
@@ -380,9 +380,9 @@ watch(
   }
 )
 
-initProps(props)
-
 const emit = defineEmits(['change', 'get-data', 'update:modelValue'])
+
+initProps(props)
 
 function initProps (value: Props) {
   if (value.width) {

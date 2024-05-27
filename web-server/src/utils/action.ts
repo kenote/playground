@@ -1,6 +1,6 @@
 import { get, set, pick, assign } from 'lodash'
 import type { Action } from '@/types/account'
-import { PlotOptions } from '@/types/account'
+import type { PlotOptions } from '@/types/account'
 
 /**
  * 获取 Action 选项

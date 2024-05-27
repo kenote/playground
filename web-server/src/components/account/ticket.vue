@@ -3,7 +3,7 @@
   <slot></slot>
   <el-form ref="formRef" size="large" 
     :model="form" 
-    :rules="rules" 
+    :rules="<FormRules>rules" 
     @submit.native.prevent="submitForm(formRef)" 
     label-position="top" 
     hide-required-asterisk >
@@ -17,8 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { FilterData } from 'parse-string'
-import type { FormInstance } from 'element-plus'
+import { type FilterData } from 'parse-string'
+import type { FormInstance, FormRules } from 'element-plus'
 
 type TicketForm = {
   token    : string
@@ -26,7 +26,7 @@ type TicketForm = {
 
 type Props = {
   name        : string
-  description : string
+  description?: string
   loading     : boolean
 }
 
@@ -49,14 +49,16 @@ const rules: Record<keyof TicketForm, FilterData.rule[]> = {
   ]
 }
 
-const submitForm = (formEl?: FormInstance) => {
+const submitForm = async (formEl?: FormInstance) => {
   if (!formEl) return
-  formEl.validate(async valid => {
+  
+  await formEl.validate( valid => {
     if (valid) {
       emit('submit', formEl.$props.model?.token)
     }
     else {
-      return false
+      // return false
+      return
     }
   })
 }

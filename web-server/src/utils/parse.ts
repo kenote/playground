@@ -1,9 +1,9 @@
 import { assign, merge, get, isDate, isString, compact, cloneDeep, isArray, isPlainObject, omit, template, isFunction, isBoolean } from 'lodash'
 import jsYaml from 'js-yaml'
-import { PropDataItem } from '@/types/base'
-import { toValue, ParseData, formatData } from 'parse-string'
+import type { PropDataItem } from '@/types/base'
+import { toValue, type ParseData, formatData } from 'parse-string'
 import { evaluate } from 'eval5'
-import { FilterQuery } from '@kenote/common'
+import { type FilterQuery } from '@kenote/common'
 import ruleJudgment from 'rule-judgment'
 import dayjs from 'dayjs'
 

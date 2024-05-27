@@ -1,5 +1,5 @@
 <template>
-  <el-sub-menu v-if="children?.length??0 > 0" :index="index">
+  <el-sub-menu v-if="children?.length??0 > 0" :index="<any>index">
     <template #title>
       <i v-if="icon" class="mr-[6px]" v-bind:class="icon"></i>
       <span>{{ name }}</span>
@@ -23,7 +23,7 @@
       <i v-if="icon" class="mr-[6px]" v-bind:class="icon"></i>
       <span>{{ name }}</span>
       <!-- success | info | danger | warning -->
-      <el-tag v-if="tag" class="ml-2" :type="tagElem?.type" size="small" effect="dark">{{ tagElem?.val }}</el-tag>
+      <el-tag v-if="tag" class="ml-2" :type="<any>tagElem?.type" size="small" effect="dark">{{ tagElem?.val }}</el-tag>
     </el-menu-item>
   </template>
   

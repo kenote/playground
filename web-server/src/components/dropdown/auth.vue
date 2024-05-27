@@ -1,5 +1,5 @@
 <template>
-  <el-dropdown class="h-full" popper-class="header-link-dropdown" @command="handleCommand" :trigger="trigger">
+  <el-dropdown class="h-full" popper-class="header-link-dropdown" @command="handleCommand" :trigger="<any>trigger">
     <a class="header-link">
       <span class="el-dropdown-link">
         <el-avatar :icon="Avatar" :size="36"></el-avatar>
@@ -31,7 +31,7 @@
             <el-button v-for="(btn) in item.buttons" size="small" @click="handleCommand(btn.link)">{{ btn.name }}</el-button>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item divided class="end">退出登录</el-dropdown-item>
+        <el-dropdown-item divided class="end" command="command:logout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { Avatar } from '@element-plus/icons-vue'
-import { NavMenu } from '@/types/base'
+import type { NavMenu } from '@/types/base';
 
 
 

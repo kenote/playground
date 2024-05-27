@@ -1,5 +1,5 @@
 <template>
-  <Container layout="horizontal" justify-content="space-between">
+  <Container layout="horizontal" justify-content="space-between" padding="0 0 20px">
     <Container layout="horizontal">
       <form-expand :data="expands" :env="env" @command="handleCommand" />
     </Container>
@@ -7,7 +7,7 @@
       v-model="keywords" 
       type="text" 
       :width="180" 
-      :placeholder="filter?.placeholder??'输入名称检索...'" 
+      :placeholder="props.filter?.placeholder??'输入名称检索...'" 
       :options="{ clearable: true }"
     />
   </Container>

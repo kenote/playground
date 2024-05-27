@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { UserEntitie, AuthToken, AccessToken, PlotOptions } from '@/types'
+import type { UserEntitie, AuthToken, AccessToken, PlotOptions } from '@/types'
 
 type State = {
   user         ?: UserEntitie | null

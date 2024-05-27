@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChannelDataNode, dataNodeProxy, initMaps } from '@kenote/common'
+import { type ChannelDataNode, dataNodeProxy, initMaps } from '@kenote/common'
 
 type Props = {
   routePath: string

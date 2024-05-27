@@ -137,6 +137,9 @@ function handleCommand (value: string, row?: any) {
     },
     refresh: () => {
       account.refresh()
+    },
+    logout: () => {
+      console.log('logout')
     }
   })(value, row)
   

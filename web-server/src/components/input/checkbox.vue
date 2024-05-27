@@ -1,13 +1,13 @@
 <template>
   <div class="w-full flex items-center">
-    <el-checkbox v-if="options?.checkAll" class="!mr-4"
+    <el-checkbox v-if="props.options?.checkAll" class="!mr-4"
       v-model="checkAll" 
       :indeterminate="isIndeterminate" 
-      @change="handleCheckAllChange"
+      @change="<any>handleCheckAllChange"
       >
       全选
     </el-checkbox>
-    <el-input v-if="options?.filterable" class="!w-48" 
+    <el-input v-if="props.options?.filterable" class="!w-48" 
       v-model="keywords" 
       size="default" 
       clearable 
@@ -18,24 +18,25 @@
     v-model="modelValue"
     :disabled="disabled"
     :size="size"
-    @change="handleCheckedValuesChange"
+    @change="<any>handleCheckedValuesChange"
     :style="{ maxHeight: height, width }"
     >
     <el-checkbox v-for="(item) in data?.filter(filterKeywords)" 
       :key="item.value" 
       :label="item.value" 
       :disabled="item?.disabled"
-      :style="{ width: toPixelSize(options?.rows!) }"
+      :style="{ width: toPixelSize(props.options?.rows!) }"
       >
-      <el-tooltip :content="toFormatString(props)(item, format)" placement="top-start">
-        {{ toFormatString(props)(item, format) }}
+      <el-tooltip :content="toFormatString(<any>props)(item, format)" placement="top-start">
+        {{ toFormatString(<any>props)(item, format) }}
       </el-tooltip>
     </el-checkbox>
   </el-checkbox-group>
 </template>
 
 <script setup lang="ts">
-import { Size, PropDataItem, FormItemOptions } from '@/types/base'
+/* __placeholder__ */
+import type { Size, PropDataItem, FormItemOptions } from '@/types/base';
 import { map, compact, trim } from 'lodash'
 import ruleJudgment from 'rule-judgment'
 

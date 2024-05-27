@@ -2,7 +2,7 @@
   <div class="mt-5" v-bind:class="wrapClass">
     <el-form ref="formRef"
       :model="values" 
-      :rules="rules"
+      :rules="<FormRules>rules"
       :size="size"
       :disabled="disabled"
       :label-width="labelWidth"
@@ -21,7 +21,7 @@
             <el-form-item v-bind:class="formItemClass"
               :key="item.key" 
               :prop="item.key" 
-              :rules="rules?.[item.key]" 
+              :rules="<any>rules?.[item.key]" 
               :label="item.label"
               :label-width="item.labelWidth"
               v-if="isFilter(env)(item.conditions, { values })"
@@ -60,12 +60,12 @@
         </el-col>
       </el-row>
       <!-- footer -->
-      <el-row :gutter="20" v-if="!options?.hide">
+      <el-row :gutter="20" v-if="!props.options?.hide">
         <el-col :span="24">
           <el-form-item class="footer">
             <el-button type="primary" native-type="submit" :loading="loading">{{ submitName }}</el-button>
-            <el-button v-if="options?.reset" plain @click="handleRest(formRef)">{{ options?.reset }}</el-button>
-            <form-expand :data="options?.emits" :env="env" :values="values" @command="handleCommand" />
+            <el-button v-if="props.options?.reset" plain @click="handleRest(formRef)">{{ props.options?.reset }}</el-button>
+            <form-expand :data="props.options?.emits" :env="env" :values="values" @command="handleCommand" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import type { FormItemColumn, Size, RequestConfig, SubmitActionOptions } from '@/types/base'
-import type { FormInstance } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { isDisabled } from '~/utils/parse'
 import { formatData } from 'parse-string'
 import { set, pick, omit, merge, zipObject, unset, map, isString, isEmpty, isEqual, cloneDeep, omitBy, isUndefined } from 'lodash'
@@ -84,6 +84,7 @@ import type { FormWrapProps } from '@/types/views/form-wrap'
 import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import { useAccountStore } from '~/store/account'
+
 
 const { timestamp } = storeToRefs(useAccountStore())
 
@@ -164,11 +165,11 @@ function formItemMarginBottom (value?: Size) {
   return '!mb-7'
 }
 
-const submitForm = (formEl?: FormInstance) => {
+const submitForm = async (formEl?: FormInstance) => {
   if (!formEl) {
     formEl = formRef.value
   }
-  formEl?.validate(valid => {
+  await formEl?.validate(valid => {
     if (valid) {
       let labelKeys = map(props.columns?.filter(ruleJudgment<FormItemColumn>({ labelOptions: { $exists: true }})), 'labelOptions.key')
       let keys = map(props.columns?.filter( v => isFilter(props.env)(v.conditions) ), 'key').concat(labelKeys)
@@ -196,7 +197,7 @@ const submitForm = (formEl?: FormInstance) => {
       emit('submit', __values, props.action, __options)
     }
     else {
-      return false
+      return
     }
   })
 }

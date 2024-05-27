@@ -1,4 +1,4 @@
-// import { defineNuxtConfig } from 'nuxt/config'
+import { defineNuxtConfig } from 'nuxt/config'
 import { resolve } from 'path'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -7,7 +7,10 @@ export default defineNuxtConfig({
   experimental: {
     renderJsonPayloads: false
   },
-
+  devtools: {
+    enabled: false
+  },
+  
   srcDir: './src',
 
   css: [

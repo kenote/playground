@@ -4,14 +4,14 @@
     <h1 class="text-center pb-8 m-0">用户登录</h1>
     <el-form ref="formRef" size="large" 
       :model="form" 
-      :rules="rules" 
+      :rules="<any>rules" 
       @submit.native.prevent="submitForm(formRef)" 
       label-position="top" 
       hide-required-asterisk >
-      <el-form-item prop="username" :rules="rules.username" label="用户名" class="h-20">
+      <el-form-item prop="username" :rules="<any>rules.username" label="用户名" class="h-20">
         <el-input placeholder="账号/邮箱/手机号" v-model="form.username" />
       </el-form-item>
-      <el-form-item prop="password" :rules="rules.password" class="h-20">
+      <el-form-item prop="password" :rules="<any>rules.password" class="h-20">
         <div slot="label" class="el-form-item__label flex! flex-1! justify-between! flex-row! pr-0!">
           <span>密码</span>
           <span><NuxtLink to="/lostpass">密码忘记了?</NuxtLink></span>
@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { AuthToken } from '@/types'
+import type { AuthToken } from '@/types'
 import { useUserStore } from '~/store/user'
 
 definePageMeta({

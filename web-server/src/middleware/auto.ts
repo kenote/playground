@@ -14,7 +14,7 @@ export default defineNuxtRouteMiddleware( (to, from) => {
   if (!channelId) {
     throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
   }
-  setPageLayout(setting?.layout??'default')
+  setPageLayout(<any>setting?.layout??'default')
   if (setting?.middleware) {
     let names = isArray(setting.middleware) ? setting.middleware : [setting.middleware]
     for (let item of names) {

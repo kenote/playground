@@ -3,11 +3,11 @@
   <p class="text-warm-gray-500 mt-[-8px] text-center">忘记密码？请在下方输入您的电子邮件地址，开始重置程序。</p>
   <el-form ref="formRef" size="large" 
     :model="form" 
-    :rules="rules" 
+    :rules="<any>rules" 
     @submit.native.prevent="submitForm(formRef)" 
     label-position="top" 
     hide-required-asterisk >
-    <el-form-item prop="email" :rules="rules.email" label="电子邮箱地址" class="h-20">
+    <el-form-item prop="email" :rules="<any>rules.email" label="电子邮箱地址" class="h-20">
       <el-input placeholder="电子邮箱地址" v-model="form.email" />
     </el-form-item>
     <el-form-item >
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { FilterData } from 'parse-string'
+import { type FilterData } from 'parse-string'
 import type { FormInstance } from 'element-plus'
 
 type LostpassForm = {
@@ -38,14 +38,14 @@ const rules: Record<keyof LostpassForm, FilterData.rule[]> = {
   ]
 }
 
-const submitForm = (formEl?: FormInstance) => {
+const submitForm = async (formEl?: FormInstance) => {
   if (!formEl) return
-  formEl.validate(async valid => {
+  await formEl.validate(valid => {
     if (valid) {
       emit('submit', formEl.$props.model)
     }
     else {
-      return false
+      return
     }
   })
 }
