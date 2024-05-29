@@ -22,10 +22,16 @@ import { pick, set, merge, assign } from 'lodash'
 import { ElMessage, ElMessageBox, type ElMessageBoxOptions } from 'element-plus'
 import { useUserStore } from '~/store/user'
 import type { Action, Confirm } from '@/types/account'
+import { useRouter, useRoute } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
 const { setting, currentChannel, timestamp } = storeToRefs(useAccountStore())
+
+// 找不到配置页面
+if (!setting.value) {
+  showError({ statusCode: 404, statusMessage: 'This page could not be found' })
+}
 
 // 加载中间件
 definePageMeta({

@@ -33,6 +33,7 @@ import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import type { AuthToken } from '@/types'
 import { useUserStore } from '~/store/user'
+import { useRouter } from 'vue-router'
 
 definePageMeta({
   layout: 'account',
@@ -67,9 +68,9 @@ const rules = useVerifyRule<keyof LoginForm>({
 })
 
 // 提交数据
-function submitForm (formEl?: FormInstance) {
+async function submitForm (formEl?: FormInstance) {
   if (!formEl) return
-  formEl.validate(valid => {
+  await formEl.validate(valid => {
     if (valid) {
       loading.value = true
       setTimeout(async () => {
@@ -84,7 +85,7 @@ function submitForm (formEl?: FormInstance) {
           else if (data) {
             store.setAuth(data)
             formEl.resetFields()
-            router.push({ path: url_callback ?? '/' })
+            router.push({ path: <string>url_callback ?? '/' })
           }
         } catch (error) {
           if (error instanceof Error) {
@@ -95,7 +96,7 @@ function submitForm (formEl?: FormInstance) {
       }, 500)
     }
     else {
-      return false
+      return
     }
   })
 }

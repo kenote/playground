@@ -9,7 +9,7 @@ const SERVER_NAME = process.env.SERVER_NAME || basename(process.cwd())
 const { MONGODB_USER, MONGODB_PASS, MONGODB_HOST, MONGODB_PORT, REDIS_HOST, REDIS_PORT, REDIS_PASS } = process.env
 const MONGODB_AUTH = compact([MONGODB_USER, MONGODB_PASS]).join(':')
 const MONGODB_HOSTNAME = compact([MONGODB_HOST, MONGODB_PORT]).join(':')
-const MONGODB_BASEURL = compact([MONGODB_AUTH, MONGODB_HOSTNAME]).join('@') || 'localhost:27017'
+const MONGODB_BASEURL = compact([MONGODB_AUTH, MONGODB_HOSTNAME]).join('@') || '127.0.0.1:27017'
 
 export const serverConfigure = <Required<ServerConfigure>> merge(<ServerConfigure>
   {

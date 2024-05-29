@@ -2,8 +2,6 @@
 import { compact, get, isFunction } from 'lodash'
 import type { Command } from '@/types/base'
 
-
-
 export function parseCommand<T> (value: string, tag?: string): Command.value<T> | null {
   if (!value) return null
   let tags = compact([ 'dialog', 'action', 'submit', 'command', 'router', 'https?', tag ]).join('|')
@@ -38,7 +36,7 @@ export function runCommand (self: any, commands?: any) {
       commands?.submit(command.path, row, component, self)
     }
     else if (command.type === 'router') {
-      self?.router.push(command.path)
+      self?.router.push( { path: command.path })
     }
     else if (command.type === 'http') {
       if (!document) return

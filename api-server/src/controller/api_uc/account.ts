@@ -62,6 +62,21 @@ export default class AccountController {
   }
 
   /**
+   * 用户登出
+   */
+  @Get('/logout', { filters: authenticate })
+  async logout (ctx: Context, next: NextHandler) {
+    try {
+      await db.user.Dao.updateOne({ _id: ctx.user?._id }, { jwtoken: '' })
+      ctx.logout()
+      ctx.cookie('jwtoken', '')
+      return ctx.api({ result: true })
+    } catch (error) {
+      nextError(error, ctx, next)
+    }
+  }
+
+  /**
    * 查询名称是否占用
    */
   @Put('/check/:type(username|email|mobile)')

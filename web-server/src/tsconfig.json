@@ -1,3 +1,10 @@
 {
-  "extends": "../tsconfig.json"
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "@nuxtjs/color-mode",
+      "element-plus/global",
+      "../types"
+    ],
+  }
 }

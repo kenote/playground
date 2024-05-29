@@ -78,6 +78,8 @@ import { dataNodeProxy, getChannelKey } from '@kenote/common'
 import { useAccountStore } from '~/store/account'
 import { useUserStore } from '~/store/user'
 import { Refresh } from '@element-plus/icons-vue'
+import { useRouter, useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 useHead({
   title: 'Panel',
@@ -138,8 +140,8 @@ function handleCommand (value: string, row?: any) {
     refresh: () => {
       account.refresh()
     },
-    logout: () => {
-      console.log('logout')
+    logout: async () => {
+      await gotoLogout()
     }
   })(value, row)
   
@@ -147,6 +149,24 @@ function handleCommand (value: string, row?: any) {
 
 function handleCollapse () {
   collapse.value = !collapse.value
+}
+
+/**
+ * 跳转退出
+ */
+async function gotoLogout() {
+  try {
+    let reslut = await useHttpProxy<{ result: boolean }>(`/api/uc/account/logout`)
+    if (reslut.data.result) {
+      const state = useUserStore()
+      state.setAuth(null)
+      router.push({ path: `/login`, query: { url_callback: route.path } })
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      ElMessage.error(error.message)
+    }
+  }
 }
 </script>
 
