@@ -1,0 +1,19 @@
+---
+
+# SDK
+sdks:
+  - key: dcdn
+    name: 全站加速
+    endpoint: https://dcdn.aliyuncs.com
+    apiVersion: '2018-01-15'
+  - key: dysms
+    name: 短信服务
+    endpoint: https://dysmsapi.aliyuncs.com
+    apiVersion: '2017-05-25'
+
+# 连接密钥
+accessKeys:
+  - key: test
+    name: 显示名称
+    accessKeyId: <accessKeyId>
+    accessKeySecret: <accessKeySecret>

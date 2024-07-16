@@ -1,0 +1,16 @@
+---
+
+# 默认SDK
+usage: test
+
+# 短信接口配置，可以多个
+sdks:
+  - key: test
+    name: 显示名称
+    type: alicloud
+    sign: <签名标记>
+    tpls:
+      register: <register>
+      verifyid: <verifyid>
+      password: <password>
+      setinfos: <setinfos>

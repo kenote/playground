@@ -4,6 +4,7 @@
   "description": "",
   "license": "MIT",
   "dependencies": {
+    "@alicloud/pop-core": "^1.7.13",
     "@kenote/api-proxy": "latest",
     "@kenote/core": "latest",
     "@kenote/koa": "latest",
